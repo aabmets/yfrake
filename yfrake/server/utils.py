@@ -25,7 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from aiohttp.web import Response
+from ..client.response import Response
 from multidict import MultiDictProxy
 from pathlib import Path
 import configparser
@@ -53,6 +53,9 @@ def convert_multidict(multidict: MultiDictProxy) -> dict:
 
 
 # ------------------------------------------------------------------------------------ #
-def pretty_json(obj: object) -> Response:
-    text = json.dumps(obj=vars(obj), indent=3)
-    return Response(text=text)
+def pretty_json(resp: Response) -> str:
+    response = dict(
+        endpoint=resp.endpoint,
+        error=resp.error,
+        data=resp.data)
+    return json.dumps(response, indent=3)

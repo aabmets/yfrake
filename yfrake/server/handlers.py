@@ -40,208 +40,208 @@ class Handlers:
     async def yfmds_historical_prices(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_historical_prices(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_options(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_options(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_insights(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_insights(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_quotes_overview(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_quotes_overview(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_esg_chart(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_esg_chart(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_quote_type(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_quote_type(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_news(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_news(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_recommendations(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_recommendations(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_shares_outstanding(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_shares_outstanding(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_validate_symbols(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_validate_symbols(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_market_summary(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_market_summary(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_trending_symbols(request: Request) -> Response:
         query: dict = convert_multidict(request.query)
         resp = await AsyncClient.get_trending_symbols(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_currencies(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_currencies(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_esg_scores(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_esg_scores(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_purchase_activity(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_purchase_activity(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_earnings(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_earnings(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_price_overview(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_price_overview(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_calendar_events(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_calendar_events(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_company_overview(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_company_overview(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_sec_filings(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_sec_filings(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_detailed_summary(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_detailed_summary(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_financials(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_financials(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_recommendation_trend(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_recommendation_trend(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_ratings_history(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_ratings_history(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_earnings_history(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_earnings_history(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_earnings_trend(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_earnings_trend(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_key_stats(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_key_stats(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_income_statements(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_income_statements(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_cashflow_statements(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_cashflow_statements(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_balance_statements(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_balance_statements(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_institution_ownership(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_institution_ownership(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_fund_ownership(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_fund_ownership(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_major_holders(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_major_holders(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_insider_transactions(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_insider_transactions(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
 
     @staticmethod
     async def yfmds_insider_holders(request: Request) -> Response:
         query = convert_multidict(request.query)
         resp = await AsyncClient.get_insider_holders(**query)
-        return pretty_json(resp)
+        return Response(text=pretty_json(resp))
