@@ -26,8 +26,10 @@
 #                                                                                    #
 # ================================================================================== #
 from pathlib import Path
-from importlib.util import *
+from importlib import util
 
+
+# ================================================================================== #
 # Here we collect all the modules from the current folder, load them,
 # and add them to the specs list, which is then used by the generator.py
 # module to generate the 'yfrake_spec.yaml' file.
@@ -38,7 +40,7 @@ for file_path in folder.iterdir():
     module_name = file_path.stem
     if '__' in str(module_name):
         continue
-    spec = spec_from_file_location(module_name, file_path)
-    module = module_from_spec(spec)
+    spec = util.spec_from_file_location(module_name, file_path)
+    module = util.module_from_spec(spec)
     spec.loader.exec_module(module)
     specs.append(module)
