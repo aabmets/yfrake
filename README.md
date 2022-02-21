@@ -17,7 +17,7 @@ It enables developers to build powerful apps without having to worry about optim
 YFrake can be used as a client to directly return data or as a programmatically controllable server to forward data to web clients.
 In addition, all requests in both sync and async modes are non-blocking, meaning that your program can continue running your code without freezing while network requests are in progress.
 The best part about YFrake is its built-in swagger API documentation, from which you can perform test-queries against the server and examine the returned responses.
-<hr>
+
 
 ### Getting Started
 #### Installation
@@ -25,5 +25,4 @@ The best part about YFrake is its built-in swagger API documentation, from which
 pip install yfrake
 ```
 
-<hr>
 <a id="footnote"><sup>note:</sup></a> Stock market data is sourced from Yahoo Finance.
