@@ -39,8 +39,8 @@ class BaseWorker:
     request data from the Yahoo Finance API servers.
     """
     # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    async def _request(params: dict, endpoint: str) -> Response:
+    @classmethod
+    async def _request(cls, params: dict, endpoint: str) -> Response:
         """
         The main function responsible for making the
         requests to the Yahoo Finance API servers.
@@ -57,24 +57,26 @@ class BaseWorker:
                     raise_for_status=True, timeout=timeout) as resp:
                 data = await resp.json()
                 Validator.validate(data)
-        except (ClientResponseError, InvalidResponseError) as ex:
+
+        except (ClientResponseError, InvalidResponseError,
+                JSONDecodeError, TimeoutError) as ex:
+            error = cls._get_error_dict(ex, url)
             data = None
-            error = {
-                'type': 'HTTPError',
-                'code': ex.status,
-                'msg': ex.message,
-                'url': url
-            }
-        except (TimeoutError, JSONDecodeError):
-            data = None
-            error = {
-                'type': 'HTTPError',
-                'code': 500,
-                'msg': 'Internal server error',
-                'url': url
-            }
+
         return Response(
             endpoint=endpoint,
             error=error,
             data=data
         )
+
+    # ------------------------------------------------------------------------------------ #
+    @staticmethod
+    def _get_error_dict(ex, url) -> dict:
+        default_code = 500
+        default_msg = 'Internal server error'
+        return {
+            'type': 'HTTPError',
+            'code': getattr(ex, 'status', default_code),
+            'msg': getattr(ex, 'message', default_msg),
+            'url': url
+        }
