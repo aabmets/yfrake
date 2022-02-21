@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # ==================================================================================== #
 [tool.poetry]
 name = "YFrake"
-version = "0.1.4"
+version = "0.1.5"
 description = "A flexible and agile stock market data scraper and server."
 readme = "README.md"
 license = "MIT License"
@@ -55,4 +55,4 @@ pytest = "*"
 
 # ==================================================================================== #
 [tool.poetry.scripts]
-generate_swagger_spec = "yfrake.openapi.generator:generate_openapi_spec"
+gen_spec = "yfrake.openapi.generator:generate_openapi_spec"
