@@ -28,7 +28,7 @@
 def validate(data: dict) -> bool:
     if len(data) == 0:
         return False
-    elif len(data) == 1:
+    if len(data) == 1:
         endpoint = list(data.keys())[0]
         error = data[endpoint].get('error')
         result = data[endpoint].get('result')
@@ -42,7 +42,7 @@ def validate(data: dict) -> bool:
         if isinstance(result, list):
             if result[0] == {}:
                 return False
-    elif len(data) > 1:
+    if len(data) > 1:
         if 'news' in data and data['news'] == []:
             return False
     return True

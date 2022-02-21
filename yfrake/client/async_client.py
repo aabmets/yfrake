@@ -251,7 +251,7 @@ class AsyncClient(BaseWorker):
         data: dict | None = resp.data
         if not resp.error:
             data: dict = resp.data['currencies']['result']
-            for i in range(0, len(data)):
+            for i, _ in enumerate(data):
                 del data[i]['symbol']
                 del data[i]['localLongName']
             data = dict(list=data)

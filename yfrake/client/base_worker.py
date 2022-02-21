@@ -29,7 +29,6 @@ from .paths import base_url, endpoints
 from .response import Response
 from .utils import validate
 from json import JSONDecodeError
-from asyncio import TimeoutError
 import aiohttp
 
 
