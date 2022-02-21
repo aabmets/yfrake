@@ -42,25 +42,27 @@ class Validator:
         """
         cls._check_special_case(data)
         error, result = cls._extract_fields(data)
-        if error is not None or result is None:
+        error_cases = [
+            error is not None or result is None,
+            type(result) == dict and len(result) == 0,
+            type(result) == list and len(result) == 0,
+            type(result) == list and len(result[0]) == 0
+        ]
+        if True in error_cases:
             raise InvalidResponseError
-        if isinstance(result, dict | list) and len(result) == 0:
-            raise InvalidResponseError
-        if isinstance(result, list) and result[0] == {}:
-            raise InvalidResponseError
-
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _extract_fields(cls, data: dict) -> tuple:
-        error, result = (True, False)
-        if len(data) == 1:
-            endpoint = list(data.keys())[0]
-            error = data[endpoint].get('error')
-            result = data[endpoint].get('result')
-        return error, result
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
     def _check_special_case(cls, data: dict) -> None:
         if len(data) > 1 and not data.get('news'):
             raise InvalidResponseError
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _extract_fields(cls, data: dict) -> tuple:
+        if len(data) == 1:
+            endpoint = list(data.keys())[0]
+            error = data[endpoint].get('error')
+            result = data[endpoint].get('result')
+            return error, result
+        return None, None
