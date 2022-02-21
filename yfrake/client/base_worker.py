@@ -27,9 +27,9 @@
 # ==================================================================================== #
 from .paths import base_url, endpoints
 from .response import Response
-from .utils import validate
+from .validator import validate, InvalidResponseError
+from aiohttp import request, ClientResponseError, ClientTimeout
 from json import JSONDecodeError
-import aiohttp
 
 
 # ==================================================================================== #
@@ -51,22 +51,13 @@ class BaseWorker:
             url = url.format(symbol=sym)
         try:
             error = None
-            timeout = aiohttp.ClientTimeout(total=5)
-            async with aiohttp.request(
+            timeout = ClientTimeout(total=5)
+            async with request(
                     method='GET', url=url, params=params,
                     raise_for_status=True, timeout=timeout) as resp:
                 data = await resp.json()
-                # Yahoo Finance sometimes replies with a successful status code 200 empty response,
-                # when the query params are invalid, so we need to ensure that the empty response
-                # is being correctly identified and returned to the user as an invalid request.
-                if not validate(data):
-                    raise aiohttp.ClientResponseError(
-                        request_info=resp.request_info,
-                        history=resp.history,
-                        status=400,
-                        message='Bad Request'
-                    )
-        except aiohttp.ClientResponseError as ex:
+                validate(data)
+        except (ClientResponseError, InvalidResponseError) as ex:
             data = None
             error = {
                 'type': 'HTTPError',

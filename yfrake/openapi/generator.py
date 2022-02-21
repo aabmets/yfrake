@@ -120,7 +120,7 @@ def _build_info() -> dict:
     contact = data['authors'][0].split()
     email = contact.pop().strip('<>')
     name = ' '.join(contact)
-    url = data['urls']['Repository']
+    url = data['urls']['Homepage']
     return {
         'title': data['name'],
         'version': data['version'],

@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    utils.py - This file is part of the YFrake package.                               #
+#    validator.py - This file is part of the YFrake package.                           #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,24 +25,33 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-def validate(data: dict) -> bool:
+class InvalidResponseError(Exception):
+    def __init__(self):
+        self.status = 400
+        self.message = 'Bad request'
+
+
+# ==================================================================================== #
+def validate(data: dict) -> None:
+    """
+    This function ensures that an empty response
+    with a successful status code 200 is recognized
+    as an erroneous response.
+    """
     if len(data) == 0:
-        return False
-    if len(data) == 1:
+        raise InvalidResponseError
+    elif len(data) == 1:
         endpoint = list(data.keys())[0]
         error = data[endpoint].get('error')
         result = data[endpoint].get('result')
         if error is not None:
-            return False
+            raise InvalidResponseError
         if result is None:
-            return False
-        if isinstance(result, dict | list):
-            if len(result) == 0:
-                return False
-        if isinstance(result, list):
-            if result[0] == {}:
-                return False
-    if len(data) > 1:
-        if 'news' in data and data['news'] == []:
-            return False
-    return True
+            raise InvalidResponseError
+        if isinstance(result, dict | list) and len(result) == 0:
+            raise InvalidResponseError
+        if isinstance(result, list) and result[0] == {}:
+            raise InvalidResponseError
+    elif len(data) > 1:
+        if 'news' in data and not data.get('news'):
+            raise InvalidResponseError

@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # ==================================================================================== #
 [tool.poetry]
 name = "YFrake"
-version = "0.1.1"
+version = "0.1.3"
 description = "A flexible and agile stock market data scraper and server."
 readme = "README.md"
 license = "MIT License"
@@ -35,8 +35,7 @@ include = [
 
 # ==================================================================================== #
 [tool.poetry.urls]
-"Repository" = "https://github.com/aspenforest/yfrake"
-"Bug Reports" = "https://github.com/aspenforest/yfrake/issues"
+"Homepage" = "https://github.com/aspenforest/yfrake"
 
 
 # ==================================================================================== #
