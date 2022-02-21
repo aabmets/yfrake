@@ -27,7 +27,7 @@
 # ==================================================================================== #
 from .paths import base_url, endpoints
 from .response import Response
-from .validator import validate, InvalidResponseError
+from .validator import Validator, InvalidResponseError
 from aiohttp import request, ClientResponseError, ClientTimeout
 from json import JSONDecodeError
 
@@ -56,7 +56,7 @@ class BaseWorker:
                     method='GET', url=url, params=params,
                     raise_for_status=True, timeout=timeout) as resp:
                 data = await resp.json()
-                validate(data)
+                Validator.validate(data)
         except (ClientResponseError, InvalidResponseError) as ex:
             data = None
             error = {

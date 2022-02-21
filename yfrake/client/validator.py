@@ -32,26 +32,35 @@ class InvalidResponseError(Exception):
 
 
 # ==================================================================================== #
-def validate(data: dict) -> None:
-    """
-    This function ensures that an empty response
-    with a successful status code 200 is recognized
-    as an erroneous response.
-    """
-    if len(data) == 0:
-        raise InvalidResponseError
-    elif len(data) == 1:
-        endpoint = list(data.keys())[0]
-        error = data[endpoint].get('error')
-        result = data[endpoint].get('result')
-        if error is not None:
-            raise InvalidResponseError
-        if result is None:
+class Validator:
+    @classmethod
+    def validate(cls, data: dict) -> None:
+        """
+        This function ensures that an empty response
+        with a successful status code 200 is correctly
+        recognized as an erroneous response.
+        """
+        cls._check_special_case(data)
+        error, result = cls._extract_fields(data)
+        if error is not None or result is None:
             raise InvalidResponseError
         if isinstance(result, dict | list) and len(result) == 0:
             raise InvalidResponseError
         if isinstance(result, list) and result[0] == {}:
             raise InvalidResponseError
-    elif len(data) > 1:
-        if 'news' in data and not data.get('news'):
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _extract_fields(cls, data: dict) -> tuple:
+        error, result = (True, False)
+        if len(data) == 1:
+            endpoint = list(data.keys())[0]
+            error = data[endpoint].get('error')
+            result = data[endpoint].get('result')
+        return error, result
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _check_special_case(cls, data: dict) -> None:
+        if len(data) > 1 and not data.get('news'):
             raise InvalidResponseError
