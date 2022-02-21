@@ -9,11 +9,11 @@
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/github/stars/aspenforest/yfrake?style=social" alt="Stars on GitHub"></a>
 
 ### Description
-YFrake is a ***flexible*** and ***agile*** stock market data scraper and server [&#91;note&#93;](#footnote).
-It enables developers to build powerful apps without having to worry about maximizing network request throughput.
-YFrake can be used as a client to directly return data or as a ***programmatically controllable server*** to forward data to web clients.
-In addition, all requests in ***sync and async modes are non-blocking***, which means that your program can continue running your code while network requests are in progress.
-The best part about YFrake is its ***built-in swagger API documentation*** from which you can perform test queries and examine the returned responses.
+YFrake is a ***flexible*** and ***agile*** stock market data scraper and server [&#91;note1&#93;](#footnote1).
+It enables developers to build powerful apps without having to worry about maximizing network request throughput [&#91;note2&#93;](#footnote1).
+YFrake can be used as a client to directly return market data or as a ***programmatically controllable server*** to forward data to web clients.
+In addition, all network requests by YFrake are ***non-blocking***, which means that your program can continue running your code while network requests are in progress.
+The best part about YFrake is its ***built-in swagger API documentation*** which you can use to perform test queries and examine the returned responses.
 
 
 ### Getting Started
@@ -23,4 +23,5 @@ pip install yfrake
 ~~~
 
 <br />
-<a id="footnote"><sup>&#91;note&#93;:</sup></a> Stock market data is sourced from Yahoo Finance.
+<a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. <br/>
+<a id="footnote2"><sup>&#91;note2&#93;:</sup></a> You still need to know how to gather coroutines when using asyncio to maximise throughput.

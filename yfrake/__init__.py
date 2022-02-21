@@ -27,9 +27,9 @@
 # ================================================================================== #
 
 from .client.async_client import AsyncClient
-from .client.sync_client import SyncClient
+from .client.sync_client import ThreadClient
 from .server.server import Server
 
 aclient = AsyncClient()
-sclient = SyncClient()
+tclient = ThreadClient()
 server = Server()

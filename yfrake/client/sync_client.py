@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    sync_client.py - This file is part of the YFrake package.                         #
+#    thread_client.py - This file is part of the YFrake package.                       #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -33,13 +33,13 @@ import copy
 
 
 # ==================================================================================== #
-class SyncClient:
+class ThreadClient:
     """
     Instances of this class enable the user
     to make requests to the Yahoo Finance API
     from a synchronous (procedural) context.
     """
-    error_msg = 'ERROR! The response attribute of the SyncClient object is read-only!'
+    error_msg = 'ERROR! The response attribute of the ThreadClient object is read-only!'
 
     # ------------------------------------------------------------------------------------ #
     def __init__(self):
