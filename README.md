@@ -1,7 +1,5 @@
 # YFrake
-###### The most flexible stock market data scraper and server. <sup>[note](#footnote)</sup>
 
----
 <!-- <a target="new" href="https://pypi.python.org/pypi/yfrake"><img border=0 src="https://img.shields.io/pypi/dm/yfrake?label=installs" alt="Installs per month"></a> -->
 <!--  <a target="new" href="https://pypi.python.org/pypi/yfrake"><img border=0 src="https://img.shields.io/pypi/pyversions/yfrake" alt="Supported Python versions"></a>  -->
 <a target="new" href="https://pypi.python.org/pypi/yfrake"><img border=0 src="https://img.shields.io/badge/python-3.7+-blue.svg" alt="Supported Python versions"></a>
@@ -13,11 +11,19 @@
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/github/stars/aspenforest/yfrake?style=social" alt="Stars on GitHub"></a>
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/twitter/follow/aabmets?style=social&label=Followers" alt="Followers on Twitter"></a>
 
+### Description
+YFrake is a flexible and agile stock market data scraper and server. <sup>[note](#footnote)</sup></br>
+It enables developers to build powerful apps without having to worry about optimizing network requests or maximizing throughput.
+YFrake can be used as a client to directly return data or as a programmatically controllable server to forward data to web clients.
+In addition, all requests in both sync and async modes are non-blocking, meaning that your program can continue running your code without freezing while network requests are in progress.
+The best part about YFrake is its built-in swagger API documentation, from which you can perform test-queries against the server and examine the returned responses.
+<hr>
 
-### Installation
+### Getting Started
+#### Installation
 ```
 pip install yfrake
 ```
 
----
-<a name="footnote"><sup>note:</sup></a> Stock market data is sourced from Yahoo Finance.
+<hr>
+<a id="footnote"><sup>note:</sup></a> Stock market data is sourced from Yahoo Finance.
