@@ -1,0 +1,44 @@
+# ================================================================================== #
+#   __init__.py - This file is part of the yfrake package.                           #
+# ================================================================================== #
+#                                                                                    #
+#   MIT License                                                                      #
+#                                                                                    #
+#   Copyright (c) 2022 Mattias Aabmets                                               #
+#                                                                                    #
+#   Permission is hereby granted, free of charge, to any person obtaining a copy     #
+#   of this software and associated documentation files (the "Software"), to deal    #
+#   in the Software without restriction, including without limitation the rights     #
+#   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell        #
+#   copies of the Software, and to permit persons to whom the Software is            #
+#   furnished to do so, subject to the following conditions:                         #
+#                                                                                    #
+#   The above copyright notice and this permission notice shall be included in all   #
+#   copies or substantial portions of the Software.                                  #
+#                                                                                    #
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR       #
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,         #
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE      #
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER           #
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,    #
+#   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE    #
+#   SOFTWARE.                                                                        #
+#                                                                                    #
+# ================================================================================== #
+from pathlib import Path
+from importlib.util import *
+
+# Here we collect all the modules from the current folder, load them,
+# and add them to the specs list, which is then used by the generator.py
+# module to generate the 'yfrake_spec.yaml' file.
+
+specs = list()
+folder = Path(__file__).parent
+for file_path in folder.iterdir():
+    module_name = file_path.stem
+    if '__' in str(module_name):
+        continue
+    spec = spec_from_file_location(module_name, file_path)
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    specs.append(module)

@@ -1,0 +1,59 @@
+# ==================================================================================== #
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+# ==================================================================================== #
+[tool.poetry]
+name = "YFrake"
+version = "0.1.0"
+description = "The most flexible Yahoo Finance stock market data scraper and server."
+readme = "README.md"
+license = "MIT License"
+authors = [
+    "Mattias Aabmets <mattias.aabmets@gmail.com>"
+]
+keywords = ["yahoo", "finance", "api", "server", "scraper"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+packages = [
+    {include = "yfrake"}
+]
+include = [
+    "yfrake",
+    "yfrake.*",
+    "yfrake.*.*"
+]
+
+
+# ==================================================================================== #
+[tool.poetry.urls]
+"Repository" = "https://github.com/aspenforest/yfrake"
+"Bug Reports" = "https://github.com/aspenforest/yfrake/issues"
+
+
+# ==================================================================================== #
+[tool.poetry.dependencies]
+python = "^3.7"
+aiohttp = "^3.8"
+aiohttp-swagger3 = "^0.7"
+psutil = "^5.9"
+pyyaml = "^6.0"
+tomli = "^2.0"
+
+
+# ==================================================================================== #
+[tool.poetry.dev-dependencies]
+pytest = "*"
+
+
+# ==================================================================================== #
+[tool.poetry.scripts]
+generate_swagger_spec = "yfrake.openapi.generator:generate_openapi_spec"

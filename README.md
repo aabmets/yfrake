@@ -1,2 +1,2 @@
-# yfrake
-Yahoo Finance Stock Market Data Rake
+# YFrake
+The most flexible Yahoo Finance stock market data scraper and server.
