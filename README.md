@@ -1,5 +1,5 @@
 # YFrake
-###### The most flexible stock market data scraper and server.[^1]
+###### The most flexible stock market data scraper and server. <sup>[note](#myfootnote1)</sup>
 
 ---
 <!-- <a target="new" href="https://pypi.python.org/pypi/yfrake"><img border=0 src="https://img.shields.io/pypi/dm/yfrake?label=installs" alt="Installs per month"></a> -->
@@ -20,4 +20,4 @@ pip install yfrake
 ```
 
 ---
-[^1] Stock market data is sourced from Yahoo Finance.
+<a name="myfootnote1"><sup>note:</sup></a> Stock market data is sourced from Yahoo Finance.
