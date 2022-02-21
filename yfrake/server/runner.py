@@ -53,7 +53,7 @@ def main():
     app = web.Application()
     swagger = SwaggerFile(
         app=app,
-        spec_file=get_spec_file_path(),
+        spec_file=str(get_spec_file_path()),
         swagger_ui_settings=SwaggerUiSettings(path="/")
     )
     swagger.add_routes(routes)
