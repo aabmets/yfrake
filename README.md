@@ -9,10 +9,10 @@
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/github/stars/aspenforest/yfrake?style=social" alt="Stars on GitHub"></a>
 
 ### Description
-YFrake is a flexible and agile stock market data scraper and server [&#91;note&#93;](#footnote).
-It enables developers to build powerful apps without having to worry about maximizing network request throughput.
+YFrake is a ***flexible*** and ***agile*** stock market data scraper and server [&#91;note&#93;](#footnote).
+It enables developers to build ***powerful apps*** without having to worry about maximizing network request throughput.
 YFrake can be used as a client to directly return data or as a ***programmatically controllable server*** to forward data to web clients.
-In addition, all requests in both sync and async modes are ***non-blocking***, which means that your program can continue running your code while network requests are in progress.
+In addition, all requests in async ***and*** sync modes are ***non-blocking***, which means that your program can continue running your code ***while*** network requests are in progress.
 The best part about YFrake is its ***built-in swagger API documentation*** from which you can perform test queries and examine the returned responses.
 
 
