@@ -23,4 +23,4 @@ pip install yfrake
 ~~~
 
 <br />
-<a id="footnote"><sup>note:</sup></a> Stock market data is sourced from Yahoo Finance.
+<a id="footnote">NOTE:</a> Stock market data is sourced from Yahoo Finance.
