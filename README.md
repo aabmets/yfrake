@@ -9,6 +9,9 @@
 <a target="new" href="https://github.com/aspenforest/yfrake/blob/main/LICENSE"><img border=0 src="https://img.shields.io/github/license/aspenforest/yfrake" alt="License on GitHub"></a>
 <a target="new" href="https://github.com/aspenforest/yfrake/stargazers"><img border=0 src="https://img.shields.io/github/stars/aspenforest/yfrake?style=social" alt="Stars on GitHub"></a>
 
+### Disclaimer
+The library in its current form is ***production ready***, but major version changes might introduce incompatibilities with previous versions.
+
 ### Description
 YFrake is a ***flexible*** and ***agile*** stock market data scraper and server [&#91;note1&#93;](#footnote1).
 It enables developers to build powerful apps without having to worry about maximizing network request throughput [&#91;note2&#93;](#footnote1).
