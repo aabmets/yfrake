@@ -10,7 +10,7 @@
 <a target="new" href="https://github.com/aspenforest/yfrake/stargazers"><img border=0 src="https://img.shields.io/github/stars/aspenforest/yfrake?style=social" alt="Stars on GitHub"></a>
 
 ### Disclaimer
-The library in its current form is ***production ready***, but major version changes might introduce incompatibilities with previous versions.
+The current version of YFrake is usable, but ***not*** production ready.
 
 ### Description
 YFrake is a ***flexible*** and ***agile*** stock market data scraper and server [&#91;note1&#93;](#footnote1).
@@ -27,31 +27,32 @@ pip install yfrake
 ~~~
 #### How to import
 ~~~
-from yfrake import tclient  # An instance of ThreadClient class.
-from yfrake import aclient  # An instance of AsyncClient class.
-from yfrake import server   # An instance of Server class.
+from yfrake import ThreadClient
+from yfrake import AsyncClient
+from yfrake import Server
 ~~~
 #### ThreadClient example
 ~~~
-tclient.request('historical_prices', symbol='msft', interval='1d', range='1y')
-while tclient.is_busy():
+client = ThreadClient()
+client.get('historical_prices', symbol='msft', interval='1d', range='1y')
+while client.is_busy():
     # Do other stuff
-if tclient.is_done() and not tclient.response.error:
-    print(tclient.response.data)
+if client.is_done() and not client.response.error:
+    print(client.response.data)
 ~~~
 #### AsyncClient example
 ~~~
 async def main():
-    resp = await aclient.get_historical_prices(symbol='msft', interval='1d', range='1y')
+    resp = await AsyncClient.get_historical_prices(symbol='msft', interval='1d', range='1y')
     if not resp.error:
         print(resp.data)
 asyncio.run(main())
 ~~~
 #### Server example
 ~~~
-server.start()  # Default address is 'localhost:8888'
+Server.start()  # Default address is 'localhost:8888'
 # Do some other stuff
-server.stop()  # Kills all server sub-processes.
+Server.stop()  # Kills all server sub-processes.
 ~~~
 
 <br/>

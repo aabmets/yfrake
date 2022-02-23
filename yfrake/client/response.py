@@ -35,7 +35,7 @@ class Response:
     YFrake and is instantiated by the private
     '_request' method of the BaseWorker class.
     """
-    error_msg = 'ERROR! The attributes of the response object are read-only!'
+    _error_msg = 'ERROR! The attributes of the response object are read-only!'
 
     # ------------------------------------------------------------------------------------ #
     def __init__(self, **kwargs):
@@ -59,25 +59,25 @@ class Response:
     # ------------------------------------------------------------------------------------ #
     @endpoint.setter
     def endpoint(self, _) -> None:
-        print(self.error_msg)
+        print(self._error_msg)
 
     @error.setter
     def error(self, _) -> None:
-        print(self.error_msg)
+        print(self._error_msg)
 
     @data.setter
     def data(self, _) -> None:
-        print(self.error_msg)
+        print(self._error_msg)
 
     # ------------------------------------------------------------------------------------ #
     @endpoint.deleter
     def endpoint(self) -> None:
-        print(self.error_msg)
+        print(self._error_msg)
 
     @error.deleter
     def error(self) -> None:
-        print(self.error_msg)
+        print(self._error_msg)
 
     @data.deleter
     def data(self) -> None:
-        print(self.error_msg)
+        print(self._error_msg)

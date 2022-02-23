@@ -1,3 +1,7 @@
+# Temporary excludes
+benchmarks
+tests
+
 # PyCharm
 .idea
 

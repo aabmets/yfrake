@@ -46,8 +46,8 @@ def main():
     route_table: list = inspect.getmembers(
         Handlers, predicate=inspect.isfunction)
     for name, func in route_table:
-        if name.startswith('yfmds_'):
-            path = '/'.join(name.split('yfmds_'))
+        if name.startswith('handler_'):
+            path = '/'.join(name.split('handler_'))
             routes.append(web.get(path=path, handler=func))
 
     app = web.Application()

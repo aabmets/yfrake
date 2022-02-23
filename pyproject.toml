@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # ==================================================================================== #
 [tool.poetry]
 name = "YFrake"
-version = "0.1.10"
+version = "0.1.11"
 description = "A flexible and agile stock market data scraper and server."
 readme = "README.md"
 license = "MIT License"
@@ -16,7 +16,8 @@ authors = [
 ]
 keywords = ["yahoo", "finance", "api", "server", "scraper"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
+#    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "License :: OSI Approved :: MIT License",

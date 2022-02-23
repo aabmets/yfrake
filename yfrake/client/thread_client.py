@@ -26,8 +26,7 @@
 #                                                                                      #
 # ==================================================================================== #
 from .async_client import AsyncClient
-from .response import Response
-from threading import Thread
+from threading import Thread, Lock
 import asyncio
 import copy
 
@@ -39,43 +38,69 @@ class ThreadClient:
     to make requests to the Yahoo Finance API
     from a synchronous (procedural) context.
     """
-    error_msg = 'ERROR! The response attribute of the ThreadClient object is read-only!'
+    _error_msg = 'ERROR! The response attribute of the ThreadClient object is read-only!'
+    _thread, _loop = None, None
+    _class_lock = Lock()
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _start_background_loop(cls) -> None:
+        asyncio.set_event_loop(cls._loop)
+        cls._loop.run_forever()
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _resurrect_thread_loop(cls) -> None:
+        cls._loop = asyncio.new_event_loop()
+        cls._thread = Thread(
+            target=cls._start_background_loop, daemon=True)
+        cls._thread.start()
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _is_thread_loop_alive(cls) -> bool:
+        alive = True
+        if (not isinstance(cls._loop, asyncio.AbstractEventLoop)
+                or cls._loop.is_closed()):
+            alive = False
+        if (not isinstance(cls._thread, Thread)
+                or not cls._thread.is_alive()):
+            alive = False
+        return alive
 
     # ------------------------------------------------------------------------------------ #
     def __init__(self):
-        self._response: Response = Response()
-        self._loop = asyncio.new_event_loop()
-        self._thread = Thread(target=self._start_background_loop, daemon=True)
-        self._thread.start()
+        if self._class_lock.acquire(blocking=False):
+            if not self._is_thread_loop_alive():
+                self._resurrect_thread_loop()
+            self._class_lock.release()
+        self._response = None
         self._future = None
 
     # ------------------------------------------------------------------------------------ #
-    def _start_background_loop(self) -> None:
-        asyncio.set_event_loop(self._loop)
-        self._loop.run_forever()
-
-    # ------------------------------------------------------------------------------------ #
-    def _set_response(self, future) -> None:
-        self._response = future.result()
-
-    # ------------------------------------------------------------------------------------ #
-    def request(self, endpoint: str, **kwargs) -> None:
-        if self.is_done():
-            if func := getattr(AsyncClient, 'get_' + endpoint, None):
-                self._future = asyncio.run_coroutine_threadsafe(func(**kwargs), self._loop)
-                self._future.add_done_callback(self._set_response)
-
-    # ------------------------------------------------------------------------------------ #
     def is_busy(self) -> bool:
-        if self._future is not None:
+        if self._future:
             return not self._future.done()
         return False
 
     # ------------------------------------------------------------------------------------ #
     def is_done(self) -> bool:
-        if self._future is not None:
+        if self._future:
             return self._future.done()
         return True
+
+    # ------------------------------------------------------------------------------------ #
+    def get(self, endpoint: str, **kwargs) -> None:
+        if self.is_done():
+            if func := getattr(AsyncClient, 'get_' + endpoint, None):
+                self._future = asyncio.run_coroutine_threadsafe(
+                    func(**kwargs), self._loop)
+                self._future.add_done_callback(
+                    self._set_response)
+
+    # ------------------------------------------------------------------------------------ #
+    def _set_response(self, future) -> None:
+        self._response = future.result()
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -86,8 +111,8 @@ class ThreadClient:
 
     @response.setter
     def response(self, _):
-        print(self.error_msg)
+        print(self._error_msg)
 
     @response.deleter
     def response(self):
-        print(self.error_msg)
+        print(self._error_msg)

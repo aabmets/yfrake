@@ -40,22 +40,20 @@ class Validator:
         with a successful status code 200 is correctly
         recognized as an erroneous response.
         """
-        cls._check_special_case(data)
         error, result = cls._extract_fields(data)
-        error_cases = [
-            error is not None or result is None,
-            type(result) == dict and len(result) == 0,
-            type(result) == list and len(result) == 0,
-            type(result) == list and len(result[0]) == 0
-        ]
-        if True in error_cases:
+        if error or cls._special_case_error(data):
+            raise InvalidResponseError
+        elif isinstance(result, dict | list) and not result:
+            raise InvalidResponseError
+        elif isinstance(result, list) and result and not result[0]:
             raise InvalidResponseError
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    def _check_special_case(cls, data: dict) -> None:
+    def _special_case_error(cls, data: dict) -> bool:
         if len(data) > 1 and not data.get('news'):
-            raise InvalidResponseError
+            return True
+        return False
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
