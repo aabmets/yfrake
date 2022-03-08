@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    server.ini - This file is part of the YFrake package.                             #
+#    handler.py - This file is part of the YFrake package.                             #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,9 +25,17 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-[DEFAULT_SETTINGS]
-host: localhost
-port: 8888
-backlog: 120
-timeout: 2
-limit: 60
+from ..client.endpoints import Endpoints
+from ..server.utils import convert_multidict, pretty_json
+from aiohttp import web
+
+
+# ==================================================================================== #
+async def handler(request: web.Request) -> web.Response:
+    query = convert_multidict(request.query)
+    attr = 'get_' + request.path.strip('/')
+    func = getattr(Endpoints, attr, None)
+    resp = await func(**query)
+    return web.Response(
+        text=pretty_json(resp)
+    )

@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    server.ini - This file is part of the YFrake package.                             #
+#    thread_loop.py - This file is part of the YFrake package.                         #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,9 +25,34 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-[DEFAULT_SETTINGS]
-host: localhost
-port: 8888
-backlog: 120
-timeout: 2
-limit: 60
+from threading import Thread
+import asyncio
+import time
+
+
+# ==================================================================================== #
+class ThreadLoop:
+    loop: asyncio.AbstractEventLoop = None
+    thread: Thread = None
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def run_background_thread(cls) -> None:
+        asyncio.set_event_loop(cls.loop)
+        cls.loop.run_forever()
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def start_thread_loop(cls) -> None:
+        ThreadLoop.loop = asyncio.new_event_loop()
+        cls.thread = Thread(target=cls.run_background_thread, daemon=True)
+        cls.thread.start()
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def stop_thread_loop(cls) -> None:
+        cls.loop.call_soon_threadsafe(cls.loop.stop)
+        while cls.loop.is_running():
+            time.sleep(0)
+        cls.loop.close()
+        cls.thread.join()

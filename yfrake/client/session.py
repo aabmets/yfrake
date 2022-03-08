@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    response.py - This file is part of the YFrake package.                            #
+#    session.py - This file is part of the YFrake package.                             #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,59 +25,51 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-import copy
+from .thread_loop import ThreadLoop
+from .paths import base_url
+import aiohttp
+import asyncio
 
 
 # ==================================================================================== #
-class Response:
-    """
-    This class represents the response model of
-    YFrake and is instantiated by the private
-    '_request' method of the BaseWorker class.
-    """
-    _error_msg = 'ERROR! The attributes of the response object are read-only!'
+class Session:
+    timeout: aiohttp.ClientTimeout | None = None
+    session: aiohttp.ClientSession | None = None
+    connector: aiohttp.TCPConnector | None = None
 
     # ------------------------------------------------------------------------------------ #
-    def __init__(self, **kwargs):
-        self._endpoint: str = kwargs.get('endpoint')
-        self._error: dict = kwargs.get('error')
-        self._data: dict = kwargs.get('data')
+    @classmethod
+    async def a_open(cls, limit, timeout) -> None:
+        cls.timeout = aiohttp.ClientTimeout(total=timeout)
+        cls.connector = aiohttp.TCPConnector(limit=limit)
+        cls.session = aiohttp.ClientSession(
+            connector=cls.connector,
+            timeout=cls.timeout,
+            base_url=base_url,
+            raise_for_status=True
+        )
 
     # ------------------------------------------------------------------------------------ #
-    @property
-    def endpoint(self) -> str | None:
-        return copy.deepcopy(self._endpoint)
-
-    @property
-    def error(self) -> dict | None:
-        return copy.deepcopy(self._error)
-
-    @property
-    def data(self) -> dict | None:
-        return copy.deepcopy(self._data)
+    @classmethod
+    async def a_close(cls) -> None:
+        await cls.session.close()
 
     # ------------------------------------------------------------------------------------ #
-    @endpoint.setter
-    def endpoint(self, _) -> None:
-        print(self._error_msg)
-
-    @error.setter
-    def error(self, _) -> None:
-        print(self._error_msg)
-
-    @data.setter
-    def data(self, _) -> None:
-        print(self._error_msg)
+    @classmethod
+    def t_open(cls, limit, timeout) -> None:
+        coro = cls.a_open(limit=limit, timeout=timeout)
+        ThreadLoop.start_thread_loop()
+        cls.schedule(coro)
 
     # ------------------------------------------------------------------------------------ #
-    @endpoint.deleter
-    def endpoint(self) -> None:
-        print(self._error_msg)
+    @classmethod
+    def t_close(cls) -> None:
+        coro = cls.a_close()
+        cls.schedule(coro)
+        ThreadLoop.stop_thread_loop()
 
-    @error.deleter
-    def error(self) -> None:
-        print(self._error_msg)
-
-    @data.deleter
-    def data(self) -> None:
-        print(self._error_msg)
+    # ------------------------------------------------------------------------------------ #
+    @staticmethod
+    def schedule(coro) -> None:
+        future = asyncio.run_coroutine_threadsafe(coro, ThreadLoop.loop)
+        future.result()  # concurrent future blocks until coro is done

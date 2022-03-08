@@ -20,41 +20,173 @@ In addition, all network requests by YFrake are ***non-blocking***, which means 
 The best part about YFrake is its ***built-in swagger API documentation*** which you can use to perform test queries and examine the returned responses.
 
 
-### Getting Started
-#### Installation
+### Getting started
+How to install yfrake:
 ~~~
 pip install yfrake
 ~~~
-#### How to import
+How to import yfrake:
 ~~~
-from yfrake import ThreadClient
-from yfrake import AsyncClient
-from yfrake import Server
+from yfrake import client, server
 ~~~
-#### ThreadClient example
+
+### Server examples
+How to run the server with default settings:
 ~~~
-client = ThreadClient()
-client.get('historical_prices', symbol='msft', interval='1d', range='1y')
-while client.is_busy():
-    # Do other stuff
-if client.is_done() and not client.response.error:
-    print(client.response.data)
+server.start()
+# do other stuff
+server.stop()
 ~~~
-#### AsyncClient example
+How to run the server with custom settings:
 ~~~
-async def main():
-    resp = await AsyncClient.get_historical_prices(symbol='msft', interval='1d', range='1y')
+settings = dict(
+    host='localhost',
+    port=8888,
+    limit=100,
+    timeout=1,
+    backlog=200
+)
+server.start(**settings)
+# do other stuff
+server.stop()
+~~~
+
+
+### Sync execution examples
+How to continue the current function while checking for response status:
+~~~
+from yfrake import client
+
+@client.configure(limit=100, timeout=1)
+def main()
+    resp = client.get('quote_type', symbol='msft')
+    
+    while not resp.available():
+        # do other stuff
+        
     if not resp.error:
+        print(resp.endpoint)
         print(resp.data)
-asyncio.run(main())
+    
+if __name__ == '__main__':
+    main()
 ~~~
-#### Server example
+How to pause the current function to wait for the result:
 ~~~
-Server.start()  # Default address is 'localhost:8888'
-# Do some other stuff
-Server.stop()  # Kills all server sub-processes.
+from yfrake import client
+
+@client.configure(limit=100, timeout=1)
+def main()
+    resp = client.get('quote_type', symbol='msft')
+    
+    resp.wait_for_result()
+    
+    if not resp.error:
+        print(resp.endpoint)
+        print(resp.data)
+    
+if __name__ == '__main__':
+    main()
+~~~
+How to run multiple queries concurrently:
+~~~
+from yfrake import client
+
+@client.configure(limit=100, timeout=1)
+def main()
+    def save_result(obj):
+        resp = in_progress.pop(obj)
+        resp.wait_for_result()
+        results.append(resp)
+
+    in_progress = dict()
+    results = list()
+    args_list = [
+        dict(endpoint='quote_type', symbol='msft'),
+        dict(endpoint='price_overview', symbol='aapl')
+    ]
+    for args_dict in args_list:
+        resp = client.get(**args_dict)
+        obj = resp.get_async_object()
+        obj.add_done_callback(save_result)
+        in_progress[obj] = resp
+
+    while in_progress:
+        time.sleep(0)
+    for resp in results:
+        if not resp.error:
+            print(resp.endpoint)
+            print(resp.data)
+    
+if __name__ == '__main__':
+    main()
+~~~
+
+### Async execution examples
+How to continue the current coroutine while checking for response status:
+~~~
+from yfrake import client
+import asyncio
+
+@client.configure(limit=100, timeout=1)
+async def main():
+    resp = client.get('quote_type', symbol='msft')
+    
+    while not resp.available():
+        # do other stuff
+        
+    if not resp.error:
+        print(resp.endpoint)
+        print(resp.data)
+
+if __name__ == '__main__':
+    asyncio.run(main())
+~~~
+How to pause the current coroutine to await for the result:
+~~~
+from yfrake import client
+import asyncio
+
+@client.configure(limit=100, timeout=1)
+async def main():
+    resp = client.get('quote_type', symbol='msft')
+    
+    await resp.result()
+    
+    if not resp.error:
+        print(resp.endpoint)
+        print(resp.data)
+
+if __name__ == '__main__':
+    asyncio.run(main())
+~~~
+How to run multiple queries concurrently:
+~~~
+from yfrake import client
+import asyncio
+
+@client.configure(limit=100, timeout=1)
+async def main():
+    args_list = [
+        dict(endpoint='quote_type', symbol='msft'),
+        dict(endpoint='price_overview', symbol='aapl')
+    ]
+    tasks_list = []
+    for args_dict in args_list:
+        resp = client.get(**args_dict)
+        obj = resp.get_async_object()
+        tasks_list.append(obj)
+
+    results = await asyncio.gather(*tasks_list)
+    for resp in results:
+        if not resp.error:
+            print(resp.endpoint)
+            print(resp.data)
+
+if __name__ == '__main__':
+    asyncio.run(main())
 ~~~
 
 <br/>
 <a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. <br/>
-<a id="footnote2"><sup>&#91;note2&#93;:</sup></a> You still need to know how to gather coroutines when using asyncio to maximize throughput.
+<a id="footnote2"><sup>&#91;note2&#93;:</sup></a> You still need to know how to correctly use asyncio.

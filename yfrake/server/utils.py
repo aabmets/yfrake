@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    base_worker.py - This file is part of the YFrake package.                         #
+#    utils.py - This file is part of the YFrake package.                               #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,7 +25,6 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from ..client.response import Response
 from multidict import MultiDictProxy
 from pathlib import Path
 import configparser
@@ -37,10 +36,14 @@ def get_server_config() -> dict:
     configfile = Path(__file__).with_name('server.ini')
     config = configparser.ConfigParser()
     config.read(configfile)
-    return {
-        'host': config['SERVER_DEFAULTS']['host'],
-        'port': config['SERVER_DEFAULTS']['port']
-    }
+    config = config['DEFAULT_SETTINGS']
+    return dict(
+        host=config['host'],
+        port=config['port'],
+        limit=config['limit'],
+        timeout=config['timeout'],
+        backlog=config['backlog']
+    )
 
 
 # ------------------------------------------------------------------------------------ #
@@ -53,9 +56,5 @@ def convert_multidict(multidict: MultiDictProxy) -> dict:
 
 
 # ------------------------------------------------------------------------------------ #
-def pretty_json(resp: Response) -> str:
-    response = dict(
-        endpoint=resp.endpoint,
-        error=resp.error,
-        data=resp.data)
-    return json.dumps(response, indent=3)
+def pretty_json(obj) -> str:
+    return json.dumps(vars(obj), indent=3)

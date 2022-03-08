@@ -2,6 +2,9 @@
 benchmarks
 tests
 
+# Deprecated code
+old
+
 # PyCharm
 .idea
 

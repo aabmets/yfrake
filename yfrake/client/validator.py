@@ -25,42 +25,35 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-class InvalidResponseError(Exception):
-    def __init__(self):
-        self.status = 400
-        self.message = 'Bad request'
+def validate(data: dict) -> bool:
+    """
+    This function ensures that an empty response
+    with a successful status code 200 is correctly
+    recognized as an erroneous response.
+    """
+    error, result = extract_fields(data)
+    special_error = is_special_error(data)
+    if (
+            (error or special_error) or
+            (isinstance(result, dict | list) and not result) or
+            (isinstance(result, list) and result and not result[0])
+    ):
+        return False  # validation unsuccessful
+    return True  # validation successful
 
 
-# ==================================================================================== #
-class Validator:
-    @classmethod
-    def validate(cls, data: dict) -> None:
-        """
-        This function ensures that an empty response
-        with a successful status code 200 is correctly
-        recognized as an erroneous response.
-        """
-        error, result = cls._extract_fields(data)
-        if error or cls._special_case_error(data):
-            raise InvalidResponseError
-        elif isinstance(result, dict | list) and not result:
-            raise InvalidResponseError
-        elif isinstance(result, list) and result and not result[0]:
-            raise InvalidResponseError
+# ------------------------------------------------------------------------------------ #
+def extract_fields(data: dict) -> tuple:
+    error, result = None, None
+    if len(data) == 1:
+        endpoint = list(data.keys())[0]
+        error = data[endpoint].get('error')
+        result = data[endpoint].get('result')
+    return error, result
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _special_case_error(cls, data: dict) -> bool:
-        if len(data) > 1 and not data.get('news'):
-            return True
-        return False
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _extract_fields(cls, data: dict) -> tuple:
-        if len(data) == 1:
-            endpoint = list(data.keys())[0]
-            error = data[endpoint].get('error')
-            result = data[endpoint].get('result')
-            return error, result
-        return None, None
+# ------------------------------------------------------------------------------------ #
+def is_special_error(data: dict) -> bool:
+    if len(data) > 1 and not data.get('news'):
+        return True
+    return False

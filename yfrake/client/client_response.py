@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    thread_client.py - This file is part of the YFrake package.                       #
+#    client_response.py - This file is part of the YFrake package.                     #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,94 +25,45 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .async_client import AsyncClient
-from threading import Thread, Lock
+from .base_response import BaseResponse
+from concurrent.futures import Future
+from asyncio import Task
+import threading
 import asyncio
-import copy
 
 
 # ==================================================================================== #
-class ThreadClient:
+class ClientResponse(BaseResponse):
     """
-    Instances of this class enable the user
-    to make requests to the Yahoo Finance API
-    from a synchronous (procedural) context.
+    The return type of 'client.get'.
     """
-    _error_msg = 'ERROR! The response attribute of the ThreadClient object is read-only!'
-    _thread, _loop = None, None
-    _class_lock = Lock()
+    def __init__(self, async_object: Task | Future):
+        async_object.add_done_callback(self._callback)
+        module = asyncio if isinstance(async_object, Task) else threading
+        self._async_object = async_object
+        self._done = module.Event()
+        super().__init__()
 
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _start_background_loop(cls) -> None:
-        asyncio.set_event_loop(cls._loop)
-        cls._loop.run_forever()
+    def _callback(self, obj: Task | Future):
+        resp = obj.result()
+        self._endpoint = resp.endpoint
+        self._error = resp.error
+        self._data = resp.data
+        self._done.set()
 
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _resurrect_thread_loop(cls) -> None:
-        cls._loop = asyncio.new_event_loop()
-        cls._thread = Thread(
-            target=cls._start_background_loop, daemon=True)
-        cls._thread.start()
+    def get_async_object(self) -> Task | Future:
+        return self._async_object
 
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _is_thread_loop_alive(cls) -> bool:
-        alive = True
-        if (not isinstance(cls._loop, asyncio.AbstractEventLoop)
-                or cls._loop.is_closed()):
-            alive = False
-        if (not isinstance(cls._thread, Thread)
-                or not cls._thread.is_alive()):
-            alive = False
-        return alive
+    def available(self) -> bool:
+        return self._done.is_set()
 
     # ------------------------------------------------------------------------------------ #
-    def __init__(self):
-        if self._class_lock.acquire(blocking=False):
-            if not self._is_thread_loop_alive():
-                self._resurrect_thread_loop()
-            self._class_lock.release()
-        self._response = None
-        self._future = None
+    def wait_for_result(self) -> None:
+        self._done.wait()
 
     # ------------------------------------------------------------------------------------ #
-    def is_busy(self) -> bool:
-        if self._future:
-            return not self._future.done()
-        return False
-
-    # ------------------------------------------------------------------------------------ #
-    def is_done(self) -> bool:
-        if self._future:
-            return self._future.done()
-        return True
-
-    # ------------------------------------------------------------------------------------ #
-    def get(self, endpoint: str, **kwargs) -> None:
-        if self.is_done():
-            if func := getattr(AsyncClient, 'get_' + endpoint, None):
-                self._future = asyncio.run_coroutine_threadsafe(
-                    func(**kwargs), self._loop)
-                self._future.add_done_callback(
-                    self._set_response)
-
-    # ------------------------------------------------------------------------------------ #
-    def _set_response(self, future) -> None:
-        self._response = future.result()
-
-    # ------------------------------------------------------------------------------------ #
-    @property
-    def response(self):
-        if self.is_done():
-            return copy.deepcopy(self._response)
-        return None
-
-    @response.setter
-    def response(self, _):
-        print(self._error_msg)
-
-    @response.deleter
-    def response(self):
-        print(self._error_msg)
+    async def result(self) -> None:
+        await self._done.wait()

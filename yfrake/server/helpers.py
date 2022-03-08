@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    base_worker.py - This file is part of the YFrake package.                         #
+#    helpers.py - This file is part of the YFrake package.                             #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,58 +25,57 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .paths import base_url, endpoints
-from .response import Response
-from .validator import Validator, InvalidResponseError
-from aiohttp import request, ClientResponseError, ClientTimeout
-from json import JSONDecodeError
+from ..client.paths import paths
+from .handler import handler
+from .utils import get_server_config
+from argparse import ArgumentParser
+from argparse import Namespace
+from aiohttp_swagger3 import SwaggerFile
+from aiohttp_swagger3 import SwaggerUiSettings
+from aiohttp import web
+import aiohttp_cors as cors
 
 
 # ==================================================================================== #
-class BaseWorker:
-    """
-    Base class which contains the methods required to
-    request data from the Yahoo Finance API servers.
-    """
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    async def _request(cls, params: dict, endpoint: str) -> Response:
-        """
-        The main function responsible for making the
-        requests to the Yahoo Finance API servers.
-        """
-        url = base_url + endpoints[endpoint]
-        if '{symbol}' in url:
-            sym = params.pop('symbol', '')
-            url = url.format(symbol=sym)
-        try:
-            error = None
-            timeout = ClientTimeout(total=5)
-            async with request(
-                    method='GET', url=url, params=params,
-                    raise_for_status=True, timeout=timeout) as resp:
-                data = await resp.json()
-                Validator.validate(data)
+def build_route_table() -> list:
+    route_table = list()
+    for key in paths.keys():
+        path = '/' + key
+        route = web.get(path=path, handler=handler)
+        route_table.append(route)
+    return route_table
 
-        except (ClientResponseError, InvalidResponseError,
-                JSONDecodeError, TimeoutError) as ex:
-            error = cls._get_error_dict(ex, url)
-            data = None
 
-        return Response(
-            endpoint=endpoint,
-            error=error,
-            data=data
-        )
+# ------------------------------------------------------------------------------------ #
+def create_swagger(app, spec) -> SwaggerFile:
+    app['storage'] = dict()
+    return SwaggerFile(
+        app=app,
+        spec_file=str(spec),
+        swagger_ui_settings=SwaggerUiSettings(path="/")
+    )
 
-    # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    def _get_error_dict(ex, url) -> dict:
-        default_code = 500
-        default_msg = 'Internal server error'
-        return {
-            'type': 'HTTPError',
-            'code': getattr(ex, 'status', default_code),
-            'msg': getattr(ex, 'message', default_msg),
-            'url': url
-        }
+
+# ------------------------------------------------------------------------------------ #
+def create_cors(app):
+    cors_options = cors.ResourceOptions(
+        allow_credentials=True,
+        expose_headers="*",
+        allow_headers="*"
+    )
+    return cors.setup(
+        app=app,
+        defaults={'*': cors_options}
+    )
+
+
+# ------------------------------------------------------------------------------------ #
+def get_runtime_args() -> Namespace:
+    config = get_server_config()
+    parser = ArgumentParser()
+    parser.add_argument('--host', type=str, default=config['host'])
+    parser.add_argument('--port', type=int, default=config['port'])
+    parser.add_argument('--limit', type=int, default=config['limit'])
+    parser.add_argument('--timeout', type=int, default=config['timeout'])
+    parser.add_argument('--backlog', type=int, default=config['backlog'])
+    return parser.parse_args()

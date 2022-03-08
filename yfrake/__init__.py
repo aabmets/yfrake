@@ -25,6 +25,8 @@
 #   SOFTWARE.                                                                        #
 #                                                                                    #
 # ================================================================================== #
-from .client.async_client import AsyncClient
-from .client.thread_client import ThreadClient
+from .client.client import Client
 from .server.server import Server
+
+client = Client()
+server = Server()

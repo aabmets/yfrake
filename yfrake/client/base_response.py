@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    server.ini - This file is part of the YFrake package.                             #
+#    base_response.py - This file is part of the YFrake package.                       #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,9 +25,53 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-[DEFAULT_SETTINGS]
-host: localhost
-port: 8888
-backlog: 120
-timeout: 2
-limit: 60
+class BaseResponse:
+    """
+    The base response object of YFrake.
+    """
+    _error_msg = 'ERROR! The attributes of the response object are read-only!'
+
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self, **kwargs):
+        self._endpoint: str = kwargs.get('endpoint')
+        self._error: dict = kwargs.get('error')
+        self._data: dict = kwargs.get('data')
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def endpoint(self) -> str | None:
+        return self._endpoint
+
+    @endpoint.setter
+    def endpoint(self, _) -> None:
+        print(self._error_msg)
+
+    @endpoint.deleter
+    def endpoint(self) -> None:
+        print(self._error_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def error(self) -> dict | None:
+        return self._error
+
+    @error.setter
+    def error(self, _) -> None:
+        print(self._error_msg)
+
+    @error.deleter
+    def error(self) -> None:
+        print(self._error_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def data(self) -> dict | None:
+        return self._data
+
+    @data.setter
+    def data(self, _) -> None:
+        print(self._error_msg)
+
+    @data.deleter
+    def data(self) -> None:
+        print(self._error_msg)

@@ -49,16 +49,22 @@ class Server:
 
     # ---------------------------------------------------------------------------------- #
     @classmethod
-    def start(cls, host: str = None, port: int = None) -> None:
+    def start(cls, **kwargs) -> None:
         if not cls.is_running():
-            config = dict(host=host, port=str(port))
-            if not host or not port:
-                config = utils.get_server_config()
-            cls._server = subprocess.Popen([
-                sys.executable, runner.__file__,
-                '--host', config['host'],
-                '--port', config['port']
-            ])
+            config = dict()
+            defaults = utils.get_server_config()
+            for opt in ['host', 'port', 'limit', 'timeout', 'backlog']:
+                config[opt] = str(kwargs.get(opt, defaults[opt]))
+            cls._server = subprocess.Popen(
+                [
+                    sys.executable, runner.__file__,
+                    '--host', config['host'],
+                    '--port', config['port'],
+                    '--limit', config['limit'],
+                    '--timeout', config['timeout'],
+                    '--backlog', config['backlog']
+                ]
+            )
 
     # ---------------------------------------------------------------------------------- #
     @classmethod

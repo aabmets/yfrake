@@ -25,46 +25,59 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from yfrake.server.handlers import Handlers
-from yfrake.server.utils import get_server_config
 from yfrake.openapi.utils import get_spec_file_path
-from aiohttp_swagger3 import SwaggerFile, SwaggerUiSettings
+from yfrake.server.helpers import build_route_table
+from yfrake.server.helpers import create_swagger
+from yfrake.server.helpers import create_cors
+from yfrake.server.helpers import get_runtime_args
+from yfrake.client.session import Session
 from aiohttp import web
-from argparse import ArgumentParser
-import inspect
+import asyncio
+import sys
 
 
 # ==================================================================================== #
-def main():
-    config = get_server_config()
-    parser = ArgumentParser()
-    parser.add_argument('--host', type=str, default=config['host'])
-    parser.add_argument('--port', type=int, default=config['port'])
-    args = parser.parse_args()
-
-    routes = list()
-    route_table: list = inspect.getmembers(
-        Handlers, predicate=inspect.isfunction)
-    for name, func in route_table:
-        if name.startswith('handler_'):
-            path = '/'.join(name.split('handler_'))
-            routes.append(web.get(path=path, handler=func))
-
+async def main():
     app = web.Application()
-    swagger = SwaggerFile(
-        app=app,
-        spec_file=str(get_spec_file_path()),
-        swagger_ui_settings=SwaggerUiSettings(path="/")
-    )
+    spec = get_spec_file_path()
+    routes = build_route_table()
+
+    swagger = create_swagger(app, spec)
     swagger.add_routes(routes)
-    app['storage'] = dict()
-    web.run_app(
-        app=app,
-        host=args.host,
-        port=args.port
+
+    cors = create_cors(app)
+    routes = list(app.router.routes())
+    for route in routes:
+        cors.add(route)
+
+    args = get_runtime_args()
+
+    await Session.a_open(
+        limit=args.limit,
+        timeout=args.timeout
     )
+
+    runner = web.AppRunner(app=app)
+    await runner.setup()
+
+    site = web.TCPSite(
+        runner=runner,
+        host=args.host,
+        port=args.port,
+        backlog=args.backlog
+    )
+    await site.start()
+
+    while True:
+        await asyncio.sleep(3600)
+
+    # await site.stop()
+    # await runner.cleanup()
+    # await Session.a_close()
 
 
 # ------------------------------------------------------------------------------------ #
 if __name__ == '__main__':
-    main()
+    if sys.platform == 'win32':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.run(main())
