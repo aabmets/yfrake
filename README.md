@@ -91,6 +91,7 @@ if __name__ == '__main__':
 How to run multiple queries concurrently:
 ~~~
 from yfrake import client
+import time
 
 @client.configure(limit=100, timeout=1)
 def main()

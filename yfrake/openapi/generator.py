@@ -27,7 +27,7 @@
 # ================================================================================== #
 from .components import components
 from .specs import specs
-from .utils import *
+from . import utils
 import tomli
 import yaml
 import copy
@@ -47,7 +47,7 @@ def generate_openapi_spec() -> None:
     generate the 'yfrake_spec.yaml' file, before the
     package is published to the PyPI.
     """
-    path = get_toml_file_path()
+    path = utils.get_toml_file_path()
     if not path.exists():
         return
     for module in specs:
@@ -61,7 +61,7 @@ def generate_openapi_spec() -> None:
         yfrake_spec['paths'].update({endpoint: {'get': spec}})
         yfrake_spec['info'].update(_build_info())
 
-    path = get_spec_file_path()
+    path = utils.get_spec_file_path()
     with open(path, 'w', encoding='utf-8') as file:
         file.write(yaml.dump(yfrake_spec))
 
@@ -76,7 +76,7 @@ def _build_parameters(module) -> list:
     for param in module.parameters:
         param = copy.deepcopy(param)
         _type: object = param['schema']['type']
-        _type: str = get_openapi_datatype(_type)
+        _type: str = utils.get_openapi_datatype(_type)
         param['schema']['type'] = _type
         parameters.append(param)
     return parameters
@@ -114,7 +114,7 @@ def _build_info() -> dict:
     This function is responsible for building the
     information section of the documentation.
     """
-    with open(get_toml_file_path(), "rb") as file:
+    with open(utils.get_toml_file_path(), "rb") as file:
         data = tomli.load(file)
     data = data['tool']['poetry']
     contact = data['authors'][0].split()

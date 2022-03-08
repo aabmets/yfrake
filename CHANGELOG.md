@@ -1,5 +1,10 @@
 # Change Log
 
+### Version 0.2.1
+* Minor fixes
+
+<br />
+
 ### Version 0.2.0
 
 #### Additions
