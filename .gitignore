@@ -1,6 +1,5 @@
 # Temporary excludes
 benchmarks
-tests
 
 # Deprecated code
 old

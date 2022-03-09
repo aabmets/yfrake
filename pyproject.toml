@@ -53,8 +53,18 @@ tomli = "~2.0"
 # ==================================================================================== #
 [tool.poetry.dev-dependencies]
 pytest = "*"
+pytest-asyncio = "*"
+coverage = "*"
 
 
 # ==================================================================================== #
 [tool.poetry.scripts]
 gen_spec = "yfrake.openapi.generator:generate_openapi_spec"
+
+
+# ==================================================================================== #
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]

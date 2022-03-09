@@ -36,26 +36,22 @@ import sys
 
 # ==================================================================================== #
 class Client:
-    @classmethod
-    def get(cls, endpoint, **kwargs) -> ClientResponse:
-        pass  # placeholder method
+    async_mode: bool | None = None
 
-    # ------------------------------------------------------------------------------------ #
     @classmethod
-    def _aget(cls, endpoint, **kwargs) -> ClientResponse:
-        attr = 'get_' + endpoint
-        if func := getattr(Endpoints, attr, None):
-            task = asyncio.create_task(func(**kwargs))
-            return ClientResponse(task)
-
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _tget(cls, endpoint, **kwargs) -> ClientResponse:
-        attr = 'get_' + endpoint
-        if func := getattr(Endpoints, attr, None):
-            future = asyncio.run_coroutine_threadsafe(
-                func(**kwargs), ThreadLoop.loop)
-            return ClientResponse(future)
+    def get(cls, endpoint: str = '', **kwargs) -> ClientResponse:
+        func = getattr(Endpoints, 'get_' + endpoint, None)
+        if cls.async_mode is None:
+            raise RuntimeError('YFrake is not configured!')
+        elif func is None:
+            raise AttributeError('Invalid YFrake endpoint!')
+        else:
+            if cls.async_mode:
+                async_object = asyncio.create_task(func(**kwargs))
+            else:
+                async_object = asyncio.run_coroutine_threadsafe(
+                    func(**kwargs), ThreadLoop.loop)
+            return ClientResponse(async_object)
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
@@ -75,7 +71,6 @@ class Client:
                 func(*args, **kwargs)
                 Session.t_close()
 
-            func_is_coro = inspect.iscoroutinefunction(func)
-            cls.get = cls._aget if func_is_coro else cls._tget
-            return a_inner if func_is_coro else t_inner
+            cls.async_mode = inspect.iscoroutinefunction(func)
+            return a_inner if cls.async_mode else t_inner
         return decorator

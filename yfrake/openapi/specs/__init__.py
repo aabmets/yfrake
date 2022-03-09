@@ -38,9 +38,9 @@ specs = list()
 folder = Path(__file__).parent
 for file_path in folder.iterdir():
     module_name = file_path.stem
-    if '__' in str(module_name):
-        continue
-    spec = util.spec_from_file_location(module_name, file_path)
-    module = util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    specs.append(module)
+    if '__' not in str(module_name):
+        spec = util.spec_from_file_location(
+            module_name, file_path)
+        module = util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        specs.append(module)

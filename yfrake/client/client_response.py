@@ -39,31 +39,36 @@ class ClientResponse(BaseResponse):
     """
     def __init__(self, async_object: Task | Future):
         async_object.add_done_callback(self._callback)
-        module = asyncio if isinstance(async_object, Task) else threading
+        obj_type = type(async_object)
+        module = {
+            Task: asyncio,
+            Future: threading
+        }[obj_type]
+        self._event = module.Event()
         self._async_object = async_object
-        self._done = module.Event()
         super().__init__()
 
     # ------------------------------------------------------------------------------------ #
     def _callback(self, obj: Task | Future):
-        resp = obj.result()
-        self._endpoint = resp.endpoint
-        self._error = resp.error
-        self._data = resp.data
-        self._done.set()
+        resp: BaseResponse = obj.result()
+        with resp.permissions:
+            self._endpoint = resp.endpoint
+            self._error = resp.error
+            self._data = resp.data
+        self._event.set()
 
     # ------------------------------------------------------------------------------------ #
-    def get_async_object(self) -> Task | Future:
+    def get_async_object(self) -> Task | Future | None:
         return self._async_object
 
     # ------------------------------------------------------------------------------------ #
     def available(self) -> bool:
-        return self._done.is_set()
+        return self._event.is_set()
 
     # ------------------------------------------------------------------------------------ #
     def wait_for_result(self) -> None:
-        self._done.wait()
+        self._event.wait()
 
     # ------------------------------------------------------------------------------------ #
     async def result(self) -> None:
-        await self._done.wait()
+        await self._event.wait()

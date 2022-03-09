@@ -47,9 +47,6 @@ def generate_openapi_spec() -> None:
     generate the 'yfrake_spec.yaml' file, before the
     package is published to the PyPI.
     """
-    path = utils.get_toml_file_path()
-    if not path.exists():
-        return
     for module in specs:
         spec = {
             'summary': module.summary,

@@ -51,18 +51,19 @@ class Server:
     @classmethod
     def start(cls, **kwargs) -> None:
         if not cls.is_running():
-            config = dict()
-            defaults = utils.get_server_config()
-            for opt in ['host', 'port', 'limit', 'timeout', 'backlog']:
-                config[opt] = str(kwargs.get(opt, defaults[opt]))
+            settings = dict()
+            default = vars(utils.get_default_config())
+            for option in ['host', 'port', 'limit', 'timeout', 'backlog']:
+                value = kwargs.get(option, default[option])
+                settings[option] = str(value)
             cls._server = subprocess.Popen(
                 [
                     sys.executable, runner.__file__,
-                    '--host', config['host'],
-                    '--port', config['port'],
-                    '--limit', config['limit'],
-                    '--timeout', config['timeout'],
-                    '--backlog', config['backlog']
+                    '--host', settings['host'],
+                    '--port', settings['port'],
+                    '--limit', settings['limit'],
+                    '--timeout', settings['timeout'],
+                    '--backlog', settings['backlog']
                 ]
             )
 

@@ -26,10 +26,11 @@
 #                                                                                      #
 # ==================================================================================== #
 from yfrake.openapi.utils import get_spec_file_path
+from yfrake.server.utils import get_default_config
 from yfrake.server.helpers import build_route_table
+from yfrake.server.helpers import get_runtime_args
 from yfrake.server.helpers import create_swagger
 from yfrake.server.helpers import create_cors
-from yfrake.server.helpers import get_runtime_args
 from yfrake.client.session import Session
 from aiohttp import web
 import asyncio
@@ -37,7 +38,9 @@ import sys
 
 
 # ==================================================================================== #
-async def main():
+async def main(config=None, run_forever=False):
+    config = config if config else get_default_config()
+
     app = web.Application()
     spec = get_spec_file_path()
     routes = build_route_table()
@@ -50,34 +53,38 @@ async def main():
     for route in routes:
         cors.add(route)
 
-    args = get_runtime_args()
-
     await Session.a_open(
-        limit=args.limit,
-        timeout=args.timeout
+        limit=config.limit,
+        timeout=config.timeout
     )
-
     runner = web.AppRunner(app=app)
     await runner.setup()
 
     site = web.TCPSite(
         runner=runner,
-        host=args.host,
-        port=args.port,
-        backlog=args.backlog
+        host=config.host,
+        port=config.port,
+        backlog=config.backlog
     )
     await site.start()
-
-    while True:
+    while run_forever:
         await asyncio.sleep(3600)
 
-    # await site.stop()
-    # await runner.cleanup()
-    # await Session.a_close()
+    await site.stop()
+    await runner.cleanup()
+    await Session.a_close()
 
 
 # ------------------------------------------------------------------------------------ #
 if __name__ == '__main__':
     if sys.platform == 'win32':
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main())
+        asyncio.set_event_loop_policy(
+            asyncio.WindowsSelectorEventLoopPolicy()
+        )
+    args = dict(
+        config=get_runtime_args(),
+        run_forever=True
+    )
+    asyncio.run(
+        main(**args)
+    )

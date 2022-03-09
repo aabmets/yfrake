@@ -25,35 +25,44 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-def validate(data: dict) -> bool:
+async def validate(data) -> bool:
     """
     This function ensures that an empty response
     with a successful status code 200 is correctly
     recognized as an erroneous response.
     """
-    error, result = extract_fields(data)
-    special_error = is_special_error(data)
-    if (
-            (error or special_error) or
-            (isinstance(result, dict | list) and not result) or
-            (isinstance(result, list) and result and not result[0])
-    ):
-        return False  # validation unsuccessful
-    return True  # validation successful
+    error, result = await extract_fields(data)
+    failures = [
+        await is_general_error(error, result),
+        await is_nested_list_empty(error, result)
+    ].count(True)
+    return False if failures else True
 
 
 # ------------------------------------------------------------------------------------ #
-def extract_fields(data: dict) -> tuple:
+async def extract_fields(data: dict) -> tuple:
     error, result = None, None
-    if len(data) == 1:
-        endpoint = list(data.keys())[0]
-        error = data[endpoint].get('error')
-        result = data[endpoint].get('result')
+    if isinstance(data, dict):
+        if len(data) == 1:
+            endpoint = list(data.keys())[0]
+            error = data[endpoint].get('error')
+            result = data[endpoint].get('result')
+        if len(data) > 1:
+            result = data.get('news')
     return error, result
 
 
 # ------------------------------------------------------------------------------------ #
-def is_special_error(data: dict) -> bool:
-    if len(data) > 1 and not data.get('news'):
+async def is_general_error(error, result) -> bool:
+    if error or not result:
         return True
+    return False
+
+
+# ------------------------------------------------------------------------------------ #
+async def is_nested_list_empty(*args) -> bool:
+    for arg in args:
+        if isinstance(arg, list):
+            if arg and not arg[0]:
+                return True
     return False

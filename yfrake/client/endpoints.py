@@ -40,14 +40,16 @@ class Endpoints:
     @staticmethod
     async def get_historical_prices(**kwargs) -> BaseResponse:
         endpoint = 'historical_prices'
-        if 'startDate' in kwargs:
-            kwargs['period1'] = kwargs.pop('startDate')
-        if 'endDate' in kwargs:
-            kwargs['period2'] = kwargs.pop('endDate')
-        if 'extHours' in kwargs:
-            kwargs['includePrePost'] = kwargs.pop('extHours')
-        if 'events' in kwargs and kwargs.pop('events'):
-            kwargs['events'] = 'div,split'
+        if start_date := kwargs.pop('startDate', None):
+            kwargs['period1'] = start_date
+        if end_date := kwargs.pop('endDate', None):
+            kwargs['period2'] = end_date
+        if ext_hours := kwargs.pop('extHours', None):
+            if type(ext_hours) is bool:
+                kwargs['includePrePost'] = str(ext_hours).lower()
+        if events := kwargs.pop('events', None):
+            if type(events) is bool:
+                kwargs['events'] = 'div,split'
         kwargs['includeAdjustedClose'] = 'true'
         data, error = await Worker.request(kwargs, endpoint)
         if not error:
@@ -83,8 +85,14 @@ class Endpoints:
     @staticmethod
     async def get_options(**kwargs) -> BaseResponse:
         endpoint = 'options'
-        if 'startDate' in kwargs:
-            kwargs['date'] = kwargs.pop('startDate')
+        if start_date := kwargs.pop('startDate', None):
+            kwargs['date'] = start_date
+        if straddle := kwargs.pop('straddle', None):
+            if type(straddle) is bool:
+                kwargs['straddle'] = str(straddle).lower()
+        if get_all_data := kwargs.pop('getAllData', None):
+            if type(get_all_data) is bool:
+                kwargs['getAllData'] = str(get_all_data).lower()
         data, error = await Worker.request(kwargs, endpoint)
         if not error:
             data: dict = data['optionChain']['result'][0]

@@ -25,24 +25,26 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from ..client.base_response import BaseResponse
 from multidict import MultiDictProxy
+from argparse import Namespace
 from pathlib import Path
 import configparser
 import json
 
 
 # ==================================================================================== #
-def get_server_config() -> dict:
+def get_default_config() -> Namespace:
     configfile = Path(__file__).with_name('server.ini')
     config = configparser.ConfigParser()
     config.read(configfile)
     config = config['DEFAULT_SETTINGS']
-    return dict(
+    return Namespace(
         host=config['host'],
-        port=config['port'],
-        limit=config['limit'],
-        timeout=config['timeout'],
-        backlog=config['backlog']
+        port=int(config['port']),
+        limit=int(config['limit']),
+        timeout=int(config['timeout']),
+        backlog=int(config['backlog'])
     )
 
 
@@ -56,5 +58,11 @@ def convert_multidict(multidict: MultiDictProxy) -> dict:
 
 
 # ------------------------------------------------------------------------------------ #
-def pretty_json(obj) -> str:
-    return json.dumps(vars(obj), indent=3)
+def pretty_json(resp: BaseResponse) -> str:
+    with resp.permissions:
+        obj = dict(
+            endpoint=resp.endpoint,
+            error=resp.error,
+            data=resp.data
+        )
+        return json.dumps(obj, indent=3)

@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    thread_loop.py - This file is part of the YFrake package.                         #
+#    utils.py - This file is part of the YFrake package.                               #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,36 +25,27 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from threading import Thread
-import asyncio
-import time
+from .paths import base_url, paths
+from urllib.parse import urlencode
 
 
-# ==================================================================================== #
-class ThreadLoop:
-    loop: asyncio.AbstractEventLoop = None
-    thread: Thread = None
+# ------------------------------------------------------------------------------------ #
+def get_path(endpoint: str, params: dict) -> str:
+    path = paths[endpoint]
+    if '{symbol}' in path:
+        sym = params.pop('symbol', '')
+        path = path.format(symbol=sym)
+    return path
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def run_background_thread(cls) -> None:
-        asyncio.set_event_loop(cls.loop)
-        cls.loop.run_forever()
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def start_thread_loop(cls) -> None:
-        ThreadLoop.loop = asyncio.new_event_loop()
-        cls.thread = Thread(target=cls.run_background_thread, daemon=True)
-        cls.thread.start()
-
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def stop_thread_loop(cls) -> None:
-        force_iter = True
-        cls.loop.call_soon_threadsafe(cls.loop.stop)
-        while force_iter or cls.loop.is_running():
-            force_iter = False
-            time.sleep(0)
-        cls.loop.close()
-        cls.thread.join()
+# ------------------------------------------------------------------------------------ #
+def build_error(path: str, params: dict, ex=None) -> dict:
+    params = '?' + urlencode(params) if params else ''
+    default_message = 'Internal server error'
+    default_status = 500
+    return dict(
+        name='HTTPError',
+        status=getattr(ex, 'status', default_status),
+        message=getattr(ex, 'message', default_message),
+        url=base_url + path + params
+    )

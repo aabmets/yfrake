@@ -1,5 +1,18 @@
 # Change Log
 
+### Version 0.3.0
+
+#### Additions
+* Bunch of tests
+
+#### Modifications
+* Bunch of bugfixes discovered by tests
+
+#### Removals
+* Bunch of bad code
+
+<br />
+
 ### Version 0.2.1
 * Minor fixes
 

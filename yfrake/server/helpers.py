@@ -27,7 +27,7 @@
 # ==================================================================================== #
 from ..client.paths import paths
 from .handler import handler
-from .utils import get_server_config
+from .utils import get_default_config
 from argparse import ArgumentParser
 from argparse import Namespace
 from aiohttp_swagger3 import SwaggerFile
@@ -71,11 +71,11 @@ def create_cors(app):
 
 # ------------------------------------------------------------------------------------ #
 def get_runtime_args() -> Namespace:
-    config = get_server_config()
+    config = get_default_config()
     parser = ArgumentParser()
-    parser.add_argument('--host', type=str, default=config['host'])
-    parser.add_argument('--port', type=int, default=config['port'])
-    parser.add_argument('--limit', type=int, default=config['limit'])
-    parser.add_argument('--timeout', type=int, default=config['timeout'])
-    parser.add_argument('--backlog', type=int, default=config['backlog'])
+    parser.add_argument('--host', type=str, default=config.host)
+    parser.add_argument('--port', type=int, default=config.port)
+    parser.add_argument('--limit', type=int, default=config.limit)
+    parser.add_argument('--timeout', type=int, default=config.timeout)
+    parser.add_argument('--backlog', type=int, default=config.backlog)
     return parser.parse_args()
