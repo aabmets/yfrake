@@ -41,6 +41,6 @@ jobs:
 #        directory: ./coverage/reports/
         token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-umbrella
-        files: ./coverage.xml
+        files: coverage.xml
         fail_ci_if_error: true
         verbose: true
