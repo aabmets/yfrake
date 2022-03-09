@@ -47,6 +47,7 @@ def generate_openapi_spec() -> None:
     generate the 'yfrake_spec.yaml' file, before the
     package is published to the PyPI.
     """
+    print('Building OpenAPI YAML spec file.')
     for module in specs:
         spec = {
             'summary': module.summary,

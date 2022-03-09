@@ -24,10 +24,10 @@ jobs:
         poetry run gen_spec
         poetry build
 
-#    - name: Build and publish to pypi
-#      uses: JRubics/poetry-publish@v1.10
-#      with:
-#        pypi_token: ${{ secrets.PYPI_TOKEN }}
+    - name: Publish to PyPI
+      uses: JRubics/poetry-publish@v1.10
+      with:
+        pypi_token: ${{ secrets.PYPI_TOKEN }}
 
 #        poetry publish
 #    - name: Install dependencies
