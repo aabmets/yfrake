@@ -33,7 +33,7 @@ jobs:
 #      run: |
 #        coverage run -m pytest
 #        coverage xml
-    
+
     - name: run tests
       run: pytest --cov-report xml --cov=yfrake tests/
 
