@@ -35,7 +35,7 @@ jobs:
         coverage xml
 
     - name: Upload report to codecov
-    - uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v2
       with:
         env_vars: OS,PYTHON
         directory: ./coverage/reports/
