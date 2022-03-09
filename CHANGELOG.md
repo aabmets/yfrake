@@ -1,5 +1,11 @@
 # Change Log
 
+
+### Version 0.3.1
+* Setting up actions workflow
+
+<br />
+
 ### Version 0.3.0
 
 #### Additions
