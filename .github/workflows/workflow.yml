@@ -38,7 +38,7 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         env_vars: OS,PYTHON
-        directory: ./coverage/reports/
+#        directory: ./coverage/reports/
         token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-umbrella
         files: ./coverage.xml
