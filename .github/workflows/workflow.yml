@@ -15,8 +15,13 @@ jobs:
 #    - name: Update pip
 #      run: python -m pip install --upgrade pip
 
+    - name: Install poetry
+      run: |
+        curl -fsS -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+        python get-poetry.py -y
+        echo "::set-env name=PATH::$HOME/.poetry/bin:$PATH"
+
     - name: Poetry processing
-      uses: Gr1N/setup-poetry@v7
       run: |
         poetry install
         poetry run gen_spec
