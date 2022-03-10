@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # ==================================================================================== #
 [tool.poetry]
 name = "YFrake"
-version = "0.3.1"
+version = "0.3.2"
 description = "A flexible and agile stock market data scraper and server."
 readme = "README.md"
 license = "MIT License"
@@ -41,7 +41,7 @@ include = [
 
 # ==================================================================================== #
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 aiohttp = "~3.8"
 aiohttp-swagger3 = "~0.7"
 aiohttp-cors = "~0.7"
