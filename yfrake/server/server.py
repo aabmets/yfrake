@@ -79,8 +79,8 @@ class Server:
         try:
             parent = psutil.Process(cls._server.pid)
             children = parent.children(recursive=True)
-            for child in children:
-                child.kill()
-            parent.kill()
-        except psutil.NoSuchProcess:
+            procs = children + [parent]
+            for proc in procs:
+                proc.kill()
+        except psutil.NoSuchProcess:  # pragma: no cover
             return
