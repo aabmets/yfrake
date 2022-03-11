@@ -7,7 +7,7 @@ build-backend = "poetry.core.masonry.api"
 # ==================================================================================== #
 [tool.poetry]
 name = "YFrake"
-version = "0.3.2"
+version = "0.3.3"
 description = "A flexible and agile stock market data scraper and server."
 readme = "README.md"
 license = "MIT License"
@@ -46,21 +46,20 @@ aiohttp = "~3.8"
 aiohttp-swagger3 = "~0.7"
 aiohttp-cors = "~0.7"
 psutil = "~5.9"
-pyyaml = "~6.0"
 tomli = "~2.0"
+pyyaml = "~6.0"
 
 
 # ==================================================================================== #
 [tool.poetry.dev-dependencies]
 pytest = "*"
 pytest-asyncio = "*"
-pytest-cov = "*"
 coverage = "*"
 
 
 # ==================================================================================== #
 [tool.poetry.scripts]
-gen_spec = "yfrake.openapi.generator:generate_openapi_spec"
+gen-spec = "yfrake.openapi.generator:generate_openapi_spec"
 
 
 # ==================================================================================== #

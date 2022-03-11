@@ -1,6 +1,30 @@
 # Change Log
 
 
+### Version 0.3.3
+#### Additions
+* Added testing for good queries for all endpoints
+* Added testing for bad queries for all endpoints
+* Added a test to test_openapi.py
+* Added exceptions testing to test_server.py
+* Added tests to response validator
+
+#### Modifications
+* Refactored Client.get method
+* Made server raise RuntimeError if already running or already stopped.
+* Workflow fixes
+* Minor fixes
+
+#### Removals
+* Removed endpoint testing from test_client.py
+
+<br />
+
+### Version 0.3.2
+* Workflow fixes
+
+<br />
+
 ### Version 0.3.1
 * Setting up actions workflow
 

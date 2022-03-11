@@ -38,6 +38,26 @@ class Endpoints:
     """
     # ------------------------------------------------------------------------------------ #
     @staticmethod
+    async def get_validate_symbols(**kwargs) -> BaseResponse:
+        endpoint = 'validate_symbols'
+        data, error = await Worker.request(kwargs, endpoint)
+        if not error:
+            data: dict = data['symbolsValidation']['result'][0]
+            _list = []
+            for key in data.keys():
+                _list.append({
+                    'symbol': key,
+                    'valid': data[key]
+                })
+            data = dict(list=_list)
+        return BaseResponse(
+            endpoint=endpoint,
+            error=error,
+            data=data
+        )
+
+    # ------------------------------------------------------------------------------------ #
+    @staticmethod
     async def get_historical_prices(**kwargs) -> BaseResponse:
         endpoint = 'historical_prices'
         if start_date := kwargs.pop('startDate', None):
@@ -197,26 +217,6 @@ class Endpoints:
             data: dict = data['timeseries']['result'][0]
             data['symbol'] = data['meta']['symbol'][0]
             del data['meta']
-        return BaseResponse(
-            endpoint=endpoint,
-            error=error,
-            data=data
-        )
-
-    # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    async def get_validate_symbols(**kwargs) -> BaseResponse:
-        endpoint = 'validate_symbols'
-        data, error = await Worker.request(kwargs, endpoint)
-        if not error:
-            data: dict = data['symbolsValidation']['result'][0]
-            _list = []
-            for key in data.keys():
-                _list.append({
-                    'symbol': key,
-                    'valid': data[key]
-                })
-            data = dict(list=_list)
         return BaseResponse(
             endpoint=endpoint,
             error=error,

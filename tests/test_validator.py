@@ -70,4 +70,4 @@ tests = [
 
 @pytest.mark.parametrize('arg,result', tests)
 async def test_validate(arg, result):
-    assert await validator.validate(arg) is result
+    assert await validator.validate_response(arg) is result

@@ -37,45 +37,50 @@ class Server:
     This class contains methods to control
     the YFrake server programmatically.
     """
+    _err_msg_1 = 'YFrake server is already running!'
+    _err_msg_2 = 'Cannot stop YFrake server which is not running!'
     _server: subprocess.Popen = None
     _is_running: bool = False
 
     # ---------------------------------------------------------------------------------- #
     @classmethod
     def is_running(cls) -> bool:
-        if cls._server is not None:
-            cls._is_running = cls._server.poll() is None
-        return cls._is_running
+        if isinstance(cls._server, subprocess.Popen):
+            return not bool(cls._server.poll())
+        return False
 
     # ---------------------------------------------------------------------------------- #
     @classmethod
     def start(cls, **kwargs) -> None:
-        if not cls.is_running():
-            settings = dict()
-            default = vars(utils.get_default_config())
-            for option in ['host', 'port', 'limit', 'timeout', 'backlog']:
-                value = kwargs.get(option, default[option])
-                settings[option] = str(value)
-            cls._server = subprocess.Popen(
-                [
-                    sys.executable, runner.__file__,
-                    '--host', settings['host'],
-                    '--port', settings['port'],
-                    '--limit', settings['limit'],
-                    '--timeout', settings['timeout'],
-                    '--backlog', settings['backlog']
-                ]
-            )
+        if cls.is_running():
+            raise RuntimeError(cls._err_msg_1)
+
+        settings = dict()
+        default = vars(utils.get_default_config())
+        for option in ['host', 'port', 'limit', 'timeout', 'backlog']:
+            value = kwargs.get(option, default[option])
+            settings[option] = str(value)
+        cls._server = subprocess.Popen(
+            [
+                sys.executable, runner.__file__,
+                '--host', settings['host'],
+                '--port', settings['port'],
+                '--limit', settings['limit'],
+                '--timeout', settings['timeout'],
+                '--backlog', settings['backlog']
+            ]
+        )
 
     # ---------------------------------------------------------------------------------- #
     @classmethod
     def stop(cls) -> None:
-        if cls.is_running():
-            try:
-                parent = psutil.Process(cls._server.pid)
-                children = parent.children(recursive=True)
-                for child in children:
-                    child.kill()
-                parent.kill()
-            except psutil.NoSuchProcess:
-                return
+        if not cls.is_running():
+            raise RuntimeError(cls._err_msg_2)
+        try:
+            parent = psutil.Process(cls._server.pid)
+            children = parent.children(recursive=True)
+            for child in children:
+                child.kill()
+            parent.kill()
+        except psutil.NoSuchProcess:
+            return

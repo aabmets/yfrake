@@ -70,7 +70,7 @@ def create_cors(app):
 
 
 # ------------------------------------------------------------------------------------ #
-def get_runtime_args() -> Namespace:
+def get_runtime_args() -> Namespace:  # pragma: no cover
     config = get_default_config()
     parser = ArgumentParser()
     parser.add_argument('--host', type=str, default=config.host)

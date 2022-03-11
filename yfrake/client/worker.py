@@ -25,7 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .validator import validate
+from .validator import validate_response
 from .utils import build_error, get_path
 from .exceptions import BadRequestError
 from .session import Session
@@ -47,7 +47,7 @@ class Worker(Session):
         try:
             async with cls.session.get(url=path, params=params) as resp:
                 data = await resp.json()
-                if not await validate(data):
+                if not await validate_response(data):  # pragma: no branch
                     raise BadRequestError
         except (aiohttp.ClientResponseError, BadRequestError,
                 asyncio.TimeoutError, json.JSONDecodeError) as ex:

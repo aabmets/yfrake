@@ -25,44 +25,62 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-async def validate(data) -> bool:
+async def validate_response(data: dict) -> bool:
     """
     This function ensures that an empty response
     with a successful status code 200 is correctly
     recognized as an erroneous response.
     """
-    error, result = await extract_fields(data)
+    endpoint, error, result = await extract_fields(data)
     failures = [
         await is_general_error(error, result),
-        await is_nested_list_empty(error, result)
+        await is_nested_dict_empty(error, result),
+        await is_insights_error(endpoint, result),
+        await is_shares_out_error(endpoint, result)
     ].count(True)
     return False if failures else True
 
 
 # ------------------------------------------------------------------------------------ #
 async def extract_fields(data: dict) -> tuple:
-    error, result = None, None
-    if isinstance(data, dict):
-        if len(data) == 1:
+    endpoint, error, result = None, None, None
+    n = len(data)
+    match n:
+        case n if n > 1:
+            result = data.get('news')
+        case n if n == 1:
             endpoint = list(data.keys())[0]
             error = data[endpoint].get('error')
             result = data[endpoint].get('result')
-        if len(data) > 1:
-            result = data.get('news')
-    return error, result
+    return endpoint, error, result
 
 
 # ------------------------------------------------------------------------------------ #
 async def is_general_error(error, result) -> bool:
-    if error or not result:
-        return True
-    return False
+    return True if error or not result else False
 
 
 # ------------------------------------------------------------------------------------ #
-async def is_nested_list_empty(*args) -> bool:
+async def is_nested_dict_empty(*args) -> bool:
     for arg in args:
         if isinstance(arg, list):
             if arg and not arg[0]:
                 return True
+    return False
+
+
+# ------------------------------------------------------------------------------------ #
+async def is_insights_error(endpoint, result) -> bool:
+    if endpoint == 'finance':
+        if isinstance(result, dict):
+            if len(result) == 2:
+                return True
+    return False
+
+
+# ------------------------------------------------------------------------------------ #
+async def is_shares_out_error(endpoint, result) -> bool:
+    if endpoint == 'timeseries':
+        if len(result[0]) == 1:
+            return True
     return False

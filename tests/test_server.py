@@ -1,14 +1,21 @@
 from yfrake import server
 from urllib import request
 import asyncio
+import pytest
 import json
+import time
 
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 def test_server():
+    assert server.is_running() is False
     server.start()
+    assert server.is_running() is True
+
+    with pytest.raises(RuntimeError):
+        server.start()
 
     url = 'http://localhost:8888/quote_type?symbol=msft'
     with request.urlopen(url=url) as f:
@@ -30,4 +37,10 @@ def test_server():
     assert len(data) > 0
     assert data.get('symbol') == 'MSFT'
 
+    assert server.is_running() is True
     server.stop()
+    time.sleep(1)
+    assert server.is_running() is False
+
+    with pytest.raises(RuntimeError):
+        server.stop()

@@ -42,7 +42,7 @@ def get_toml_file_path() -> Path:
 
 # ---------------------------------------------------------------------------------- #
 def get_openapi_datatype(var: object) -> str:
-    default = 'Invalid Datatype'
+    default = ''
     _map = {
         'str': 'string',
         'int': 'integer',

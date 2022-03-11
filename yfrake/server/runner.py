@@ -67,7 +67,7 @@ async def main(config=None, run_forever=False):
         backlog=config.backlog
     )
     await site.start()
-    while run_forever:
+    while run_forever:  # pragma: no cover
         await asyncio.sleep(3600)
 
     await site.stop()

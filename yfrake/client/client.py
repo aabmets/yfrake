@@ -36,27 +36,31 @@ import sys
 
 # ==================================================================================== #
 class Client:
+    _err_msg_1 = 'YFrake is not configured!'
+    _err_msg_2 = 'Invalid YFrake endpoint!'
     async_mode: bool | None = None
 
+    # ------------------------------------------------------------------------------------ #
     @classmethod
     def get(cls, endpoint: str = '', **kwargs) -> ClientResponse:
-        func = getattr(Endpoints, 'get_' + endpoint, None)
         if cls.async_mode is None:
-            raise RuntimeError('YFrake is not configured!')
-        elif func is None:
-            raise AttributeError('Invalid YFrake endpoint!')
-        else:
-            if cls.async_mode:
+            raise RuntimeError(cls._err_msg_1)
+
+        attr = 'get_' + endpoint
+        if func := getattr(Endpoints, attr, None):
+            if cls.async_mode is True:
                 async_object = asyncio.create_task(func(**kwargs))
             else:
                 async_object = asyncio.run_coroutine_threadsafe(
                     func(**kwargs), ThreadLoop.loop)
             return ClientResponse(async_object)
 
+        raise AttributeError(cls._err_msg_2)
+
     # ------------------------------------------------------------------------------------ #
     @classmethod
     def configure(cls, limit: int = 60, timeout: int = 2):
-        if sys.platform == 'win32':
+        if sys.platform == 'win32':  # pragma: no branch
             policy = asyncio.WindowsSelectorEventLoopPolicy()
             asyncio.set_event_loop_policy(policy)
 
@@ -65,11 +69,13 @@ class Client:
                 await Session.a_open(limit=limit, timeout=timeout)
                 await func(*args, **kwargs)
                 await Session.a_close()
+                cls.async_mode = None
 
             def t_inner(*args, **kwargs):
                 Session.t_open(limit=limit, timeout=timeout)
                 func(*args, **kwargs)
                 Session.t_close()
+                cls.async_mode = None
 
             cls.async_mode = inspect.iscoroutinefunction(func)
             return a_inner if cls.async_mode else t_inner
