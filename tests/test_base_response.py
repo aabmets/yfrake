@@ -1,9 +1,13 @@
 from yfrake.client.base_response import BaseResponse
 import asyncio
 import pytest
+import sys
 
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(
+        asyncio.WindowsSelectorEventLoopPolicy()
+    )
 
 
 def test_instantiate_with_params():

@@ -1,6 +1,7 @@
 from yfrake.client import validator
 import pytest
 
+
 tests = [
     (
         {

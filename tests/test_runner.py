@@ -1,8 +1,12 @@
 from yfrake.server import runner
 import asyncio
+import sys
 
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(
+        asyncio.WindowsSelectorEventLoopPolicy()
+    )
 
 
 async def test_runner():
