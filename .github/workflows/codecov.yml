@@ -17,8 +17,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install wheel
         pip install yfrake
         pip install pytest
+        pip install pytest-asyncio
         pip install coverage
 
     - name: Generate coverage report
