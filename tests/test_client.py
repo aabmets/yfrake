@@ -1,4 +1,5 @@
 from yfrake import client
+from yfrake.client.client_response import ClientResponse
 import asyncio
 import pytest
 import sys
@@ -33,13 +34,14 @@ def test_invalid_symbol():
         args = dict(endpoint='quote_type', symbol='THIS_IS_INVALID')
         resp = client.get(**args)
         resp.wait_for_result()
+        assert isinstance(resp, ClientResponse)
         assert bool(resp.endpoint) is True
         assert bool(resp.error) is True
         assert bool(resp.data) is False
     inner()
 
 
-async def test_while_not_available():
+async def test_async_object():
     @client.configure()
     async def inner():
         args = dict(endpoint='quote_type', symbol='msft')
