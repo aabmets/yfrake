@@ -1,7 +1,9 @@
 # This workflow generates the code coverage report and uploads it to Codecov.
 
 name: Generate Code Coverage
+
 on: [push]
+
 jobs:
   main:
     runs-on: windows-latest
@@ -14,9 +16,11 @@ jobs:
       with:
         python-version: 3.10.2
 
+    - name: Update PIP
+      run: python -m pip install --upgrade pip
+
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
         pip install wheel
         pip install yfrake
         pip install pytest
@@ -34,3 +38,12 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
         verbose: true
+
+    - name: Setup Testspace
+      uses: testspace-com/setup-testspace@v1
+      with:
+        domain: ${{github.repository_owner}}
+        token: ${{ secrets.TESTSPACE_TOKEN }}
+
+    - name: Publish Results to Testspace
+      run: testspace coverage.xml
