@@ -1,5 +1,5 @@
 from yfrake import server
-from urllib import request
+import aiohttp
 import asyncio
 import pytest
 import json
@@ -13,7 +13,7 @@ if sys.platform == 'win32':
     )
 
 
-def test_server():
+async def test_server():
     assert server.is_running() is False
     server.start()
     assert server.is_running() is True
@@ -21,10 +21,12 @@ def test_server():
     with pytest.raises(RuntimeError):
         server.start()
 
-    url = 'http://localhost:8888/quote_type?symbol=msft'
-    with request.urlopen(url=url) as f:
-        resp = f.read().decode('utf-8')
-    resp = json.loads(resp)
+    url = 'http://localhost:8888/quote_type'
+    params = dict(symbol='msft')
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url=url, params=params) as resp:
+            data = await resp.text(encoding='utf-8')
+    resp = json.loads(data)
 
     endpoint = resp.get('endpoint', False)
     error = resp.get('error', False)
