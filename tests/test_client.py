@@ -23,7 +23,25 @@ def test_invalid_endpoint():
     @client.configure()
     def inner():
         args = dict(endpoint='THIS_IS_INVALID', symbol='msft')
-        with pytest.raises(AttributeError):
+        with pytest.raises(NameError):
+            client.get(**args)
+    inner()
+
+
+async def test_invalid_param():
+    @client.configure()
+    async def inner():
+        with pytest.raises(KeyError):
+            args = dict(endpoint='quote_type', INVALID_KEY=1000)
+            client.get(**args)
+    await inner()
+
+
+def test_invalid_datatype():
+    @client.configure()
+    def inner():
+        with pytest.raises(TypeError):
+            args = dict(endpoint='quote_type', symbol=1000)
             client.get(**args)
     inner()
 

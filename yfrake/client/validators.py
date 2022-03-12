@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    validator.py - This file is part of the YFrake package.                           #
+#    validators.py - This file is part of the YFrake package.                           #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,6 +25,34 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from ..openapi.modules import param_specs
+
+
+# ==================================================================================== #
+_err_msg_1 = 'Invalid query parameter key \'{0}\' for endpoint \'{1}\'. (YFrake)'
+_err_msg_2 = 'Invalid value datatype \'{0}\' for query parameter key \'{1}\' at endpoint \'{2}\'. (YFrake)'
+
+
+# ==================================================================================== #
+def validate_and_sanitize(endpoint: str, params: dict) -> None:
+    spec = param_specs[endpoint]
+    for param in params:  # ensure param keys are valid
+        if param not in spec:
+            raise KeyError(_err_msg_1.format(
+                param, endpoint
+            ))
+    for name, expected in spec.items():  # ensure param value types are valid
+        if name in params:
+            value = params[name]
+            if not isinstance(value, expected):
+                raise TypeError(_err_msg_2.format(
+                    type(value).__name__, name, endpoint
+                ))
+            if type(value) == bool:  # sanitize bools to strings
+                params[name] = str(value).lower()
+
+
+# ------------------------------------------------------------------------------------ #
 async def validate_response(data: dict) -> bool:
     """
     This function ensures that an empty response

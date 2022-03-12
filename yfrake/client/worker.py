@@ -25,7 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .validator import validate_response
+from .validators import validate_response
 from .utils import build_error, get_path
 from .exceptions import BadRequestError
 from .session import Session
@@ -37,13 +37,13 @@ import json
 # ==================================================================================== #
 class Worker(Session):
     @classmethod
-    async def request(cls, params: dict, endpoint: str) -> tuple:
+    async def request(cls, endpoint: str, params: dict) -> tuple:
         """
         The main function responsible for making the
         requests to the Yahoo Finance API servers.
         """
-        path = get_path(endpoint, params)
         error = None
+        path = get_path(endpoint, params)
         try:
             async with cls.session.get(url=path, params=params) as resp:
                 data = await resp.json()

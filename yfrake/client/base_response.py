@@ -30,6 +30,10 @@ import copy
 
 # ==================================================================================== #
 class AccessController:
+    """
+    Instances of this class manage permission
+    context handlers for BaseResponse objects.
+    """
     def __init__(self):
         self.elevated = False
 
@@ -50,9 +54,11 @@ class AccessController:
 class BaseResponse:
     """
     The base response object of YFrake.
+    Read-only without elevated permissions.
+    Use 'with resp.permissions:' to elevate.
     """
-    _err_msg_1 = 'Insufficient permissions to modify response object attributes!'
-    _err_msg_2 = 'It is illegal to delete response object attributes!'
+    _err_msg_1 = 'Insufficient permissions to modify response object attributes! (YFrake)'
+    _err_msg_2 = 'Deletion of response object attributes is not allowed! (YFrake)'
 
     # ------------------------------------------------------------------------------------ #
     def __init__(self, **kwargs):

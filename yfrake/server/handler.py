@@ -33,9 +33,10 @@ from aiohttp import web
 # ==================================================================================== #
 async def handler(request: web.Request) -> web.Response:
     query = convert_multidict(request.query)
-    attr = 'get_' + request.path.strip('/')
+    endpoint = request.path.strip('/')
+    attr = 'get_' + endpoint
     func = getattr(Endpoints, attr, None)
-    resp = await func(**query)
+    resp = await func(endpoint, **query)
     return web.Response(
         text=pretty_json(resp)
     )

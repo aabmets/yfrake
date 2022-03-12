@@ -29,6 +29,7 @@ from .client_response import ClientResponse
 from .thread_loop import ThreadLoop
 from .endpoints import Endpoints
 from .session import Session
+from .validators import validate_and_sanitize
 import asyncio
 import inspect
 import sys
@@ -36,8 +37,8 @@ import sys
 
 # ==================================================================================== #
 class Client:
-    _err_msg_1 = 'YFrake is not configured!'
-    _err_msg_2 = 'Invalid YFrake endpoint!'
+    _err_msg_1 = 'Client not configured! (YFrake)'
+    _err_msg_2 = 'Invalid endpoint \'{0}\'! (YFrake)'
     async_mode: bool | None = None
 
     # ------------------------------------------------------------------------------------ #
@@ -48,14 +49,17 @@ class Client:
 
         attr = 'get_' + endpoint
         if func := getattr(Endpoints, attr, None):
+            validate_and_sanitize(endpoint, kwargs)
             if cls.async_mode is True:
-                async_object = asyncio.create_task(func(**kwargs))
+                async_object = asyncio.create_task(
+                    func(endpoint, **kwargs))
             else:
                 async_object = asyncio.run_coroutine_threadsafe(
-                    func(**kwargs), ThreadLoop.loop)
+                    func(endpoint, **kwargs), ThreadLoop.loop)
             return ClientResponse(async_object)
 
-        raise AttributeError(cls._err_msg_2)
+        msg = cls._err_msg_2.format(endpoint)
+        raise NameError(msg)
 
     # ------------------------------------------------------------------------------------ #
     @classmethod

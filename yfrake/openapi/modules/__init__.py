@@ -31,10 +31,12 @@ from importlib import util
 
 # ================================================================================== #
 # Here we collect all the modules from the current folder, load them,
-# and add them to the specs list, which is then used by the generator.py
+# and add them to the modules list, which is then used by the generator.py
 # module to generate the 'yfrake_spec.yaml' file.
 
-specs = list()
+modules = list()
+param_specs = dict()
+
 folder = Path(__file__).parent
 for file_path in folder.iterdir():
     module_name = file_path.stem
@@ -43,4 +45,13 @@ for file_path in folder.iterdir():
             module_name, file_path)
         module = util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        specs.append(module)
+        modules.append(module)
+
+        # generating endpoint param specs, which is
+        # used by validate_input func in validators.py.
+        module_params = dict()
+        for param in getattr(module, 'parameters'):
+            item = {param['name']: param['schema']['type']}
+            module_params.update(item)
+
+        param_specs[module_name] = module_params

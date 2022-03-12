@@ -26,7 +26,7 @@
 #                                                                                    #
 # ================================================================================== #
 from .components import components
-from .specs import specs
+from .modules import modules
 from . import utils
 import tomli
 import yaml
@@ -48,7 +48,7 @@ def generate_openapi_spec() -> None:
     package is published to the PyPI.
     """
     print('Building OpenAPI YAML spec file.')
-    for module in specs:
+    for module in modules:
         spec = {
             'summary': module.summary,
             'description': module.description,

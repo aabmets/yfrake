@@ -1,5 +1,11 @@
 # Change Log
 
+### Version 0.3.3
+* Added input validity checker and sanitizer
+* Testing fixes
+* Bugfixes
+
+<br />
 
 ### Version 0.3.3
 #### Additions

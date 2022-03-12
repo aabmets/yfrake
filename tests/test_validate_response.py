@@ -1,4 +1,4 @@
-from yfrake.client import validator
+from yfrake.client.validators import validate_response
 import pytest
 
 
@@ -70,5 +70,5 @@ tests = [
 
 
 @pytest.mark.parametrize('arg,result', tests)
-async def test_validate(arg, result):
-    assert await validator.validate_response(arg) is result
+async def test_validate_response(arg, result):
+    assert await validate_response(arg) is result

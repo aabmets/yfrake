@@ -2,6 +2,13 @@
 
 bad_queries = [
     {
+       'expected_error': True,
+       'expected_data': False,
+       'query': dict(
+           endpoint='validate_symbols',
+           symbols=''
+       )
+    }, {
         'expected_error': True,
         'expected_data': False,
         'query': dict(
@@ -20,20 +27,14 @@ bad_queries = [
             endpoint='historical_prices',
             symbol='qwerty123456',
             interval='1wk',
-            range='1y',
-            events=True,
-            extHours=False
+            range='1y'
         )
     }, {
         'expected_error': True,
         'expected_data': False,
         'query': dict(
             endpoint='options',
-            symbol='qwerty123456',
-            startDate=1609502400,
-            endDate=1612180800,
-            straddle=True,
-            getAllData=False,
+            symbol='qwerty123456'
         )
     }, {
         'expected_error': True,
@@ -54,6 +55,13 @@ bad_queries = [
             symbol='qwerty123456',
             startDate=1609502400,
             endDate=1612180800
+        )
+    }, {
+        'expected_error': True,
+        'expected_data': False,
+        'query': dict(
+            endpoint='shares_outstanding',
+            symbol='qwerty123456'
         )
     }, {
         'expected_error': True,
@@ -82,6 +90,12 @@ bad_queries = [
         'query': dict(
             endpoint='quote_type',
             symbol='qwerty123456'
+        )
+    }, {
+        'expected_error': True,
+        'expected_data': False,
+        'query': dict(
+            endpoint='news'
         )
     }, {
         'expected_error': True,

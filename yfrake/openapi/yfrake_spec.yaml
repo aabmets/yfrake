@@ -24,12 +24,12 @@ info:
     email: mattias.aabmets@gmail.com
     name: Mattias Aabmets
     url: https://github.com/aspenforest/yfrake
-  description: A flexible and agile stock market data scraper and server.
+  description: A fast and flexible stock market data scraper and server.
   license:
     name: MIT License
     url: https://github.com/aspenforest/yfrake/blob/main/LICENSE
   title: YFrake
-  version: 0.3.4
+  version: 0.3.5
 openapi: 3.0.0
 paths:
   /balance_statements:
