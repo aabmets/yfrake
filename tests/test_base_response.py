@@ -10,62 +10,66 @@ if sys.platform == 'win32':
     )
 
 
-def test_instantiate_with_params():
-    resp = BaseResponse(
-        endpoint=str(),
-        error=list(),
-        data=dict()
-    )
-    assert type(resp.endpoint) is str
-    assert type(resp.error) is list
-    assert type(resp.data) is dict
-
-
-def test_instantiate_without_params():
+def test_resp_endpoint():
     resp = BaseResponse()
     assert resp.endpoint is None
-    assert resp.error is None
-    assert resp.data is None
+    with resp.permissions:
+        resp.endpoint = str()
+    assert resp.endpoint == str()
 
 
-def test_exceptions():
+def test_resp_endpoint_exceptions():
     resp = BaseResponse()
-
     with pytest.raises(PermissionError):
-        resp.endpoint = int()
-
-    with pytest.raises(PermissionError):
-        resp.error = int()
-
-    with pytest.raises(PermissionError):
-        resp.data = int()
-
+        resp.endpoint = str()
     with pytest.raises(RuntimeError):
         del resp.endpoint
 
+
+def test_resp_error():
+    resp = BaseResponse()
+    assert resp.error is None
+    with resp.permissions:
+        resp.error = dict()
+    assert resp.error == dict()
+
+
+def test_resp_error_exceptions():
+    resp = BaseResponse()
+    with pytest.raises(PermissionError):
+        resp.error = dict()
     with pytest.raises(RuntimeError):
         del resp.error
 
+
+def test_resp_data():
+    resp = BaseResponse()
+    assert resp.data is None
+    with resp.permissions:
+        resp.data = dict()
+    assert resp.data == dict()
+
+
+def test_resp_data_exceptions():
+    resp = BaseResponse()
+    with pytest.raises(PermissionError):
+        resp.data = dict()
     with pytest.raises(RuntimeError):
         del resp.data
 
 
-def test_permissions_sync():
+async def test_response_object():
     resp = BaseResponse()
-    with resp.permissions:
 
-        resp.endpoint = str()
-        resp.error = dict()
-        resp.data = list()
+    assert resp.endpoint is None
+    assert resp.error is None
+    assert resp.data is None
 
-        assert type(resp.endpoint) is str
-        assert type(resp.error) is dict
-        assert type(resp.data) is list
-
-
-async def test_permissions_async():
-    resp = BaseResponse()
     async with resp.permissions:
         resp.endpoint = str()
         resp.error = dict()
-        resp.data = list()
+        resp.data = dict()
+
+    assert resp.endpoint == str()
+    assert resp.error == dict()
+    assert resp.data == dict()
