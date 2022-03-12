@@ -14,12 +14,10 @@ if sys.platform == 'win32':
 
 
 async def test_server():
-    assert server.is_running() is False
     server.start()
-    assert server.is_running() is True
-
-    with pytest.raises(RuntimeError):
-        server.start()
+    while not server.is_running():
+        time.sleep(0)
+    assert server.is_running()
 
     url = 'http://localhost:8888/quote_type'
     params = dict(symbol='msft')
@@ -43,10 +41,23 @@ async def test_server():
     assert len(data) > 0
     assert data.get('symbol') == 'MSFT'
 
-    assert server.is_running() is True
     server.stop()
-    time.sleep(1)
-    assert server.is_running() is False
+    while server.is_running():
+        time.sleep(0)
+    assert not server.is_running()
 
+
+def test_server_exceptions():
+    server.start()
+    while not server.is_running():
+        time.sleep(0)
+    with pytest.raises(RuntimeError):
+        server.start()
+
+    time.sleep(0)
+
+    server.stop()
+    while server.is_running():
+        time.sleep(0)
     with pytest.raises(RuntimeError):
         server.stop()

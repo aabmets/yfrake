@@ -13,8 +13,6 @@
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Faabmets&label=Say%20Thanks" alt="Say thanks on Twitter"></a>
 
 
-
-
 ### Disclaimer
 The current version of YFrake is usable, but ***not*** production ready.
 
