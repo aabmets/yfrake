@@ -1,6 +1,6 @@
 # Change Log
 
-### Version 0.3.3
+### Version 0.3.4
 * Added input validity checker and sanitizer
 * Testing fixes
 * Bugfixes
