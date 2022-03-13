@@ -13,14 +13,11 @@
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Faabmets&label=Say%20Thanks" alt="Say thanks on Twitter"></a>
 
 
-### Disclaimer
-The current version of YFrake is usable, but ***not*** production ready.
-
 ### Description
-YFrake is a ***flexible*** and ***agile*** stock market data scraper and server [&#91;note1&#93;](#footnote1).
-It enables developers to build powerful apps without having to worry about maximizing network request throughput [&#91;note2&#93;](#footnote1).
-YFrake can be used as a client to directly return market data or as a ***programmatically controllable server*** to forward data to web clients.
-In addition, all network requests by YFrake are ***non-blocking***, which means that your program can continue running your code while network requests are in progress.
+YFrake is a fast and flexible stock market data scraper and server [&#91;note&#93;](#footnote).
+It enables developers to ***build powerful apps*** without having to worry about the details of session management and request handling [&#91;note2&#93;](#footnote1).
+YFrake can be used as a client to directly return market data to the running program or as a ***programmatically controllable server*** to provide market data to third-party apps.
+In addition, all network requests by YFrake, either in sync or async mode, are ***non-blocking***, which means that your program can continue executing your code while network requests are in progress.
 The best part about YFrake is its ***built-in swagger API documentation*** which you can use to perform test queries and examine the returned responses.
 
 
@@ -192,6 +189,6 @@ if __name__ == '__main__':
     asyncio.run(main())
 ~~~
 
+<br />
+<a id="footnote"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 
 <br/>
-<a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. <br/>
-<a id="footnote2"><sup>&#91;note2&#93;:</sup></a> You still need to know how to correctly use asyncio.
