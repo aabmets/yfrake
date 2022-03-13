@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'YFrake'
-copyright = '2022, Mattias Aabmets'
+project_copyright = '2022, Mattias Aabmets'
 author = 'Mattias Aabmets'
 
 # The full version, including alpha/beta/rc tags
