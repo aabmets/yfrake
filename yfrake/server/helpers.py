@@ -36,6 +36,8 @@ from aiohttp import web
 import aiohttp_cors as cors
 
 
+# These functions are called sequentially by the runner.py module.
+
 # ==================================================================================== #
 def build_route_table() -> list:
     route_table = list()

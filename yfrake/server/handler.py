@@ -32,6 +32,10 @@ from aiohttp import web
 
 # ==================================================================================== #
 async def handler(request: web.Request) -> web.Response:
+    """
+    This func handles all incoming requests to the server
+    and forwards them to the correct endpoint handlers.
+    """
     query = convert_multidict(request.query)
     endpoint = request.path.strip('/')
     attr = 'get_' + endpoint

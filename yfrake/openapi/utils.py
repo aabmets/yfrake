@@ -42,6 +42,9 @@ def get_toml_file_path() -> Path:
 
 # ---------------------------------------------------------------------------------- #
 def get_openapi_datatype(var: object) -> str:
+    """
+    Converts python datatype names into OpenAPI words.
+    """
     default = ''
     _map = {
         'str': 'string',

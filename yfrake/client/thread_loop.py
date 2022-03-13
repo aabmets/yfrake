@@ -32,6 +32,11 @@ import time
 
 # ==================================================================================== #
 class ThreadLoop:
+    """
+    This class is responsible for running a separate
+    async event loop in a thread, when the YFrake
+    client is being used in the sync mode.
+    """
     loop: asyncio.AbstractEventLoop = None
     thread: Thread = None
 

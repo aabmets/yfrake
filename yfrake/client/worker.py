@@ -40,7 +40,7 @@ class Worker(Session):
     async def request(cls, endpoint: str, params: dict) -> tuple:
         """
         The main function responsible for making the
-        requests to the Yahoo Finance API servers.
+        web requests to the Yahoo Finance API servers.
         """
         error = None
         path = get_path(endpoint, params)

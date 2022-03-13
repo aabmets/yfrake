@@ -35,7 +35,7 @@ import asyncio
 # ==================================================================================== #
 class ClientResponse(BaseResponse):
     """
-    The datatype returned by the client object.
+    The datatype returned by client 'get' method.
     """
     def __init__(self, async_object: Task | Future):
         async_object.add_done_callback(self._callback)

@@ -31,6 +31,7 @@ from urllib.parse import urlencode
 
 # ------------------------------------------------------------------------------------ #
 def get_path(endpoint: str, params: dict) -> str:
+    # Some endpoints need the symbol provided as a path parameter.
     path = paths[endpoint]
     if '{symbol}' in path:
         sym = params.pop('symbol', '')
@@ -40,6 +41,8 @@ def get_path(endpoint: str, params: dict) -> str:
 
 # ------------------------------------------------------------------------------------ #
 def build_error(path: str, params: dict, ex=None) -> dict:
+    # This func is used by the Worker 'request' method to
+    # build the error dict for the response object.
     params = '?' + urlencode(params) if params else ''
     default_message = 'Internal server error'
     default_status = 500

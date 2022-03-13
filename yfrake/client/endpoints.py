@@ -26,17 +26,18 @@
 #                                                                                      #
 # ==================================================================================== #
 from .base_response import BaseResponse
-from .validators import validate_and_sanitize
 from .worker import Worker
 
 
 # ==================================================================================== #
 class Endpoints:
     """
-    This class contains the public async 'get_' methods,
-    which should be called in an async context by the
-    user to request data from the Yahoo Finance API.
+    Each method of this class handles calls to and
+    returns responses from a specific API endpoint.
     """
+    # Separate methods with involved data juggling are required,
+    # because the Yahoo Finance API is a convoluted mangled mess.
+
     # ------------------------------------------------------------------------------------ #
     @staticmethod
     async def get_validate_symbols(endpoint, **kwargs) -> BaseResponse:

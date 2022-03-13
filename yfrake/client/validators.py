@@ -35,6 +35,11 @@ _err_msg_2 = 'Invalid value datatype \'{0}\' for query parameter key \'{1}\' at 
 
 # ==================================================================================== #
 def validate_and_sanitize(endpoint: str, params: dict) -> None:
+    """
+    This function ensures the validity of any params
+    provided into the client 'get' method by the user
+    and sanitizes any booleans into strings.
+    """
     spec = param_specs[endpoint]
     for param in params:  # ensure param keys are valid
         if param not in spec:

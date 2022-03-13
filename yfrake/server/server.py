@@ -37,8 +37,8 @@ class Server:
     This class contains methods to control
     the YFrake server programmatically.
     """
-    _err_msg_1 = 'YFrake server is already running!'
-    _err_msg_2 = 'Cannot stop YFrake server which is not running!'
+    _err_msg_1 = 'Server is already running! (YFrake)'
+    _err_msg_2 = 'Cannot stop server which is not running! (YFrake)'
     _server: subprocess.Popen = None
     _is_running: bool = False
 

@@ -32,6 +32,7 @@ import tomli
 import yaml
 import copy
 
+
 yfrake_spec = {
     'openapi': '3.0.0',
     'info': {},
@@ -47,7 +48,6 @@ def generate_openapi_spec() -> None:
     generate the 'yfrake_spec.yaml' file, before the
     package is published to the PyPI.
     """
-    print('Building OpenAPI YAML spec file.')
     for module in modules:
         spec = {
             'summary': module.summary,
@@ -62,6 +62,8 @@ def generate_openapi_spec() -> None:
     path = utils.get_spec_file_path()
     with open(path, 'w', encoding='utf-8') as file:
         file.write(yaml.dump(yfrake_spec))
+
+    print('OpenAPI yaml file has been built.')
 
 
 # ---------------------------------------------------------------------------------- #

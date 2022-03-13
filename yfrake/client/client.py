@@ -37,20 +37,27 @@ import sys
 
 # ==================================================================================== #
 class Client:
-    _err_msg_1 = 'Client not configured! (YFrake)'
-    _err_msg_2 = 'Invalid endpoint \'{0}\'! (YFrake)'
-    async_mode: bool | None = None
+    _err_msg_1 = 'Invalid endpoint \'{0}\'! (YFrake)'
+    _err_msg_2 = 'Configuration decorator not in use! (YFrake)'
+    _err_msg_3 = 'Configuration decorator already in use! (YFrake)'
+
+    _async_mode: bool | None = None
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
     def get(cls, endpoint: str = '', **kwargs) -> ClientResponse:
-        if cls.async_mode is None:
-            raise RuntimeError(cls._err_msg_1)
+        """
+        This method is used to fetch market data
+        from the Yahoo Finance API servers.
+        Works in sync and async modes both.
+        """
+        if cls._async_mode is None:
+            raise RuntimeError(cls._err_msg_2)
 
         attr = 'get_' + endpoint
         if func := getattr(Endpoints, attr, None):
             validate_and_sanitize(endpoint, kwargs)
-            if cls.async_mode is True:
+            if cls._async_mode is True:
                 async_object = asyncio.create_task(
                     func(endpoint, **kwargs))
             else:
@@ -58,12 +65,20 @@ class Client:
                     func(endpoint, **kwargs), ThreadLoop.loop)
             return ClientResponse(async_object)
 
-        msg = cls._err_msg_2.format(endpoint)
+        msg = cls._err_msg_1.format(endpoint)
         raise NameError(msg)
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
     def configure(cls, limit: int = 60, timeout: int = 2):
+        """
+        This decorator opens and closes a session to Yahoo Finance API servers.
+        It must be used once before any calls to the client 'get' method
+        are made inside the decorated function.
+        """
+        if cls._async_mode is not None:
+            raise RuntimeError(cls._err_msg_3)
+
         if sys.platform == 'win32':  # pragma: no branch
             policy = asyncio.WindowsSelectorEventLoopPolicy()
             asyncio.set_event_loop_policy(policy)
@@ -73,14 +88,14 @@ class Client:
                 await Session.a_open(limit=limit, timeout=timeout)
                 await func(*args, **kwargs)
                 await Session.a_close()
-                cls.async_mode = None
+                cls._async_mode = None
 
             def t_inner(*args, **kwargs):
                 Session.t_open(limit=limit, timeout=timeout)
                 func(*args, **kwargs)
                 Session.t_close()
-                cls.async_mode = None
+                cls._async_mode = None
 
-            cls.async_mode = inspect.iscoroutinefunction(func)
-            return a_inner if cls.async_mode else t_inner
+            cls._async_mode = inspect.iscoroutinefunction(func)
+            return a_inner if cls._async_mode else t_inner
         return decorator

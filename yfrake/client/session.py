@@ -33,6 +33,12 @@ import asyncio
 
 # ==================================================================================== #
 class Session:
+    """
+    This class holds a connection to the Yahoo
+    Finance API servers. A session is established
+    by the client 'configure' decorator. There can
+    only be a single session active at any time.
+    """
     timeout: aiohttp.ClientTimeout | None = None
     session: aiohttp.ClientSession | None = None
     connector: aiohttp.TCPConnector | None = None

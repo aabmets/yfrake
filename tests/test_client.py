@@ -19,6 +19,16 @@ def test_client_not_configured():
     inner()
 
 
+def test_client_already_configured():
+    @client.configure()
+    def inner():
+        with pytest.raises(RuntimeError):
+            @client.configure()
+            def failure():
+                pass
+    inner()
+
+
 def test_invalid_endpoint():
     @client.configure()
     def inner():
