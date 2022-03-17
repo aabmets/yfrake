@@ -23,7 +23,7 @@ async def test_client_async(args):
         endpoint = query.get('endpoint')
 
         resp = client.get(**query)
-        await resp.result()
+        await resp.wait()
 
         assert resp.endpoint == endpoint
         assert bool(resp.error) is args.get('expected_error')

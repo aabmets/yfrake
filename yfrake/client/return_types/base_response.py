@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    utils.py - This file is part of the YFrake package.                               #
+#    base_response.py - This file is part of the YFrake package.                       #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,31 +25,78 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from multidict import MultiDictProxy
-from argparse import Namespace
-from pathlib import Path
-import configparser
+from .access_controller import AccessController
+import copy
 
 
 # ==================================================================================== #
-def get_default_config() -> Namespace:
-    configfile = Path(__file__).with_name('server.ini')
-    config = configparser.ConfigParser()
-    config.read(configfile)
-    config = config['DEFAULT_SETTINGS']
-    return Namespace(
-        host=config['host'],
-        port=int(config['port']),
-        limit=int(config['limit']),
-        timeout=int(config['timeout']),
-        backlog=int(config['backlog'])
-    )
+class BaseResponse:
+    """
+    Parent class of ClientResponse.
+    """
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self):
+        self.permissions = AccessController()
+        self._endpoint: str | None = None
+        self._error: dict | None = None
+        self._data: dict | None = None
 
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def endpoint(self) -> str | None:
+        if not self.permissions.elevated:
+            endpoint = getattr(self, '_endpoint', None)
+            return copy.deepcopy(endpoint)
+        return self._endpoint
 
-# ------------------------------------------------------------------------------------ #
-def convert_multidict(multidict: MultiDictProxy) -> dict:
-    out = dict()
-    for key in multidict.keys():
-        if key not in out:
-            out[key] = multidict[key]
-    return out
+    @property
+    def error(self) -> dict | None:
+        if not self.permissions.elevated:
+            error = getattr(self, '_error', None)
+            return copy.deepcopy(error)
+        return self._error
+
+    @property
+    def data(self) -> dict | None:
+        if not self.permissions.elevated:
+            data = getattr(self, '_data', None)
+            return copy.deepcopy(data)
+        return self._data
+
+    # ------------------------------------------------------------------------------------ #
+    @endpoint.setter
+    def endpoint(self, value) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        self._endpoint = value
+
+    @error.setter
+    def error(self, value) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        self._error = value
+
+    @data.setter
+    def data(self, value) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        self._data = value
+
+    # ------------------------------------------------------------------------------------ #
+    @endpoint.deleter
+    def endpoint(self) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        del self._endpoint
+
+    @error.deleter
+    def error(self) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        del self._error
+
+    @data.deleter
+    def data(self) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        del self._data

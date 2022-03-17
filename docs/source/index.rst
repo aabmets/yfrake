@@ -6,17 +6,20 @@ Welcome to YFrake's documentation!
    :caption: OVERVIEW
 
    overview/description.rst
+   overview/getting_started.rst
 
 .. toctree::
    :maxdepth: 2
    :caption: CLIENT
 
-   client/getting_started.rst
-   client/client_usage.rst
+   client/client_reference.rst
+   client/response_reference.rst
+   client/sync_mode_examples.rst
+   client/async_mode_examples.rst
 
 .. toctree::
    :maxdepth: 2
    :caption: SERVER
 
-   server/getting_started.rst
-   server/server_usage.rst
+   server/server_reference.rst
+   server/server_usage_examples.rst

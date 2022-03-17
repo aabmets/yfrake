@@ -27,6 +27,7 @@
 # ==================================================================================== #
 from .base_response import BaseResponse
 from concurrent.futures import Future
+from typing import Coroutine
 from asyncio import Task
 import threading
 import asyncio
@@ -35,40 +36,56 @@ import asyncio
 # ==================================================================================== #
 class ClientResponse(BaseResponse):
     """
-    The datatype returned by client 'get' method.
+    A custom datatype returned by the client 'get' method.
     """
-    def __init__(self, async_object: Task | Future):
-        async_object.add_done_callback(self._callback)
-        obj_type = type(async_object)
-        module = {
-            Task: asyncio,
-            Future: threading
-        }[obj_type]
-        self._event = module.Event()
-        self._async_object = async_object
+    def __init__(self, async_mode: bool):
+        self._future: Task | Future | None = None
+        self._event = {
+            True: asyncio.Event,
+            False: threading.Event
+        }[async_mode]()
         super().__init__()
 
     # ------------------------------------------------------------------------------------ #
-    def _callback(self, obj: Task | Future):
-        resp: BaseResponse = obj.result()
-        with resp.permissions:
-            self._endpoint = resp.endpoint
-            self._error = resp.error
-            self._data = resp.data
-        self._event.set()
+    def pending(self) -> bool:
+        return not self._event.is_set()
 
     # ------------------------------------------------------------------------------------ #
-    def get_async_object(self) -> Task | Future | None:
-        return self._async_object
+    def wait(self) -> Coroutine | None:
+        if isinstance(self._event, asyncio.Event):
+            return self._event.wait()  # return a coro
+        self._event.wait()  # block until set
 
     # ------------------------------------------------------------------------------------ #
-    def available(self) -> bool:
-        return self._event.is_set()
+    @property
+    def event(self) -> asyncio.Event | threading.Event:
+        return self._event
+
+    @event.setter
+    def event(self, value) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        self._event = value
+
+    @event.deleter
+    def event(self) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        del self._event
 
     # ------------------------------------------------------------------------------------ #
-    def wait_for_result(self) -> None:
-        self._event.wait()
+    @property
+    def future(self) -> Task | Future | None:
+        return self._future
 
-    # ------------------------------------------------------------------------------------ #
-    async def result(self) -> None:
-        await self._event.wait()
+    @future.setter
+    def future(self, value) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        self._future = value
+
+    @future.deleter
+    def future(self) -> None:
+        if not self.permissions.elevated:
+            raise self.permissions.error
+        del self._future

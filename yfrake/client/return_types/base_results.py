@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    base_response.py - This file is part of the YFrake package.                       #
+#    base_results.py - This file is part of the YFrake package.                        #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,95 +25,35 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-import copy
+from .client_response import ClientResponse
 
 
 # ==================================================================================== #
-class AccessController:
+class BaseResults:
     """
-    Instances of this class manage permission
-    context handlers for BaseResponse objects.
+    Parent class of AsyncResults and ThreadResults.
     """
-    def __init__(self):
-        self.elevated = False
-
-    def __enter__(self):
-        self.elevated = True
-
-    def __exit__(self, t, v, b):
-        self.elevated = False
-
-    async def __aenter__(self):
-        self.elevated = True
-
-    async def __aexit__(self, t, v, b):
-        self.elevated = False
-
-
-# ==================================================================================== #
-class BaseResponse:
-    """
-    The base response object of YFrake.
-    Read-only without elevated permissions.
-    Use 'with resp.permissions:' to elevate.
-    """
-    _err_msg_1 = 'Insufficient permissions to modify response object attributes! (YFrake)'
-    _err_msg_2 = 'Deletion of response object attributes is not allowed! (YFrake)'
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self, requests: dict):
+        self._future_objects = list(requests.keys())
+        self._response_objects = list(requests.values())
 
     # ------------------------------------------------------------------------------------ #
-    def __init__(self, **kwargs):
-        self.permissions = AccessController()
-        self._endpoint: str = kwargs.get('endpoint')
-        self._error: dict = kwargs.get('error')
-        self._data: dict = kwargs.get('data')
+    def __getitem__(self, key) -> ClientResponse:
+        return self._response_objects[key]
+
+    def __setitem__(self, key, value) -> None:
+        self._response_objects[key] = value
+
+    def __delitem__(self, key) -> None:
+        del self._response_objects[key]
+
+    def __len__(self) -> int:
+        return len(self._response_objects)
 
     # ------------------------------------------------------------------------------------ #
-    @property
-    def endpoint(self) -> str | None:
-        if not self.permissions.elevated:
-            return copy.deepcopy(self._endpoint)
-        return self._endpoint
-
-    @property
-    def error(self) -> dict | None:
-        if not self.permissions.elevated:
-            return copy.deepcopy(self._error)
-        return self._error
-
-    @property
-    def data(self) -> dict | None:
-        if not self.permissions.elevated:
-            return copy.deepcopy(self._data)
-        return self._data
-
-    # ------------------------------------------------------------------------------------ #
-    @endpoint.setter
-    def endpoint(self, value) -> None:
-        if not self.permissions.elevated:
-            raise PermissionError(self._err_msg_1)
-        self._endpoint = value
-
-    @error.setter
-    def error(self, value) -> None:
-        if not self.permissions.elevated:
-            raise PermissionError(self._err_msg_1)
-        self._error = value
-
-    @data.setter
-    def data(self, value) -> None:
-        if not self.permissions.elevated:
-            raise PermissionError(self._err_msg_1)
-        self._data = value
-
-    # ------------------------------------------------------------------------------------ #
-    @endpoint.deleter
-    def endpoint(self) -> None:
-        raise RuntimeError(self._err_msg_2)
-
-    @error.deleter
-    def error(self) -> None:
-        raise RuntimeError(self._err_msg_2)
-
-    @data.deleter
-    def data(self) -> None:
-        raise RuntimeError(self._err_msg_2)
+    def pending(self) -> bool:
+        for resp in self._response_objects:
+            if resp.pending():
+                return True
+        return False

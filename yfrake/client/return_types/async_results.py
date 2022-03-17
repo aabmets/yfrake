@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    utils.py - This file is part of the YFrake package.                               #
+#    async_results.py - This file is part of the YFrake package.                       #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,31 +25,33 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from multidict import MultiDictProxy
-from argparse import Namespace
-from pathlib import Path
-import configparser
+from .client_response import ClientResponse
+from .base_results import BaseResults
+import asyncio
 
 
 # ==================================================================================== #
-def get_default_config() -> Namespace:
-    configfile = Path(__file__).with_name('server.ini')
-    config = configparser.ConfigParser()
-    config.read(configfile)
-    config = config['DEFAULT_SETTINGS']
-    return Namespace(
-        host=config['host'],
-        port=int(config['port']),
-        limit=int(config['limit']),
-        timeout=int(config['timeout']),
-        backlog=int(config['backlog'])
-    )
+class AsyncResults(BaseResults):
+    """
+    A custom iterable returned by the
+    'batch_get' method in async mode.
+    """
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self, requests: dict):
+        super().__init__(requests)
 
+    # ------------------------------------------------------------------------------------ #
+    async def wait(self) -> None:
+        await asyncio.wait(self._future_objects)
 
-# ------------------------------------------------------------------------------------ #
-def convert_multidict(multidict: MultiDictProxy) -> dict:
-    out = dict()
-    for key in multidict.keys():
-        if key not in out:
-            out[key] = multidict[key]
-    return out
+    # ------------------------------------------------------------------------------------ #
+    async def gather(self) -> ClientResponse:
+        await self.wait()
+        for resp in self._response_objects:
+            yield resp
+
+    # ------------------------------------------------------------------------------------ #
+    async def as_completed(self) -> ClientResponse:
+        for task in asyncio.as_completed(self._future_objects):
+            result = await task
+            yield result

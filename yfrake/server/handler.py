@@ -26,8 +26,9 @@
 #                                                                                      #
 # ==================================================================================== #
 from ..client.endpoints import Endpoints
-from ..server.utils import convert_multidict, pretty_json
+from ..server.utils import convert_multidict
 from aiohttp import web
+import json
 
 
 # ==================================================================================== #
@@ -36,11 +37,10 @@ async def handler(request: web.Request) -> web.Response:
     This func handles all incoming requests to the server
     and forwards them to the correct endpoint handlers.
     """
-    query = convert_multidict(request.query)
-    endpoint = request.path.strip('/')
-    attr = 'get_' + endpoint
-    func = getattr(Endpoints, attr, None)
-    resp = await func(endpoint, **query)
-    return web.Response(
-        text=pretty_json(resp)
-    )
+    query = convert_multidict(request.query)  # ensure no double keys
+    endpoint = request.path.strip('/')        # get endpoint name from path
+    attr = 'get_' + endpoint                  # get endpoint method name
+    func = getattr(Endpoints, attr, None)     # get endpoint method
+    result = await func(endpoint, **query)    # wait until done
+    text = json.dumps(result, indent=3)       # convert dict to str
+    return web.Response(text=text)            # return str

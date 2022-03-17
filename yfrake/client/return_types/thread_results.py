@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    utils.py - This file is part of the YFrake package.                               #
+#    thread_results.py - This file is part of the YFrake package.                      #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,30 +25,33 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .paths import base_url, paths
-from urllib.parse import urlencode
+from .client_response import ClientResponse
+from .base_results import BaseResults
+from concurrent import futures
 
 
-# ------------------------------------------------------------------------------------ #
-def get_path(endpoint: str, params: dict) -> str:
-    # Some endpoints need the symbol provided as a path parameter.
-    path = paths[endpoint]
-    if '{symbol}' in path:
-        sym = params.pop('symbol', '')
-        path = path.format(symbol=sym)
-    return path
+# ==================================================================================== #
+class ThreadResults(BaseResults):
+    """
+    A custom iterable returned by the
+    'batch_get' method in sync mode.
+    """
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self, requests: dict):
+        super().__init__(requests)
 
+    # ------------------------------------------------------------------------------------ #
+    def wait(self) -> None:
+        futures.wait(self._future_objects)
 
-# ------------------------------------------------------------------------------------ #
-def build_error(path: str, params: dict, ex=None) -> dict:
-    # This func is used by the Worker 'request' method to
-    # build the error dict for the response object.
-    params = '?' + urlencode(params) if params else ''
-    default_message = 'Internal server error'
-    default_status = 500
-    return dict(
-        name='HTTPError',
-        status=getattr(ex, 'status', default_status),
-        message=getattr(ex, 'message', default_message),
-        url=base_url + path + params
-    )
+    # ------------------------------------------------------------------------------------ #
+    def gather(self) -> ClientResponse:
+        self.wait()
+        for resp in self._response_objects:
+            yield resp
+
+    # ------------------------------------------------------------------------------------ #
+    def as_completed(self) -> ClientResponse:
+        for future in futures.as_completed(self._future_objects):
+            result = future.result()
+            yield result

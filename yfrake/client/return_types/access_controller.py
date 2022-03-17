@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    utils.py - This file is part of the YFrake package.                               #
+#    access_controller.py - This file is part of the YFrake package.                   #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,31 +25,30 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from multidict import MultiDictProxy
-from argparse import Namespace
-from pathlib import Path
-import configparser
+class AccessController:
+    """
+    Instances of this class manage permission
+    context handlers for client response objects.
+    """
+    _err_msg = 'Insufficient permissions to access the response object attributes! (YFrake)'
 
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self):
+        self.elevated = False
 
-# ==================================================================================== #
-def get_default_config() -> Namespace:
-    configfile = Path(__file__).with_name('server.ini')
-    config = configparser.ConfigParser()
-    config.read(configfile)
-    config = config['DEFAULT_SETTINGS']
-    return Namespace(
-        host=config['host'],
-        port=int(config['port']),
-        limit=int(config['limit']),
-        timeout=int(config['timeout']),
-        backlog=int(config['backlog'])
-    )
+    def __enter__(self):
+        self.elevated = True
 
+    def __exit__(self, t, v, b):
+        self.elevated = False
 
-# ------------------------------------------------------------------------------------ #
-def convert_multidict(multidict: MultiDictProxy) -> dict:
-    out = dict()
-    for key in multidict.keys():
-        if key not in out:
-            out[key] = multidict[key]
-    return out
+    async def __aenter__(self):
+        self.elevated = True
+
+    async def __aexit__(self, t, v, b):
+        self.elevated = False
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def error(self) -> None:
+        raise PermissionError(self._err_msg)

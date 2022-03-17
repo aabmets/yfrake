@@ -4,7 +4,7 @@
 branch = True
 source = yfrake
 omit =
-    yfrake/openapi/specs/*
+    yfrake/openapi/modules/*
     yfrake/server/handler.py
 
 [report]

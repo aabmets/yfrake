@@ -1,5 +1,4 @@
 from yfrake.server import utils
-from yfrake.client.base_response import BaseResponse
 from multidict import MultiDictProxy, MultiDict
 
 
@@ -18,11 +17,3 @@ def test_convert_multidict():
 
     assert list(result.keys()).count('key_1') == 1
     assert list(result.keys()).count('key_2') == 1
-
-
-def test_pretty_json():
-    resp = BaseResponse()
-    resp = utils.pretty_json(resp)
-
-    assert isinstance(resp, str)
-    assert len(resp) != 0

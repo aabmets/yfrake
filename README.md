@@ -14,181 +14,22 @@
 
 
 ### Description
-YFrake is a fast and flexible stock market data scraper and server [&#91;note&#93;](#footnote).
-It enables developers to ***build powerful apps*** without having to worry about the details of session management and request handling [&#91;note2&#93;](#footnote1).
-YFrake can be used as a client to directly return market data to the running program or as a ***programmatically controllable server*** to provide market data to third-party apps.
-In addition, all network requests by YFrake, either in sync or async mode, are ***non-blocking***, which means that your program can continue executing your code while network requests are in progress.
-The best part about YFrake is its ***built-in swagger API documentation*** which you can use to perform test queries and examine the returned responses.
+YFrake is a fast and flexible stock market data scraper and server [&#91;note1&#93;](#footnote1).
+It enables developers to ***build powerful apps*** without having to worry about the details of session management or handling requests [&#91;note2&#93;](#footnote2).
+YFrake can be used as a client to directly return market data to the running program or 
+as a ***programmatically controllable server*** to provide market data to other applications.
+In addition, all network requests by the client in ***both*** sync and async modes are ***non-blocking***, 
+which means that your program can continue executing your code while network requests are in progress.
+The best part about YFrake is its ***built-in swagger API documentation*** which you can use to 
+perform test queries and examine the returned responses straight in your web browser.
+YFrake relies extensively on ***aiohttp*** and its plugins to provide its functionality.
 
+### Documentation
 
-### Getting started
-How to install yfrake:
-~~~
-pip install yfrake
-~~~
-How to import yfrake:
-~~~
-from yfrake import client, server
-~~~
-
-### Server examples
-How to run the server with default settings:
-~~~
-server.start()
-# do other stuff
-server.stop()
-~~~
-How to run the server with custom settings:
-~~~
-settings = dict(
-    host='localhost',
-    port=8888,
-    limit=100,
-    timeout=1,
-    backlog=200
-)
-server.start(**settings)
-# do other stuff
-server.stop()
-~~~
-
-
-### Sync execution examples
-How to continue the current function while checking for response status:
-~~~
-from yfrake import client
-
-@client.configure(limit=100, timeout=1)
-def main()
-    resp = client.get('quote_type', symbol='msft')
-    
-    while not resp.available():
-        # do other stuff
-        
-    if not resp.error:
-        print(resp.endpoint)
-        print(resp.data)
-    
-if __name__ == '__main__':
-    main()
-~~~
-How to pause the current function to wait for the result:
-~~~
-from yfrake import client
-
-@client.configure(limit=100, timeout=1)
-def main()
-    resp = client.get('quote_type', symbol='msft')
-    
-    resp.wait_for_result()
-    
-    if not resp.error:
-        print(resp.endpoint)
-        print(resp.data)
-    
-if __name__ == '__main__':
-    main()
-~~~
-How to run multiple queries concurrently:
-~~~
-from yfrake import client
-import time
-
-@client.configure(limit=100, timeout=1)
-def main()
-    def save_result(obj):
-        resp = in_progress.pop(obj)
-        resp.wait_for_result()
-        results.append(resp)
-
-    in_progress = dict()
-    results = list()
-    args_list = [
-        dict(endpoint='quote_type', symbol='msft'),
-        dict(endpoint='price_overview', symbol='aapl')
-    ]
-    for args_dict in args_list:
-        resp = client.get(**args_dict)
-        obj = resp.get_async_object()
-        obj.add_done_callback(save_result)
-        in_progress[obj] = resp
-
-    while in_progress:
-        time.sleep(0)
-    for resp in results:
-        if not resp.error:
-            print(resp.endpoint)
-            print(resp.data)
-    
-if __name__ == '__main__':
-    main()
-~~~
-
-### Async execution examples
-How to continue the current coroutine while checking for response status:
-~~~
-from yfrake import client
-import asyncio
-
-@client.configure(limit=100, timeout=1)
-async def main():
-    resp = client.get('quote_type', symbol='msft')
-    
-    while not resp.available():
-        # do other stuff
-        
-    if not resp.error:
-        print(resp.endpoint)
-        print(resp.data)
-
-if __name__ == '__main__':
-    asyncio.run(main())
-~~~
-How to pause the current coroutine to await for the result:
-~~~
-from yfrake import client
-import asyncio
-
-@client.configure(limit=100, timeout=1)
-async def main():
-    resp = client.get('quote_type', symbol='msft')
-    
-    await resp.result()
-    
-    if not resp.error:
-        print(resp.endpoint)
-        print(resp.data)
-
-if __name__ == '__main__':
-    asyncio.run(main())
-~~~
-How to run multiple queries concurrently:
-~~~
-from yfrake import client
-import asyncio
-
-@client.configure(limit=100, timeout=1)
-async def main():
-    args_list = [
-        dict(endpoint='quote_type', symbol='msft'),
-        dict(endpoint='price_overview', symbol='aapl')
-    ]
-    tasks_list = []
-    for args_dict in args_list:
-        resp = client.get(**args_dict)
-        obj = resp.get_async_object()
-        tasks_list.append(obj)
-
-    results = await asyncio.gather(*tasks_list)
-    for resp in results:
-        if not resp.error:
-            print(resp.endpoint)
-            print(resp.data)
-
-if __name__ == '__main__':
-    asyncio.run(main())
-~~~
+You can read the tutorials and the package reference at <a target="new" href="yfrake.readthedocs.io">yfrake.readthedocs.io</a> .
 
 <br />
-<a id="footnote"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 
+<a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 
+<br/>
+<a id="footnote2"><sup>&#91;note2&#93;:</sup></a> The limits of YFrake are configurable and depend on the capabilities of your system.
 <br/>
