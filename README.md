@@ -22,7 +22,7 @@ In addition, all network requests by the client in ***both*** sync and async mod
 which means that your program can continue executing your code while network requests are in progress.
 The best part about YFrake is its ***built-in swagger API documentation*** which you can use to 
 perform test queries and examine the returned responses straight in your web browser.
-YFrake relies extensively on ***aiohttp*** and its plugins to provide its functionality.
+YFrake built upon the widely used ***aiohttp*** package and its plugins.
 
 ### Documentation
 
