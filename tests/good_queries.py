@@ -217,7 +217,7 @@ good_queries = [
         'expected_error': False,
         'expected_data': True,
         'query': dict(
-            endpoint='key_stats',
+            endpoint='key_statistics',
             symbol='msft'
         )
     }, {

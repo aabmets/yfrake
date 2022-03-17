@@ -28,71 +28,72 @@
 from .return_types.client_response import ClientResponse
 from .return_types.async_results import AsyncResults
 from .return_types.thread_results import ThreadResults
+from .get_all_queries import GetAllQueries
+from .decorator import Decorator
 from .thread_loop import ThreadLoop
 from .endpoints import Endpoints
-from .session import Session
 from .validators import validate_and_sanitize
 import asyncio
-import inspect
-import sys
 
 
 # ==================================================================================== #
-class Client:
-    _err_msg_1 = 'Configuration decorator already in use! (YFrake)'
-    _err_msg_2 = 'Configuration decorator not in use! (YFrake)'
-    _err_msg_3 = 'Invalid endpoint \'{0}\'! (YFrake)'
-    _err_msg_4 = 'Only a list of dicts can be passed into the \'batch_get\' method! (YFrake)'
-
-    _async_mode: bool = False
-    _initialized: bool = False
+class Client(Decorator):
+    _err_invalid_ep = 'Invalid endpoint \'{0}\'! (YFrake)'
+    _err_batch_get = 'Only a list of dicts can be passed into the \'batch_get\' method! (YFrake)'
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    def configure(cls, limit: int = 64, timeout: int = 2):
+    async def _wrapper(cls, endpoint, kwargs, func, resp) -> ClientResponse:
+        result = await func(endpoint, **kwargs)
+        with resp.permissions:
+            resp.endpoint = result['endpoint']
+            resp.error = result['error']
+            resp.data = result['data']
+            resp.event.set()
+        return resp
+
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def get(cls, endpoint: str = '', **kwargs) -> ClientResponse:
         """
-        This decorator opens and closes a session to
-        the Yahoo Finance API servers. Other methods
-        of the client object can be called only when the
-        decorated function or coroutine has not returned.
+        This method schedules a single task to fetch
+        market data from the Yahoo Finance API servers.
+        Returns immediately with the pending
+        ClientResponse object.
         """
-        if cls._initialized:
-            raise RuntimeError(cls._err_msg_1)
+        cls.raise_if_not_configured()
 
-        if sys.platform == 'win32':  # pragma: no branch
-            policy = asyncio.WindowsSelectorEventLoopPolicy()
-            asyncio.set_event_loop_policy(policy)
+        attr = 'get_' + endpoint
+        if func := getattr(Endpoints, attr, None):
+            validate_and_sanitize(endpoint, kwargs)
+            resp = ClientResponse(cls._async_mode)
+            if cls._async_mode:
+                future = asyncio.create_task(
+                    cls._wrapper(endpoint, kwargs, func, resp))
+            else:
+                future = asyncio.run_coroutine_threadsafe(
+                    cls._wrapper(endpoint, kwargs, func, resp),
+                    ThreadLoop.loop)
+            with resp.permissions:
+                resp.future = future
+            return resp
 
-        def decorator(func):
-            async def a_inner(*args, **kwargs):
-                await Session.a_open(limit=limit, timeout=timeout)
-                await func(*args, **kwargs)
-                await Session.a_close()
-                cls._initialized = False
-
-            def t_inner(*args, **kwargs):
-                Session.t_open(limit=limit, timeout=timeout)
-                func(*args, **kwargs)
-                Session.t_close()
-                cls._initialized = False
-
-            cls._initialized = True
-            cls._async_mode = inspect.iscoroutinefunction(func)
-            return a_inner if cls._async_mode else t_inner
-        return decorator
+        msg = cls._err_invalid_ep.format(endpoint)
+        raise NameError(msg)
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
     def batch_get(cls, queries: list) -> AsyncResults | ThreadResults:
         """
-        This method schedules multiple tasks to fetch
+        This helper method schedules multiple tasks to fetch
         market data from the Yahoo Finance API servers.
-        Returns immediately the unfinished results object.
+        Returns immediately with either the pending
+        AsyncResults or ThreadResults collection.
         """
         requests = dict()
         for query in queries:
             if not isinstance(query, dict):
-                raise TypeError(cls._err_msg_4)
+                raise TypeError(cls._err_batch_get)
             resp = cls.get(**query)
             with resp.permissions:
                 fut = resp.future
@@ -105,44 +106,12 @@ class Client:
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    def get(cls, endpoint: str = '', **kwargs) -> ClientResponse:
+    def get_all(cls, symbol: str) -> AsyncResults | ThreadResults:
         """
-        This method schedules a single task to fetch
-        market data from the Yahoo Finance API servers.
-        Returns immediately the unfinished response object.
+        This helper method obtains all the available data about
+        the provided symbol from the Yahoo Finance API servers.
+        Returns immediately with either the pending
+        AsyncResults or ThreadResults collection.
         """
-        if not cls._initialized:
-            raise RuntimeError(cls._err_msg_2)
-
-        attr = 'get_' + endpoint
-        func = getattr(Endpoints, attr, None)
-
-        if not func:
-            msg = cls._err_msg_3.format(endpoint)
-            raise NameError(msg)
-
-        validate_and_sanitize(endpoint, kwargs)
-        resp = ClientResponse(cls._async_mode)
-
-        if cls._async_mode:
-            future = asyncio.create_task(
-                cls._wrapper(endpoint, kwargs, func, resp))
-        else:
-            future = asyncio.run_coroutine_threadsafe(
-                cls._wrapper(endpoint, kwargs, func, resp),
-                ThreadLoop.loop)
-
-        with resp.permissions:
-            resp.future = future
-        return resp
-
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    async def _wrapper(cls, endpoint, kwargs, func, resp) -> ClientResponse:
-        result = await func(endpoint, **kwargs)
-        with resp.permissions:
-            resp.endpoint = result['endpoint']
-            resp.error = result['error']
-            resp.data = result['data']
-            resp.event.set()
-        return resp
+        queries = GetAllQueries(symbol)
+        return cls.batch_get(queries)

@@ -1,5 +1,5 @@
 # ================================================================================== #
-#   key_stats.py - This file is part of the yfrake package.                          #
+#   key_statistics.py - This file is part of the yfrake package.                     #
 # ================================================================================== #
 #                                                                                    #
 #   MIT License                                                                      #

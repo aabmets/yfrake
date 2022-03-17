@@ -14,7 +14,7 @@ if sys.platform == 'win32':
 queries = [
     dict(endpoint='quote_type', symbol='msft'),
     dict(endpoint='price_overview', symbol='aapl'),
-    dict(endpoint='key_stats', symbol='tsla')
+    dict(endpoint='key_statistics', symbol='tsla')
 ]
 
 

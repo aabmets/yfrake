@@ -199,7 +199,7 @@ bad_queries = [
         'expected_error': True,
         'expected_data': False,
         'query': dict(
-            endpoint='key_stats',
+            endpoint='key_statistics',
             symbol='qwerty123456'
         )
     }, {

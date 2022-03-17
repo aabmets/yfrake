@@ -15,18 +15,18 @@
 
 ### Description
 YFrake is a fast and flexible stock market data scraper and server [&#91;note1&#93;](#footnote1).
-It enables developers to ***build powerful apps*** without having to worry about the details of session management or handling requests [&#91;note2&#93;](#footnote2).
-YFrake can be used as a client to directly return market data to the running program or 
+It enables developers to ***build powerful apps*** without having to worry about the details of session management or maximizing throughput [&#91;note2&#93;](#footnote2).
+YFrake can be used as a client to directly return market data to the current program or 
 as a ***programmatically controllable server*** to provide market data to other applications.
 In addition, all network requests by the client in ***both*** sync and async modes are ***non-blocking***, 
 which means that your program can continue executing your code while network requests are in progress.
 The best part about YFrake is its ***built-in swagger API documentation*** which you can use to 
 perform test queries and examine the returned responses straight in your web browser.
-YFrake built upon the widely used ***aiohttp*** package and its plugins.
+YFrake is built upon the widely used ***aiohttp*** package and its plugins.
 
 ### Documentation
 
-The tutorials and the package reference is available at <a target="new" href="http://yfrake.readthedocs.io">yfrake.readthedocs.io</a> *(work in progress)*
+The tutorials and the reference manual is available at <a target="new" href="http://yfrake.readthedocs.io">yfrake.readthedocs.io</a> *(work in progress)*
 
 <br />
 <a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 

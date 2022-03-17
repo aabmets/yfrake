@@ -53,7 +53,7 @@ paths: dict = {
     'ratings_history':          '/v10/finance/quoteSummary/{symbol}',
     'earnings_history':         '/v10/finance/quoteSummary/{symbol}',
     'earnings_trend':           '/v10/finance/quoteSummary/{symbol}',
-    'key_stats':                '/v10/finance/quoteSummary/{symbol}',
+    'key_statistics':           '/v10/finance/quoteSummary/{symbol}',
     'income_statements':        '/v10/finance/quoteSummary/{symbol}',
     'cashflow_statements':      '/v10/finance/quoteSummary/{symbol}',
     'balance_statements':       '/v10/finance/quoteSummary/{symbol}',

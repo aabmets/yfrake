@@ -428,7 +428,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_key_stats(endpoint, **kwargs) -> dict:
+    async def get_key_statistics(endpoint, **kwargs) -> dict:
         kwargs['modules'] = 'defaultKeyStatistics'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
