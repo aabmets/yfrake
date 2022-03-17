@@ -26,7 +26,7 @@ YFrake relies extensively on ***aiohttp*** and its plugins to provide its functi
 
 ### Documentation
 
-You can read the tutorials and the package reference at <a target="new" href="http://yfrake.readthedocs.io">yfrake.readthedocs.io</a> .
+The tutorials and the package reference is available at <a target="new" href="http://yfrake.readthedocs.io">yfrake.readthedocs.io</a> *(work in progress)*
 
 <br />
 <a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 
