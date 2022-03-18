@@ -10,7 +10,7 @@ The following example prints out the names of all the endpoints queried:
    from yfrake import client
    import asyncio
 
-   @client.configure(limit=1024, timeout=1)
+   @client.configure()
    async def main():
       results = client.get_all(symbol='msft')
       async for resp in results.gather():
@@ -28,7 +28,7 @@ The following example prints out either the ``error`` or the ``data`` property o
    from yfrake import client
    import asyncio
 
-   @client.configure(limit=1024, timeout=1)
+   @client.configure()
    async def main():
       queries = [
          dict(endpoint='quote_type', symbol='msft'),
@@ -54,7 +54,7 @@ The following example creates a batch request of 3 endpoints for 3 symbols:
 
    from yfrake import client
 
-   @client.configure(limit=1024, timeout=1)
+   @client.configure()
    def main():
       all_queries = list()
       for symbol in ['msft', 'aapl', 'tsla']:
