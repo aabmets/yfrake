@@ -12,57 +12,34 @@ if sys.platform == 'win32':
     )
 
 
-def test_guarded_attr_types_sync():
+def test_client_response_1():
     @client.configure()
     def inner():
         resp = client.get(endpoint='quote_type', symbol='msft')
         resp.wait()
-
         assert isinstance(resp.event, threading.Event)
         assert isinstance(resp.future, futures.Future)
-
     inner()
 
 
-async def test_guarded_attr_types_async():
+async def test_client_response_2():
     @client.configure()
     async def inner():
         resp = client.get(endpoint='quote_type', symbol='msft')
         await resp.wait()
-
         assert isinstance(resp.event, asyncio.Event)
         assert isinstance(resp.future, asyncio.Task)
-
     await inner()
 
 
-def test_guarded_attr_exceptions():
+def test_client_response_3():
     @client.configure()
     def inner():
         resp = client.get(endpoint='quote_type', symbol='msft')
         resp.wait()
-
         for attr in ['event', 'future']:
-            with pytest.raises(PermissionError):
+            with pytest.raises(RuntimeError):
                 setattr(resp, attr, str())
-            with pytest.raises(PermissionError):
+            with pytest.raises(RuntimeError):
                 delattr(resp, attr)
-
-    inner()
-
-
-def test_guarded_attr_permissions():
-    @client.configure()
-    def inner():
-        resp = client.get(endpoint='quote_type', symbol='msft')
-        resp.wait()
-
-        with resp.permissions:
-            for attr in ['event', 'future']:
-                setattr(resp, attr, str())
-                assert isinstance(getattr(resp, attr), str)
-                delattr(resp, attr)
-                with pytest.raises(AttributeError):
-                    getattr(resp, attr)
-
     inner()

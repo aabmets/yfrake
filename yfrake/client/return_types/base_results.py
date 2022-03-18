@@ -57,3 +57,7 @@ class BaseResults:
             if resp.pending():
                 return True
         return False
+
+    # ------------------------------------------------------------------------------------ #
+    # The 'wait()' function is defined separately in both the AsyncResults and ThreadResults classes, because
+    # the 'asyncio.wait()' coroutine returns two sets of tasks, which we don't want to expose to the user.

@@ -25,78 +25,58 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .access_controller import AccessController
-import copy
-
-
-# ==================================================================================== #
 class BaseResponse:
     """
-    Parent class of ClientResponse.
+    Base class of the ClientResponse.
     """
+    _err_msg = 'Operation not available on response object attributes! (YFrake)'
+
     # ------------------------------------------------------------------------------------ #
     def __init__(self):
-        self.permissions = AccessController()
         self._endpoint: str | None = None
         self._error: dict | None = None
         self._data: dict | None = None
 
     # ------------------------------------------------------------------------------------ #
+    @classmethod
+    def _raise_error(cls) -> None:
+        raise RuntimeError(cls._err_msg)
+
+    # ------------------------------------------------------------------------------------ #
     @property
     def endpoint(self) -> str | None:
-        if not self.permissions.elevated:
-            endpoint = getattr(self, '_endpoint', None)
-            return copy.deepcopy(endpoint)
         return self._endpoint
 
-    @property
-    def error(self) -> dict | None:
-        if not self.permissions.elevated:
-            error = getattr(self, '_error', None)
-            return copy.deepcopy(error)
-        return self._error
-
-    @property
-    def data(self) -> dict | None:
-        if not self.permissions.elevated:
-            data = getattr(self, '_data', None)
-            return copy.deepcopy(data)
-        return self._data
-
-    # ------------------------------------------------------------------------------------ #
     @endpoint.setter
-    def endpoint(self, value) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        self._endpoint = value
+    def endpoint(self, _) -> None:
+        self._raise_error()
 
-    @error.setter
-    def error(self, value) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        self._error = value
-
-    @data.setter
-    def data(self, value) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        self._data = value
-
-    # ------------------------------------------------------------------------------------ #
     @endpoint.deleter
     def endpoint(self) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        del self._endpoint
+        self._raise_error()
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def error(self) -> dict | None:
+        return self._error
+
+    @error.setter
+    def error(self, _) -> None:
+        self._raise_error()
 
     @error.deleter
     def error(self) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        del self._error
+        self._raise_error()
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def data(self) -> dict | None:
+        return self._data
+
+    @data.setter
+    def data(self, _) -> None:
+        self._raise_error()
 
     @data.deleter
     def data(self) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        del self._data
+        self._raise_error()

@@ -27,7 +27,8 @@
 # ==================================================================================== #
 class GetAllQueries:
     """
-    This class defines the queries for the 'get_all' method.
+    This is a custom datatype factory which creates
+    the list of queries for the 'get_all' method.
     """
     def __new__(cls, symbol) -> list:
         queries = [

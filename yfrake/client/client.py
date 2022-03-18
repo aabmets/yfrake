@@ -34,22 +34,27 @@ from .thread_loop import ThreadLoop
 from .endpoints import Endpoints
 from .validators import validate_and_sanitize
 import asyncio
+import uuid
 
 
 # ==================================================================================== #
 class Client(Decorator):
     _err_invalid_ep = 'Invalid endpoint \'{0}\'! (YFrake)'
-    _err_batch_get = 'Only a list of dicts can be passed into the \'batch_get\' method! (YFrake)'
+    _err_bad_type = 'Only a list of dicts can be passed into the \'batch_get\' method! (YFrake)'
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
     async def _wrapper(cls, endpoint, kwargs, func, resp) -> ClientResponse:
+        _uuid = uuid.uuid4()
+        cls._requests[_uuid] = resp  # doesn't need a lock
         result = await func(endpoint, **kwargs)
-        with resp.permissions:
-            resp.endpoint = result['endpoint']
-            resp.error = result['error']
-            resp.data = result['data']
-            resp.event.set()
+
+        setattr(resp, '_endpoint', result['endpoint'])
+        setattr(resp, '_error', result['error'])
+        setattr(resp, '_data', result['data'])
+        getattr(resp, '_event').set()
+
+        cls._requests.pop(_uuid)  # doesn't need a lock
         return resp
 
     # ------------------------------------------------------------------------------------ #
@@ -74,8 +79,7 @@ class Client(Decorator):
                 future = asyncio.run_coroutine_threadsafe(
                     cls._wrapper(endpoint, kwargs, func, resp),
                     ThreadLoop.loop)
-            with resp.permissions:
-                resp.future = future
+            setattr(resp, '_future', future)
             return resp
 
         msg = cls._err_invalid_ep.format(endpoint)
@@ -93,11 +97,10 @@ class Client(Decorator):
         requests = dict()
         for query in queries:
             if not isinstance(query, dict):
-                raise TypeError(cls._err_batch_get)
+                raise TypeError(cls._err_bad_type)
             resp = cls.get(**query)
-            with resp.permissions:
-                fut = resp.future
-                requests[fut] = resp
+            fut = resp.future
+            requests[fut] = resp
 
         return {
             True: AsyncResults,

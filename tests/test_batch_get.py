@@ -108,16 +108,6 @@ async def test_batch_get_9():
     @client.configure()
     async def inner():
         results = client.batch_get(queries)
-        async for resp in results.as_completed():
-            assert bool(resp.error) is False
-            assert bool(resp.data) is True
-    await inner()
-
-
-async def test_batch_get_10():
-    @client.configure()
-    async def inner():
-        results = client.batch_get(queries)
         await results.wait()
 
         assert len(results) == len(queries)
@@ -126,11 +116,10 @@ async def test_batch_get_10():
         assert isinstance(results[0], str)
         del results[0]
         assert len(results) < len(queries)
-
     await inner()
 
 
-async def test_batch_get_11():
+async def test_batch_get_10():
     @client.configure()
     async def inner():
         _queries = ['asdfg']

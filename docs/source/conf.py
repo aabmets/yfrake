@@ -45,7 +45,7 @@ exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help overview.  See the documentation for
+# The theme to use for HTML and HTML Help yfrake.  See the documentation for
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'

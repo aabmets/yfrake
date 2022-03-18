@@ -34,7 +34,9 @@ import sys
 class Decorator:
     _err_cfg_missing = 'Configuration decorator not in use! (YFrake)'
     _err_already_cfg = 'Configuration decorator already in use! (YFrake)'
+    _err_forgot_to_wait = 'You forgot to (a)wait a response or a results object! (YFrake)'
 
+    _requests: dict = dict()
     _async_mode: bool = False
     _initialized: bool = False
 
@@ -68,12 +70,16 @@ class Decorator:
             async def a_inner(*args, **kwargs):
                 await Session.a_open(limit=limit, timeout=timeout)
                 await func(*args, **kwargs)
+                if cls._requests:  # pragma: no branch
+                    raise RuntimeError(cls._err_forgot_to_wait)
                 await Session.a_close()
                 cls._initialized = False
 
             def t_inner(*args, **kwargs):
                 Session.t_open(limit=limit, timeout=timeout)
                 func(*args, **kwargs)
+                if cls._requests:  # pragma: no branch
+                    raise RuntimeError(cls._err_forgot_to_wait)
                 Session.t_close()
                 cls._initialized = False
 

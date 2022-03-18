@@ -3,23 +3,22 @@ Welcome to YFrake's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: OVERVIEW
+   :caption: YFrake
 
-   overview/description.rst
-   overview/getting_started.rst
-
-.. toctree::
-   :maxdepth: 2
-   :caption: CLIENT
-
-   client/client_reference.rst
-   client/response_reference.rst
-   client/sync_mode_examples.rst
-   client/async_mode_examples.rst
+   yfrake/description.rst
+   yfrake/getting_started.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: SERVER
+   :caption: Client
+
+   client/overview.rst
+   client/reference/index.rst
+   client/examples/index.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Server
 
    server/server_reference.rst
    server/server_usage_examples.rst

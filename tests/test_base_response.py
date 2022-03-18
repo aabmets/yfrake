@@ -10,69 +10,32 @@ if sys.platform == 'win32':
     )
 
 
-def test_resp_endpoint():
+def test_resp_attributes():
     resp = BaseResponse()
     assert resp.endpoint is None
-    with resp.permissions:
-        resp.endpoint = str()
-    assert resp.endpoint == str()
+    assert resp.error is None
+    assert resp.data is None
 
 
 def test_resp_endpoint_exceptions():
     resp = BaseResponse()
-    with pytest.raises(PermissionError):
+    with pytest.raises(RuntimeError):
         resp.endpoint = str()
-    with pytest.raises(PermissionError):
+    with pytest.raises(RuntimeError):
         del resp.endpoint
-
-
-def test_resp_error():
-    resp = BaseResponse()
-    assert resp.error is None
-    with resp.permissions:
-        resp.error = dict()
-    assert resp.error == dict()
 
 
 def test_resp_error_exceptions():
     resp = BaseResponse()
-    with pytest.raises(PermissionError):
+    with pytest.raises(RuntimeError):
         resp.error = dict()
-    with pytest.raises(PermissionError):
+    with pytest.raises(RuntimeError):
         del resp.error
-
-
-def test_resp_data():
-    resp = BaseResponse()
-    assert resp.data is None
-    with resp.permissions:
-        resp.data = dict()
-    assert resp.data == dict()
 
 
 def test_resp_data_exceptions():
     resp = BaseResponse()
-    with pytest.raises(PermissionError):
+    with pytest.raises(RuntimeError):
         resp.data = dict()
-    with pytest.raises(PermissionError):
+    with pytest.raises(RuntimeError):
         del resp.data
-
-
-async def test_response_object():
-    resp = BaseResponse()
-
-    async with resp.permissions:
-        assert resp.endpoint is None
-        assert resp.error is None
-        assert resp.data is None
-
-        del resp.endpoint
-        del resp.error
-        del resp.data
-
-        with pytest.raises(AttributeError):
-            getattr(resp, 'endpoint')
-        with pytest.raises(AttributeError):
-            getattr(resp, 'error')
-        with pytest.raises(AttributeError):
-            getattr(resp, 'data')

@@ -36,7 +36,7 @@ import asyncio
 # ==================================================================================== #
 class ClientResponse(BaseResponse):
     """
-    A custom datatype returned by the client 'get' method.
+    Datatype returned by the client 'get' method.
     """
     def __init__(self, async_mode: bool):
         self._future: Task | Future | None = None
@@ -54,7 +54,7 @@ class ClientResponse(BaseResponse):
     def wait(self) -> Coroutine | None:
         if isinstance(self._event, asyncio.Event):
             return self._event.wait()  # return a coro
-        self._event.wait()  # block until set
+        self._event.wait()  # block until event is set
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -62,16 +62,12 @@ class ClientResponse(BaseResponse):
         return self._event
 
     @event.setter
-    def event(self, value) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        self._event = value
+    def event(self, _) -> None:
+        self._raise_error()
 
     @event.deleter
     def event(self) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        del self._event
+        self._raise_error()
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -79,13 +75,9 @@ class ClientResponse(BaseResponse):
         return self._future
 
     @future.setter
-    def future(self, value) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        self._future = value
+    def future(self, _) -> None:
+        self._raise_error()
 
     @future.deleter
     def future(self) -> None:
-        if not self.permissions.elevated:
-            raise self.permissions.error
-        del self._future
+        self._raise_error()
