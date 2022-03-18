@@ -32,140 +32,37 @@ class GetAllQueries:
     """
     def __new__(cls, symbol) -> list:
         queries = [
-            dict(
-                endpoint='historical_prices',
-                symbol=symbol,
-                interval='1d',
-                range='max',
-                events=True,
-                extHours=True
-            ),
-            dict(
-                endpoint='shares_outstanding',
-                symbol=symbol,
-                startDate=946728000,
-                endDate=3162293065
-            ),
-            dict(
-                endpoint='options',
-                symbol=symbol,
-                getAllData=True
-            ),
-            dict(
-                endpoint='balance_statements',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='calendar_events',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='cashflow_statements',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='company_overview',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='detailed_summary',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='earnings',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='earnings_history',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='earnings_trend',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='esg_chart',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='esg_scores',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='financials',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='fund_ownership',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='income_statements',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='insider_holders',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='insider_transactions',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='insights',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='institution_ownership',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='key_statistics',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='major_holders',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='news',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='price_overview',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='purchase_activity',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='quote_type',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='quotes_overview',
-                symbols=symbol
-            ),
-            dict(
-                endpoint='ratings_history',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='recommendation_trend',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='recommendations',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='sec_filings',
-                symbol=symbol
-            ),
-            dict(
-                endpoint='validate_symbols',
-                symbols=symbol
-            )
+            dict(endpoint='historical_prices', symbol=symbol, interval='1d', range='max', events=True, extHours=True),
+            dict(endpoint='shares_outstanding', symbol=symbol, startDate=946728000, endDate=3162293065),
+            dict(endpoint='options', symbol=symbol, getAllData=True),
+            dict(endpoint='balance_statements', symbol=symbol),
+            dict(endpoint='calendar_events', symbol=symbol),
+            dict(endpoint='cashflow_statements', symbol=symbol),
+            dict(endpoint='company_overview', symbol=symbol),
+            dict(endpoint='detailed_summary', symbol=symbol),
+            dict(endpoint='earnings', symbol=symbol),
+            dict(endpoint='earnings_history', symbol=symbol),
+            dict(endpoint='earnings_trend', symbol=symbol),
+            dict(endpoint='esg_chart', symbol=symbol),
+            dict(endpoint='esg_scores', symbol=symbol),
+            dict(endpoint='financials', symbol=symbol),
+            dict(endpoint='fund_ownership', symbol=symbol),
+            dict(endpoint='income_statements', symbol=symbol),
+            dict(endpoint='insider_holders', symbol=symbol),
+            dict(endpoint='insider_transactions', symbol=symbol),
+            dict(endpoint='insights', symbol=symbol),
+            dict(endpoint='institution_ownership', symbol=symbol),
+            dict(endpoint='key_statistics', symbol=symbol),
+            dict(endpoint='major_holders', symbol=symbol),
+            dict(endpoint='news', symbol=symbol),
+            dict(endpoint='price_overview', symbol=symbol),
+            dict(endpoint='purchase_activity', symbol=symbol),
+            dict(endpoint='quote_type', symbol=symbol),
+            dict(endpoint='quotes_overview', symbols=symbol),
+            dict(endpoint='ratings_history', symbol=symbol),
+            dict(endpoint='recommendation_trend', symbol=symbol),
+            dict(endpoint='recommendations', symbol=symbol),
+            dict(endpoint='sec_filings', symbol=symbol),
+            dict(endpoint='validate_symbols', symbols=symbol)
         ]
         return queries
