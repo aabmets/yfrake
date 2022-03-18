@@ -20,7 +20,7 @@ The following example loops at line 4 ``while`` the response has not yet arrived
    :linenos:
 
    @client.configure()
-   async def main()
+   async def main():
       resp = client.get('quote_type', symbol='msft')
       while resp.pending():
          # do some other stuff
@@ -33,7 +33,7 @@ The following example blocks at line 4 until the response has arrived:
    :linenos:
 
    @client.configure()
-   async def main()
+   async def main():
       resp = client.get('quote_type', symbol='msft')
       await resp.wait()
       # do some other stuff
@@ -113,7 +113,7 @@ The following example blocks while all the available data about a symbol is bein
    :linenos:
 
    @client.configure()
-   async def main()
+   async def main():
       results = client.get_all(symbol='aapl')
       await results.wait()
       # do some other stuff
