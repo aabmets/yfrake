@@ -55,11 +55,11 @@ The following example waits until all of the responses have arrived before runni
    :linenos:
 
    @client.configure()
-   async def main()
+   async def main():
       queries = [
          dict(endpoint='quote_type', symbol='msft'),
          dict(endpoint='price_overview', symbol='aapl'),
-         dict(endpoint='key_stats', symbol='tsla')
+         dict(endpoint='key_statistics', symbol='tsla')
       ]
       results = client.batch_get(queries)
       async for resp in results.gather():
@@ -73,11 +73,11 @@ The following example starts yielding the responses into the ``async for`` loop 
    :linenos:
 
    @client.configure()
-   async def main()
+   async def main():
       queries = [
          dict(endpoint='quote_type', symbol='msft'),
          dict(endpoint='price_overview', symbol='aapl'),
-         dict(endpoint='key_stats', symbol='tsla')
+         dict(endpoint='key_statistics', symbol='tsla')
       ]
       results = client.batch_get(queries)
       async for resp in results.as_completed():
@@ -100,7 +100,7 @@ The following example loops while all the available data about a symbol is being
    :linenos:
 
    @client.configure()
-   async def main()
+   async def main():
       results = client.get_all(symbol='msft')
       while results.pending():
          # do some other stuff

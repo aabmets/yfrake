@@ -20,7 +20,7 @@ The following example loops at line 4 ``while`` the response has not yet arrived
    :linenos:
 
    @client.configure()
-   def main()
+   def main():
       resp = client.get('quote_type', symbol='msft')
       while resp.pending():
          # do some other stuff
@@ -33,7 +33,7 @@ The following example blocks at line 4 until the response has arrived:
    :linenos:
 
    @client.configure()
-   def main()
+   def main():
       resp = client.get('quote_type', symbol='msft')
       resp.wait()
       # do some other stuff
@@ -55,11 +55,11 @@ The following example waits until all of the responses have arrived before runni
    :linenos:
 
    @client.configure()
-   def main()
+   def main():
       queries = [
          dict(endpoint='quote_type', symbol='msft'),
          dict(endpoint='price_overview', symbol='aapl'),
-         dict(endpoint='key_stats', symbol='tsla')
+         dict(endpoint='key_statistics', symbol='tsla')
       ]
       results = client.batch_get(queries)
       for resp in results.gather():
@@ -73,11 +73,11 @@ The following example starts yielding the responses into the ``for`` loop as soo
    :linenos:
 
    @client.configure()
-   def main()
+   def main():
       queries = [
          dict(endpoint='quote_type', symbol='msft'),
          dict(endpoint='price_overview', symbol='aapl'),
-         dict(endpoint='key_stats', symbol='tsla')
+         dict(endpoint='key_statistics', symbol='tsla')
       ]
       results = client.batch_get(queries)
       for resp in results.as_completed():
@@ -100,7 +100,7 @@ The following example loops while all the available data about a symbol is being
    :linenos:
 
    @client.configure()
-   def main()
+   def main():
       results = client.get_all(symbol='msft')
       while results.pending():
          # do some other stuff
@@ -113,7 +113,7 @@ The following example blocks while all the available data about a symbol is bein
    :linenos:
 
    @client.configure()
-   def main()
+   def main():
       results = client.get_all(symbol='aapl')
       results.wait()
       # do some other stuff
