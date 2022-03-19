@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies
       run: |
         poetry install
-        poetry run gen_spec
+        poetry run gen-spec
         poetry build
 
     - name: Publish package
