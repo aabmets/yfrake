@@ -31,6 +31,7 @@ from yfrake.server.helpers import build_route_table
 from yfrake.server.helpers import get_runtime_args
 from yfrake.server.helpers import create_swagger
 from yfrake.server.helpers import create_cors
+from yfrake.server.helpers import print_notification
 from yfrake.client.session import Session
 from aiohttp import web
 import asyncio
@@ -69,6 +70,9 @@ async def main(config=None, run_forever=False):
         backlog=config.backlog
     )
     await site.start()
+
+    print_notification(config.host, config.port)
+
     while run_forever:  # pragma: no cover
         await asyncio.sleep(3600)
 

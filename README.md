@@ -26,7 +26,7 @@ YFrake is built upon the widely used ***aiohttp*** package and its plugins.
 
 ### Documentation
 
-The tutorials and the reference manual is available at <a target="new" href="http://yfrake.readthedocs.io">yfrake.readthedocs.io</a> *(work in progress)*
+The tutorials and the reference manual is available at: &nbsp; <a target="new" href="http://yfrake.readthedocs.io">yfrake.readthedocs.io</a>
 
 <br />
 <a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 

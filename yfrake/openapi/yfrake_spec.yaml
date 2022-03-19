@@ -29,7 +29,7 @@ info:
     name: MIT License
     url: https://github.com/aspenforest/yfrake/blob/main/LICENSE
   title: YFrake
-  version: 0.4.0
+  version: 1.0.0
 openapi: 3.0.0
 paths:
   /balance_statements:

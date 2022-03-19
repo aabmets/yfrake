@@ -72,6 +72,15 @@ def create_cors(app):
 
 
 # ------------------------------------------------------------------------------------ #
+def print_notification(host, port):
+    message = f'Running the YFrake server at: http://{host}:{port}'
+    print('=' * len(message))
+    print(message)
+    print('=' * len(message))
+    print('\n')
+
+
+# ------------------------------------------------------------------------------------ #
 def get_runtime_args() -> Namespace:  # pragma: no cover
     config = get_default_config()
     parser = ArgumentParser()
