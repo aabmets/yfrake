@@ -35,7 +35,7 @@ include = [
 
 # ==================================================================================== #
 [tool.poetry.urls]
-"Homepage" = "https://github.com/aspenforest/yfrake"
+"Repository" = "https://github.com/aspenforest/yfrake"
 "Documentation" = "https://yfrake.readthedocs.io"
 
 
