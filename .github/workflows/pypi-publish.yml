@@ -2,7 +2,9 @@
 
 name: Build and Upload Package
 
-on: [push]
+on:
+  release:
+    types: [published]
 
 jobs:
   deploy:
