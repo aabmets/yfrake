@@ -9,12 +9,12 @@ Running the server programmatically with the default settings:
    :linenos:
 
    if not server.is_running()
-      server.start()
+       server.start()
 
    # do other stuff
 
    if server.is_running()
-      server.stop()
+       server.stop()
 
 
 Running the server programmatically with custom settings:
@@ -24,20 +24,20 @@ Running the server programmatically with custom settings:
    :linenos:
 
    settings = dict(
-      host='localhost',
-      port=8888,
-      limit=64,
-      timeout=2,
-      backlog=128
+       host='localhost',
+       port=8888,
+       limit=64,
+       timeout=2,
+       backlog=128
    )
 
    if not server.is_running()
-      server.start(**settings)
+       server.start(**settings)
 
    # do other stuff
 
    if server.is_running()
-      server.stop()
+       server.stop()
 
 
 Running the server from the command line or terminal:

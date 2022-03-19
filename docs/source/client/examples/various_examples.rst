@@ -12,12 +12,12 @@ The following example prints out the names of all the endpoints queried:
 
    @client.configure()
    async def main():
-      results = client.get_all(symbol='msft')
-      async for resp in results.gather():
-         print(f'Endpoint: {resp.endpoint}')
+       results = client.get_all(symbol='msft')
+       async for resp in results.gather():
+           print(f'Endpoint: {resp.endpoint}')
 
    if __name__ == '__main__':
-      asyncio.run(main())
+       asyncio.run(main())
 
 
 The following example prints out either the ``error`` or the ``data`` property of the ``ClientResponse`` objects:
@@ -30,21 +30,21 @@ The following example prints out either the ``error`` or the ``data`` property o
 
    @client.configure()
    async def main():
-      queries = [
-         dict(endpoint='quote_type', symbol='msft'),
-         dict(endpoint='price_overview', symbol='gme_to_the_moon'),
-         dict(endpoint='key_statistics', symbol='tsla')
-      ]
-      results = client.batch_get(queries)
-      await results.wait()
-      for resp in results:
-         if resp.error:
-            print(f'Error: {resp.error}')
-         else:
-            print(f'Data: {resp.data}')
+       queries = [
+           dict(endpoint='quote_type', symbol='msft'),
+           dict(endpoint='price_overview', symbol='gme_to_the_moon'),
+           dict(endpoint='key_statistics', symbol='tsla')
+       ]
+       results = client.batch_get(queries)
+       await results.wait()
+       for resp in results:
+           if resp.error:
+               print(f'Error: {resp.error}')
+           else:
+               print(f'Data: {resp.data}')
 
    if __name__ == '__main__':
-      asyncio.run(main())
+       asyncio.run(main())
 
 
 The following example creates a batch request of 3 endpoints for 3 symbols:
@@ -56,20 +56,41 @@ The following example creates a batch request of 3 endpoints for 3 symbols:
 
    @client.configure()
    def main():
-      all_queries = list()
-      for symbol in ['msft', 'aapl', 'tsla']:
-         queries = [
-            dict(endpoint='quote_type', symbol=symbol),
-            dict(endpoint='price_overview', symbol=symbol),
-            dict(endpoint='key_statistics', symbol=symbol)
-         ]
-         all_queries.extend(queries)
+       all_queries = list()
+       for symbol in ['msft', 'aapl', 'tsla']:
+           queries = [
+               dict(endpoint='quote_type', symbol=symbol),
+               dict(endpoint='price_overview', symbol=symbol),
+               dict(endpoint='key_statistics', symbol=symbol)
+           ]
+           all_queries.extend(queries)
 
-      results = client.batch_get(all_queries)
-      results.wait()
+       results = client.batch_get(all_queries)
+       results.wait()
 
-      count = len(all_queries)
-      print(f'ClientResponse objects: {count}')  # 9
+       count = len(all_queries)
+       print(f'ClientResponse objects: {count}')  # 9
 
    if __name__ == '__main__':
-      main()
+       main()
+
+
+The following example demonstrates the usage of the ``get`` method inside a non-decorated method:
+
+.. code-block:: python
+   :linenos:
+
+   from yfrake import client
+
+   def make_the_request(symbol):
+       resp = client.get('quote_type', symbol=symbol)
+       resp.wait()
+       return resp
+
+   @client.configure()
+   def main():
+       resp = make_the_request('msft')
+       print(f'Data: {resp.data}')
+
+   if __name__ == '__main__':
+       main()

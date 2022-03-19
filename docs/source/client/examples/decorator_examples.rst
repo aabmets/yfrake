@@ -9,7 +9,7 @@ The following examples open a session with the default settings:
 
    @client.configure()
    def main()
-      # do some stuff
+       # do some stuff
 
 
 .. code-block:: python
@@ -18,7 +18,7 @@ The following examples open a session with the default settings:
 
    @client.configure()
    async def main()
-      # do some stuff
+       # do some stuff
 
 
 .. raw:: html
@@ -34,7 +34,7 @@ The following examples open a session with custom settings:
 
    @client.configure(limit=128, timeout=8)
    def main()
-      # do some stuff
+       # do some stuff
 
 
 .. code-block:: python
@@ -43,4 +43,4 @@ The following examples open a session with custom settings:
 
    @client.configure(limit=128, timeout=8)
    async def main()
-      # do some stuff
+       # do some stuff

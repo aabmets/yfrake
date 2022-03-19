@@ -21,9 +21,9 @@ The following example loops at line 4 ``while`` the response has not yet arrived
 
    @client.configure()
    async def main():
-      resp = client.get('quote_type', symbol='msft')
-      while resp.pending():
-         # do some other stuff
+       resp = client.get('quote_type', symbol='msft')
+       while resp.pending():
+           # do some other stuff
 
 
 The following example blocks at line 4 until the response has arrived:
@@ -34,9 +34,9 @@ The following example blocks at line 4 until the response has arrived:
 
    @client.configure()
    async def main():
-      resp = client.get('quote_type', symbol='msft')
-      await resp.wait()
-      # do some other stuff
+       resp = client.get('quote_type', symbol='msft')
+       await resp.wait()
+       # do some other stuff
 
 
 .. raw:: html
@@ -56,14 +56,14 @@ The following example waits until all of the responses have arrived before runni
 
    @client.configure()
    async def main():
-      queries = [
-         dict(endpoint='quote_type', symbol='msft'),
-         dict(endpoint='price_overview', symbol='aapl'),
-         dict(endpoint='key_statistics', symbol='tsla')
-      ]
-      results = client.batch_get(queries)
-      async for resp in results.gather():
-         # do some stuff with the resp
+       queries = [
+           dict(endpoint='quote_type', symbol='msft'),
+           dict(endpoint='price_overview', symbol='aapl'),
+           dict(endpoint='key_statistics', symbol='tsla')
+       ]
+       results = client.batch_get(queries)
+       async for resp in results.gather():
+           # do some stuff with the resp
 
 
 The following example starts yielding the responses into the ``async for`` loop as soon as they become available:
@@ -74,14 +74,14 @@ The following example starts yielding the responses into the ``async for`` loop 
 
    @client.configure()
    async def main():
-      queries = [
-         dict(endpoint='quote_type', symbol='msft'),
-         dict(endpoint='price_overview', symbol='aapl'),
-         dict(endpoint='key_statistics', symbol='tsla')
-      ]
-      results = client.batch_get(queries)
-      async for resp in results.as_completed():
-         # do some stuff with the resp
+       queries = [
+           dict(endpoint='quote_type', symbol='msft'),
+           dict(endpoint='price_overview', symbol='aapl'),
+           dict(endpoint='key_statistics', symbol='tsla')
+       ]
+       results = client.batch_get(queries)
+       async for resp in results.as_completed():
+           # do some stuff with the resp
 
 
 .. raw:: html
@@ -101,9 +101,9 @@ The following example loops while all the available data about a symbol is being
 
    @client.configure()
    async def main():
-      results = client.get_all(symbol='msft')
-      while results.pending():
-         # do some other stuff
+       results = client.get_all(symbol='msft')
+       while results.pending():
+           # do some other stuff
 
 
 The following example blocks while all the available data about a symbol is being retrieved:
@@ -114,9 +114,9 @@ The following example blocks while all the available data about a symbol is bein
 
    @client.configure()
    async def main():
-      results = client.get_all(symbol='aapl')
-      await results.wait()
-      # do some other stuff
+       results = client.get_all(symbol='aapl')
+       await results.wait()
+       # do some other stuff
 
 **WARNING:** A single call to ``get_all()`` creates 32 simultaneous network requests and
 can return up to 1.5 megabytes of data, so uncontrolled usage of this method
