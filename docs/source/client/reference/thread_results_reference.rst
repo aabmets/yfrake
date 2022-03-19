@@ -34,7 +34,7 @@ Public Methods
 .. py:method:: gather()
    :noindex:
 
-   | Synchronous generator which can be used in the ``for`` clause.
+   | Synchronous generator which can be used in the ``for`` loop.
    | Waits for and starts yielding results when all requests have completed.
 
    :return: Request response objects
@@ -44,7 +44,7 @@ Public Methods
 .. py:method:: as_completed()
    :noindex:
 
-   | Synchronous generator which can be used in the ``for`` clause.
+   | Synchronous generator which can be used in the ``for`` loop.
    | Waits for and starts yielding results immediately as they become available.
 
    :return: Request response objects

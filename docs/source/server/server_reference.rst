@@ -1,5 +1,5 @@
-Server reference
-================
+Reference
+=========
 
 .. py:classmethod:: server.start(host='localhost', port=8888, limit=64, timeout=2, backlog=128)
 

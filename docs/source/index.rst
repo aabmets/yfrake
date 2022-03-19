@@ -20,5 +20,6 @@ Welcome to YFrake's documentation!
    :maxdepth: 2
    :caption: Server
 
+   server/server_overview.rst
    server/server_reference.rst
-   server/server_usage_examples.rst
+   server/server_examples.rst

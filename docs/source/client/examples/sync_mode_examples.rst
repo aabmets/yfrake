@@ -117,3 +117,7 @@ The following example blocks while all the available data about a symbol is bein
       results = client.get_all(symbol='aapl')
       results.wait()
       # do some other stuff
+
+**WARNING:** A single call to ``get_all()`` creates 32 simultaneous network requests and
+can return up to 1.5 megabytes of data, so uncontrolled usage of this method
+*may* deplete the memory of your system and *may* get your IP blacklisted by Yahoo.

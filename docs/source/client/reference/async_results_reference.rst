@@ -23,6 +23,15 @@ Public Methods
    :rtype: bool
 
 
+.. raw:: html
+
+   <br />
+   <hr>
+
+
+Public Coroutines
+-----------------
+
 .. py:method:: wait()
    :noindex:
    :async:
@@ -36,7 +45,7 @@ Public Methods
    :noindex:
    :async:
 
-   | Asynchronous generator which can be used in the ``async for`` clause.
+   | Asynchronous generator which can be used in the ``async for`` loop.
    | Awaits and starts yielding results when all requests have completed.
 
    :return: Request response objects
@@ -47,7 +56,7 @@ Public Methods
    :noindex:
    :async:
 
-   | Asynchronous generator which can be used in the ``async for`` clause.
+   | Asynchronous generator which can be used in the ``async for`` loop.
    | Awaits and starts yielding results immediately as they become available.
 
    :return: Request response objects

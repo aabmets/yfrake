@@ -26,7 +26,6 @@
 #                                                                                      #
 # ==================================================================================== #
 from .session import Session
-from concurrent import futures
 import asyncio
 import inspect
 import sys

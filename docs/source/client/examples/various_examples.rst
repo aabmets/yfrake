@@ -32,7 +32,7 @@ The following example prints out either the ``error`` or the ``data`` property o
    async def main():
       queries = [
          dict(endpoint='quote_type', symbol='msft'),
-         dict(endpoint='price_overview', symbol='aapl'),
+         dict(endpoint='price_overview', symbol='gme_to_the_moon'),
          dict(endpoint='key_statistics', symbol='tsla')
       ]
       results = client.batch_get(queries)

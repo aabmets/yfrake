@@ -1,10 +1,8 @@
-Server usage examples
-=====================
+Examples
+========
 
-There are two ways how you can run the server: you can either control it from within your Python program or
-you can run the *runner.py* module located in the */yfrake/server* folder of your Python distribution.
 
-Running the server programmatically with default settings:
+Running the server programmatically with the default settings:
 
 .. code-block:: python
    :emphasize-lines: 2
@@ -46,8 +44,8 @@ Running the server from the command line or terminal:
 
 ``$ python "/path/to/python/Lib/site-packages/yfrake/server/runner.py" args``
 
-| It is not necessary to provide any args, if you want to run the server with default settings.
-| The default values of the available args are as follows:
+| It is not necessary to provide any args, if you want to run the server with the default settings.
+| The default values for the available args are as follows:
 
 ``--host 'localhost'``
 ``--port 8888``
