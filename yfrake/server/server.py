@@ -25,7 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from . import runner, utils
+from . import utils
 import subprocess
 import psutil
 import sys
@@ -56,13 +56,15 @@ class Server:
             raise RuntimeError(cls._err_msg_1)
 
         settings = dict()
-        default = vars(utils.get_default_config())
+        default_config = vars(utils.get_default_config())
         for option in ['host', 'port', 'limit', 'timeout', 'backlog']:
-            value = kwargs.get(option, default[option])
+            value = kwargs.get(option, default_config[option])
             settings[option] = str(value)
+
+        runner_file_path = utils.get_runner_file_path()
         cls._server = subprocess.Popen(
             [
-                sys.executable, runner.__file__,
+                sys.executable, runner_file_path,
                 '--host', settings['host'],
                 '--port', settings['port'],
                 '--limit', settings['limit'],

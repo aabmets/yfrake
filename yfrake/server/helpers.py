@@ -27,9 +27,6 @@
 # ==================================================================================== #
 from ..client.paths import paths
 from .handler import handler
-from .utils import get_default_config
-from argparse import ArgumentParser
-from argparse import Namespace
 from aiohttp_swagger3 import SwaggerFile
 from aiohttp_swagger3 import SwaggerUiSettings
 from aiohttp import web
@@ -78,15 +75,3 @@ def print_notification(host, port):
     print(message)
     print('=' * len(message))
     print('\n')
-
-
-# ------------------------------------------------------------------------------------ #
-def get_runtime_args() -> Namespace:  # pragma: no cover
-    config = get_default_config()
-    parser = ArgumentParser()
-    parser.add_argument('--host', type=str, default=config.host)
-    parser.add_argument('--port', type=int, default=config.port)
-    parser.add_argument('--limit', type=int, default=config.limit)
-    parser.add_argument('--timeout', type=int, default=config.timeout)
-    parser.add_argument('--backlog', type=int, default=config.backlog)
-    return parser.parse_args()

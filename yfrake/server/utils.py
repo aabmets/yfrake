@@ -25,6 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from argparse import ArgumentParser
 from multidict import MultiDictProxy
 from argparse import Namespace
 from pathlib import Path
@@ -32,10 +33,16 @@ import configparser
 
 
 # ==================================================================================== #
+def get_runner_file_path() -> str:
+    runner_file = Path(__file__).with_name('runner.py').resolve()
+    return str(runner_file)
+
+
+# ------------------------------------------------------------------------------------ #
 def get_default_config() -> Namespace:
-    configfile = Path(__file__).with_name('server.ini')
+    config_file = Path(__file__).with_name('server.ini').resolve()
     config = configparser.ConfigParser()
-    config.read(configfile)
+    config.read(config_file)
     config = config['DEFAULT_SETTINGS']
     return Namespace(
         host=config['host'],
@@ -44,6 +51,18 @@ def get_default_config() -> Namespace:
         timeout=int(config['timeout']),
         backlog=int(config['backlog'])
     )
+
+
+# ------------------------------------------------------------------------------------ #
+def get_runtime_config() -> Namespace:  # pragma: no cover
+    config = get_default_config()
+    parser = ArgumentParser()
+    parser.add_argument('--host', type=str, default=config.host)
+    parser.add_argument('--port', type=int, default=config.port)
+    parser.add_argument('--limit', type=int, default=config.limit)
+    parser.add_argument('--timeout', type=int, default=config.timeout)
+    parser.add_argument('--backlog', type=int, default=config.backlog)
+    return parser.parse_args()
 
 
 # ------------------------------------------------------------------------------------ #
