@@ -34,7 +34,7 @@ import json
 # ==================================================================================== #
 async def handler(request: web.Request) -> web.Response:
     """
-    This func handles all incoming requests to the server
+    This func receives all the incoming requests to the server
     and forwards them to the correct endpoint handlers.
     """
     query = convert_multidict(request.query)  # ensure no double keys

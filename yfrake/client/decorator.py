@@ -52,7 +52,7 @@ class Decorator:
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    def raise_if_not_configured(cls) -> None:
+    def _raise_if_not_configured(cls) -> None:
         """
         This check is used by the client on each request
         to ensure that the 'configure' decorator is active.
