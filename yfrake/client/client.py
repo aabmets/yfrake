@@ -34,7 +34,6 @@ from .thread_loop import ThreadLoop
 from .endpoints import Endpoints
 from .validators import validate_and_sanitize
 import asyncio
-import uuid
 
 
 # ==================================================================================== #
@@ -45,16 +44,11 @@ class Client(Decorator):
     # ------------------------------------------------------------------------------------ #
     @classmethod
     async def _wrapper(cls, endpoint, kwargs, func, resp) -> ClientResponse:
-        _uuid = uuid.uuid4()
-        cls._requests[_uuid] = resp  # doesn't need a lock
         result = await func(endpoint, **kwargs)
-
         setattr(resp, '_endpoint', result['endpoint'])
         setattr(resp, '_error', result['error'])
         setattr(resp, '_data', result['data'])
         getattr(resp, '_event').set()
-
-        cls._requests.pop(_uuid)  # doesn't need a lock
         return resp
 
     # ------------------------------------------------------------------------------------ #
@@ -66,7 +60,8 @@ class Client(Decorator):
         Returns immediately with the pending
         ClientResponse object.
         """
-        cls._raise_if_not_configured()
+        if not cls._initialized:
+            raise RuntimeError(cls._err_cfg_missing)
 
         attr = 'get_' + endpoint
         if func := getattr(Endpoints, attr, None):

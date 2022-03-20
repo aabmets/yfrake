@@ -30,6 +30,7 @@ from yfrake.openapi.utils import get_spec_file_path
 from yfrake.server.utils import get_runtime_config
 from yfrake.server.utils import get_default_config
 from yfrake.server import helpers
+from yfrake import client
 from aiohttp import web
 import warnings
 import asyncio

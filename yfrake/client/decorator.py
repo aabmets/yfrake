@@ -36,29 +36,8 @@ class Decorator:
     _err_already_cfg = 'Configuration decorator already in use! (YFrake)'
     _err_forgot_to_wait = 'You forgot to (a)wait a response or a results object! (YFrake)'
 
-    _requests: dict = dict()
     _async_mode: bool = False
     _initialized: bool = False
-
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _raise_if_hanging_requests(cls) -> None:  # pragma: no cover
-        """
-        This method is used by the decorator on program exit
-        to ensure that all the requests have been awaited.
-        """
-        if cls._requests:
-            raise RuntimeError(cls._err_forgot_to_wait)
-
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def _raise_if_not_configured(cls) -> None:
-        """
-        This check is used by the client on each request
-        to ensure that the 'configure' decorator is active.
-        """
-        if not cls._initialized:
-            raise RuntimeError(cls._err_cfg_missing)
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
@@ -77,21 +56,22 @@ class Decorator:
             asyncio.set_event_loop_policy(policy)
 
         def decorator(func):
+            config = dict(limit=limit, timeout=timeout)
+
             async def a_inner(*args, **kwargs):
-                await Session.a_open(limit=limit, timeout=timeout)
+                cls._initialized = True
+                await Session.a_open(**config)
                 await func(*args, **kwargs)
-                cls._raise_if_hanging_requests()
                 await Session.a_close()
                 cls._initialized = False
 
             def t_inner(*args, **kwargs):
-                Session.t_open(limit=limit, timeout=timeout)
+                cls._initialized = True
+                Session.t_open(**config)
                 func(*args, **kwargs)
-                cls._raise_if_hanging_requests()
                 Session.t_close()
                 cls._initialized = False
 
-            cls._initialized = True
             cls._async_mode = inspect.iscoroutinefunction(func)
             return a_inner if cls._async_mode else t_inner
         return decorator
