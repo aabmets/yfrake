@@ -66,7 +66,7 @@ class Client(Decorator):
         Returns immediately with the pending
         ClientResponse object.
         """
-        cls.raise_if_not_configured()
+        cls._raise_if_not_configured()
 
         attr = 'get_' + endpoint
         if func := getattr(Endpoints, attr, None):
