@@ -1,4 +1,4 @@
-from yfrake import client
+from yfrake import client, ClientSingleton
 import asyncio
 import pytest
 import sys
@@ -71,6 +71,19 @@ async def test_async_object():
     async def inner():
         args = dict(endpoint='quote_type', symbol='msft')
         resp = client.get(**args)
+        while resp.pending():
+            await asyncio.sleep(0.0001)
+        assert bool(resp.error) is False
+        assert bool(resp.data) is True
+    await inner()
+
+
+async def test_singleton_instantiation():
+    @client.configure()
+    async def inner():
+        _client = ClientSingleton()
+        args = dict(endpoint='quote_type', symbol='msft')
+        resp = _client.get(**args)
         while resp.pending():
             await asyncio.sleep(0.0001)
         assert bool(resp.error) is False

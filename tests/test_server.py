@@ -1,4 +1,4 @@
-from yfrake import server
+from yfrake import server, ServerSingleton
 import aiohttp
 import asyncio
 import pytest
@@ -47,17 +47,18 @@ async def test_server():
     assert not server.is_running()
 
 
-def test_server_exceptions():
-    server.start()
-    while not server.is_running():
+def test_exceptions_and_singleton():
+    _server = ServerSingleton()
+    _server.start()
+    while not _server.is_running():
         time.sleep(0)
     with pytest.raises(RuntimeError):
-        server.start()
+        _server.start()
 
     time.sleep(0)
 
-    server.stop()
-    while server.is_running():
+    _server.stop()
+    while _server.is_running():
         time.sleep(0)
     with pytest.raises(RuntimeError):
-        server.stop()
+        _server.stop()
