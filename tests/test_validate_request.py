@@ -1,4 +1,5 @@
-from yfrake.client.validators import validate_and_sanitize
+from yfrake.client.validators import validate_request
+from yfrake.client.exceptions import BadRequestError
 import pytest
 
 
@@ -10,7 +11,7 @@ def test_pass():
         events=True,
         extHours=False
     )
-    validate_and_sanitize('historical_prices', args)
+    validate_request('historical_prices', args)
 
 
 def test_invalid_param():
@@ -23,7 +24,7 @@ def test_invalid_param():
         INVALID_KEY=bool()
     )
     with pytest.raises(KeyError):
-        validate_and_sanitize('historical_prices', args)
+        validate_request('historical_prices', args)
 
 
 def test_invalid_datatype():
@@ -35,4 +36,4 @@ def test_invalid_datatype():
         extHours=dict()  # invalid datatype
     )
     with pytest.raises(TypeError):
-        validate_and_sanitize('historical_prices', args)
+        validate_request('historical_prices', args)

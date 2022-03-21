@@ -25,33 +25,21 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from ..client.paths import paths
-from .handler import handler
 from aiohttp_swagger3 import SwaggerFile
 from aiohttp_swagger3 import SwaggerUiSettings
-from aiohttp import web
 import aiohttp_cors as cors
 
 
 # These functions are called sequentially by the runner.py module.
 
 # ==================================================================================== #
-def build_route_table() -> list:
-    route_table = list()
-    for key in paths.keys():
-        path = '/' + key
-        route = web.get(path=path, handler=handler)
-        route_table.append(route)
-    return route_table
-
-
-# ------------------------------------------------------------------------------------ #
 def create_swagger(app, spec) -> SwaggerFile:
     app['storage'] = dict()
     return SwaggerFile(
         app=app,
         spec_file=str(spec),
-        swagger_ui_settings=SwaggerUiSettings(path="/")
+        swagger_ui_settings=SwaggerUiSettings(path="/"),
+        validate=False
     )
 
 

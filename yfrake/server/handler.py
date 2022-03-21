@@ -25,7 +25,9 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from ..client.endpoints import Endpoints
+from .. import client
+from ..client.worker import Worker
+from ..client.exceptions import BadRequestError
 from ..server.utils import convert_multidict
 from aiohttp import web
 import json
@@ -37,10 +39,22 @@ async def handler(request: web.Request) -> web.Response:
     This func receives all the incoming requests to the server
     and forwards them to the correct endpoint handlers.
     """
-    query = convert_multidict(request.query)  # ensure no double keys
-    endpoint = request.path.strip('/')        # get endpoint name from path
-    attr = 'get_' + endpoint                  # get endpoint method name
-    func = getattr(Endpoints, attr, None)     # get endpoint method
-    result = await func(endpoint, **query)    # wait until done
-    text = json.dumps(result, indent=3)       # convert dict to str
-    return web.Response(text=text)            # return str
+    params = convert_multidict(request.query)
+    endpoint = request.path.strip('/')
+    try:
+        resp = client.get(endpoint, **params)
+        await resp.wait()
+        error = resp.error
+        data = resp.data
+
+    except (NameError, TypeError, KeyError, BadRequestError):
+        error = Worker.build_error(BadRequestError)
+        data = None
+
+    result = dict(
+        endpoint=endpoint,
+        error=error,
+        data=data
+    )
+    text = json.dumps(result, indent=3)
+    return web.Response(text=text)

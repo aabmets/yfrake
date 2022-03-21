@@ -26,39 +26,49 @@
 #                                                                                      #
 # ==================================================================================== #
 from ..openapi.modules import param_specs
+from .exceptions import BadRequestError
+from .paths import paths
 
 
 # ==================================================================================== #
-_err_msg_1 = 'Invalid query parameter key \'{0}\' for endpoint \'{1}\'. (YFrake)'
-_err_msg_2 = 'Invalid value datatype \'{0}\' for query parameter key \'{1}\' at endpoint \'{2}\'. (YFrake)'
+_err_msg_0 = 'Invalid endpoint \'{0}\'! (YFrake)'
+_err_msg_1 = 'Invalid query parameter \'{0}\' for endpoint \'{1}\'. (YFrake)'
+_err_msg_2 = 'Invalid datatype \'{0}\' for query parameter \'{1}\' at endpoint \'{2}\'. (YFrake)'
 
 
 # ==================================================================================== #
-def validate_and_sanitize(endpoint: str, params: dict) -> None:
+def validate_request(endpoint: str, params: dict) -> None:
     """
     This function ensures the validity of any params
-    provided into the client 'get' method by the user
-    and sanitizes any booleans into strings.
+    passed into the client 'get' method by the user.
     """
-    spec = param_specs[endpoint]
-    for param in params:  # ensure param keys are valid
+    spec = param_specs.get(endpoint)
+
+    if endpoint not in paths.keys():
+        msg = _err_msg_0.format(
+            endpoint
+        )
+        raise NameError(msg)
+
+    for param in params:
         if param not in spec:
-            raise KeyError(_err_msg_1.format(
+            msg = _err_msg_1.format(
                 param, endpoint
-            ))
-    for name, expected in spec.items():  # ensure param value types are valid
+            )
+            raise KeyError(msg)
+
+    for name, expected in spec.items():
         if name in params:
-            value = params[name]
+            value = params.get(name)
             if not isinstance(value, expected):
-                raise TypeError(_err_msg_2.format(
+                msg = _err_msg_2.format(
                     type(value).__name__, name, endpoint
-                ))
-            if type(value) == bool:  # sanitize bools to strings
-                params[name] = str(value).lower()
+                )
+                raise TypeError(msg)
 
 
 # ------------------------------------------------------------------------------------ #
-async def validate_response(data: dict) -> bool:
+async def validate_response(data: dict) -> None:
     """
     This function ensures that an empty response
     with a successful status code 200 is correctly
@@ -71,7 +81,8 @@ async def validate_response(data: dict) -> bool:
         await is_insights_error(endpoint, result),
         await is_shares_out_error(endpoint, result)
     ].count(True)
-    return False if failures else True
+    if failures:
+        raise BadRequestError
 
 
 # ------------------------------------------------------------------------------------ #

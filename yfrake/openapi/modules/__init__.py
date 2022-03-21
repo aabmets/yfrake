@@ -48,7 +48,7 @@ for file_path in folder.iterdir():
         modules.append(module)
 
         # generating endpoint param specs, which is
-        # used by validate_input func in validators.py.
+        # used by the validate_request func in validators.py.
         module_params = dict()
         for param in getattr(module, 'parameters'):
             item = {param['name']: param['schema']['type']}

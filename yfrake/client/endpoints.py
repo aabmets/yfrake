@@ -39,7 +39,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_validate_symbols(endpoint, **kwargs) -> dict:
+    async def get_validate_symbols(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
             data: dict = data['symbolsValidation']['result'][0]
@@ -58,7 +58,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_historical_prices(endpoint, **kwargs) -> dict:
+    async def get_historical_prices(endpoint: str, kwargs: dict) -> dict:
         if start_date := kwargs.pop('startDate', None):
             kwargs['period1'] = start_date
         if end_date := kwargs.pop('endDate', None):
@@ -100,7 +100,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_options(endpoint, **kwargs) -> dict:
+    async def get_options(endpoint: str, kwargs: dict) -> dict:
         if start_date := kwargs.pop('startDate', None):
             kwargs['date'] = start_date
         if straddle := kwargs.pop('straddle', None):
@@ -118,7 +118,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_insights(endpoint, **kwargs) -> dict:
+    async def get_insights(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
             data: dict = data['finance']['result']
@@ -131,7 +131,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_quotes_overview(endpoint, **kwargs) -> dict:
+    async def get_quotes_overview(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
             data: dict = {'list': data['quoteResponse']['result']}
@@ -143,7 +143,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_esg_chart(endpoint, **kwargs) -> dict:
+    async def get_esg_chart(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
             data: dict = data['esgChart']['result'][0]
@@ -155,7 +155,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_quote_type(endpoint, **kwargs) -> dict:
+    async def get_quote_type(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
             data: dict = data['quoteType']['result'][0]
@@ -167,7 +167,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_news(endpoint, **kwargs) -> dict:
+    async def get_news(endpoint: str, kwargs: dict) -> dict:
         if 'symbol' in kwargs:
             kwargs['q'] = kwargs.pop('symbol')
         data, error = await Worker.request(endpoint, kwargs)
@@ -181,7 +181,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_recommendations(endpoint, **kwargs) -> dict:
+    async def get_recommendations(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
             data: dict = data['finance']['result'][0]
@@ -194,7 +194,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_shares_outstanding(endpoint, **kwargs) -> dict:
+    async def get_shares_outstanding(endpoint: str, kwargs: dict) -> dict:
         if 'startDate' in kwargs:
             kwargs['period1'] = kwargs.pop('startDate')
         if 'endDate' in kwargs:
@@ -212,7 +212,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_market_summary(endpoint, **kwargs) -> dict:
+    async def get_market_summary(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:  # pragma: no branch
             data: dict = data['marketSummaryResponse']['result']
@@ -225,7 +225,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_trending_symbols(endpoint, **kwargs) -> dict:
+    async def get_trending_symbols(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:  # pragma: no branch
             data: dict = data['finance']['result'][0]['quotes']
@@ -238,7 +238,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_currencies(endpoint, **kwargs) -> dict:
+    async def get_currencies(endpoint: str, kwargs: dict) -> dict:
         data, error = await Worker.request(endpoint, kwargs)
         if not error:  # pragma: no branch
             data: dict = data['currencies']['result']
@@ -254,7 +254,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_esg_scores(endpoint, **kwargs) -> dict:
+    async def get_esg_scores(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'esgScores'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -267,7 +267,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_purchase_activity(endpoint, **kwargs) -> dict:
+    async def get_purchase_activity(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'netSharePurchaseActivity'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -280,7 +280,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_earnings(endpoint, **kwargs) -> dict:
+    async def get_earnings(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'earnings'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -293,7 +293,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_price_overview(endpoint, **kwargs) -> dict:
+    async def get_price_overview(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'price'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -306,7 +306,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_calendar_events(endpoint, **kwargs) -> dict:
+    async def get_calendar_events(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'calendarEvents'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -319,7 +319,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_company_overview(endpoint, **kwargs) -> dict:
+    async def get_company_overview(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'assetProfile'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -332,7 +332,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_sec_filings(endpoint, **kwargs) -> dict:
+    async def get_sec_filings(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'secFilings'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -346,7 +346,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_detailed_summary(endpoint, **kwargs) -> dict:
+    async def get_detailed_summary(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'summaryDetail'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -359,7 +359,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_financials(endpoint, **kwargs) -> dict:
+    async def get_financials(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'financialData'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -372,7 +372,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_recommendation_trend(endpoint, **kwargs) -> dict:
+    async def get_recommendation_trend(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'recommendationTrend'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -386,7 +386,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_ratings_history(endpoint, **kwargs) -> dict:
+    async def get_ratings_history(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'upgradeDowngradeHistory'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -400,7 +400,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_earnings_history(endpoint, **kwargs) -> dict:
+    async def get_earnings_history(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'earningsHistory'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -414,7 +414,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_earnings_trend(endpoint, **kwargs) -> dict:
+    async def get_earnings_trend(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'earningsTrend'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -428,7 +428,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_key_statistics(endpoint, **kwargs) -> dict:
+    async def get_key_statistics(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'defaultKeyStatistics'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -441,7 +441,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_income_statements(endpoint, **kwargs) -> dict:
+    async def get_income_statements(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'incomeStatementHistory,incomeStatementHistoryQuarterly'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -458,7 +458,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_cashflow_statements(endpoint, **kwargs) -> dict:
+    async def get_cashflow_statements(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'cashflowStatementHistory,cashflowStatementHistoryQuarterly'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -475,7 +475,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_balance_statements(endpoint, **kwargs) -> dict:
+    async def get_balance_statements(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'balanceSheetHistory,balanceSheetHistoryQuarterly'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -492,7 +492,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_institution_ownership(endpoint, **kwargs) -> dict:
+    async def get_institution_ownership(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'institutionOwnership'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -506,7 +506,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_fund_ownership(endpoint, **kwargs) -> dict:
+    async def get_fund_ownership(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'fundOwnership'
         data, error = await Worker.request(endpoint, kwargs)
         data: dict | None = data
@@ -521,7 +521,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_major_holders(endpoint, **kwargs) -> dict:
+    async def get_major_holders(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'majorHoldersBreakdown'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -534,7 +534,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_insider_transactions(endpoint, **kwargs) -> dict:
+    async def get_insider_transactions(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'insiderTransactions'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:
@@ -548,7 +548,7 @@ class Endpoints:
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod
-    async def get_insider_holders(endpoint, **kwargs) -> dict:
+    async def get_insider_holders(endpoint: str, kwargs: dict) -> dict:
         kwargs['modules'] = 'insiderHolders'
         data, error = await Worker.request(endpoint, kwargs)
         if not error:

@@ -25,47 +25,45 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from yfrake.client.session import Session
 from yfrake.openapi.utils import get_spec_file_path
 from yfrake.server.utils import get_runtime_config
 from yfrake.server.utils import get_default_config
+from yfrake.server.handler import handler
 from yfrake.server import helpers
 from yfrake import client
 from aiohttp import web
 import warnings
 import asyncio
-import sys
 
 
 # ==================================================================================== #
 if __name__ != '__main__':  # pragma: no branch
     message = "\n" \
-        "=================================================\n" \
-        "The 'runner.py' file is not meant to be imported!\n" \
-        "Use 'from yfrake import server' instead! (YFrake)\n" \
-        "=================================================\n"
+        "╔═══════════════════════════════════════════════════╗\n" \
+        "║ The 'runner.py' file is not meant to be imported! ║\n" \
+        "║ Use 'from yfrake import server' instead! (YFrake) ║\n" \
+        "╚═══════════════════════════════════════════════════╝\n"
     warnings.warn(message, category=RuntimeWarning, stacklevel=100)
 
 
 # ------------------------------------------------------------------------------------ #
-async def main(config=None, run_forever=False):
-    config = config if config else get_default_config()
-
-    app = web.Application()
+@client.configure()
+async def main(run_forever=False):
     spec = get_spec_file_path()
-    routes = helpers.build_route_table()
+    app = web.Application()
+    config = {
+        True: get_runtime_config,
+        False: get_default_config
+    }[run_forever]()
 
     swagger = helpers.create_swagger(app, spec)
+    routes = [web.get('/{any}', handler)]
     swagger.add_routes(routes)
 
     cors = helpers.create_cors(app)
     routes = list(app.router.routes())
     for route in routes:
         cors.add(route)
-
-    await Session.a_open(
-        limit=config.limit,
-        timeout=config.timeout)
 
     runner = web.AppRunner(app=app)
     await runner.setup()
@@ -83,17 +81,9 @@ async def main(config=None, run_forever=False):
 
     await site.stop()
     await runner.cleanup()
-    await Session.a_close()
 
 
 # ------------------------------------------------------------------------------------ #
 if __name__ == '__main__':
-    if sys.platform == 'win32':
-        asyncio.set_event_loop_policy(
-            asyncio.WindowsSelectorEventLoopPolicy()
-        )
-    coro = main(
-        config=get_runtime_config(),
-        run_forever=True
-    )
+    coro = main(run_forever=True)
     asyncio.run(coro)

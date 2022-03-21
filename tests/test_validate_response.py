@@ -1,4 +1,5 @@
 from yfrake.client.validators import validate_response
+from yfrake.client.exceptions import BadRequestError
 import pytest
 
 
@@ -11,6 +12,14 @@ tests = [
                 ],
                 "error": False
             }
+        },
+        True
+    ), (
+        {
+            "key": "value",
+            "news": [
+                {"key": "value"}
+            ]
         },
         True
     ), (
@@ -57,18 +66,14 @@ tests = [
             }
         },
         False
-    ), (
-        {
-            "key": "value",
-            "news": [
-                {"key": "value"}
-            ]
-        },
-        True
     )
 ]
 
 
 @pytest.mark.parametrize('arg,result', tests)
 async def test_validate_response(arg, result):
-    assert await validate_response(arg) is result
+    if result is False:
+        with pytest.raises(BadRequestError):
+            await validate_response(arg)
+    else:
+        await validate_response(arg)

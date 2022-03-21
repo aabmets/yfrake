@@ -28,23 +28,21 @@
 from .return_types.client_response import ClientResponse
 from .return_types.async_results import AsyncResults
 from .return_types.thread_results import ThreadResults
-from .get_all_queries import GetAllQueries
-from .decorator import Decorator
 from .thread_loop import ThreadLoop
+from .decorator import Decorator
 from .endpoints import Endpoints
-from .validators import validate_and_sanitize
+from .validators import validate_request
 import asyncio
 
 
 # ==================================================================================== #
 class Client(Decorator):
-    _err_invalid_ep = 'Invalid endpoint \'{0}\'! (YFrake)'
     _err_bad_type = 'Only a list of dicts can be passed into the \'batch_get\' method! (YFrake)'
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
     async def _wrapper(cls, endpoint, kwargs, func, resp) -> ClientResponse:
-        result = await func(endpoint, **kwargs)
+        result = await func(endpoint, kwargs)
         setattr(resp, '_endpoint', result['endpoint'])
         setattr(resp, '_error', result['error'])
         setattr(resp, '_data', result['data'])
@@ -62,23 +60,20 @@ class Client(Decorator):
         """
         if not cls._initialized:
             raise RuntimeError(cls._err_cfg_missing)
-
+        validate_request(endpoint, kwargs)
         attr = 'get_' + endpoint
-        if func := getattr(Endpoints, attr, None):
-            validate_and_sanitize(endpoint, kwargs)
-            resp = ClientResponse(cls._async_mode)
-            if cls._async_mode:
-                future = asyncio.create_task(
-                    cls._wrapper(endpoint, kwargs, func, resp))
-            else:
-                future = asyncio.run_coroutine_threadsafe(
-                    cls._wrapper(endpoint, kwargs, func, resp),
-                    ThreadLoop.loop)
-            setattr(resp, '_future', future)
-            return resp
+        func = getattr(Endpoints, attr)
+        resp = ClientResponse(cls._async_mode)
 
-        msg = cls._err_invalid_ep.format(endpoint)
-        raise NameError(msg)
+        if cls._async_mode:
+            future = asyncio.create_task(
+                cls._wrapper(endpoint, kwargs, func, resp))
+        else:
+            future = asyncio.run_coroutine_threadsafe(
+                cls._wrapper(endpoint, kwargs, func, resp),
+                ThreadLoop.loop)
+        setattr(resp, '_future', future)
+        return resp
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
@@ -106,10 +101,42 @@ class Client(Decorator):
     @classmethod
     def get_all(cls, symbol: str) -> AsyncResults | ThreadResults:
         """
-        This helper method obtains all the available data about
-        the provided symbol from the Yahoo Finance API servers.
+        This helper method obtains all the available data about a symbol.
         Returns immediately with either the pending
         AsyncResults or ThreadResults collection.
         """
-        queries = GetAllQueries(symbol)
+        queries = [
+            dict(endpoint='historical_prices', symbol=symbol, interval='1d', range='max', events=True, extHours=True),
+            dict(endpoint='shares_outstanding', symbol=symbol, startDate=946728000, endDate=3162293065),
+            dict(endpoint='options', symbol=symbol, getAllData=True),
+            dict(endpoint='balance_statements', symbol=symbol),
+            dict(endpoint='calendar_events', symbol=symbol),
+            dict(endpoint='cashflow_statements', symbol=symbol),
+            dict(endpoint='company_overview', symbol=symbol),
+            dict(endpoint='detailed_summary', symbol=symbol),
+            dict(endpoint='earnings', symbol=symbol),
+            dict(endpoint='earnings_history', symbol=symbol),
+            dict(endpoint='earnings_trend', symbol=symbol),
+            dict(endpoint='esg_chart', symbol=symbol),
+            dict(endpoint='esg_scores', symbol=symbol),
+            dict(endpoint='financials', symbol=symbol),
+            dict(endpoint='fund_ownership', symbol=symbol),
+            dict(endpoint='income_statements', symbol=symbol),
+            dict(endpoint='insider_holders', symbol=symbol),
+            dict(endpoint='insider_transactions', symbol=symbol),
+            dict(endpoint='insights', symbol=symbol),
+            dict(endpoint='institution_ownership', symbol=symbol),
+            dict(endpoint='key_statistics', symbol=symbol),
+            dict(endpoint='major_holders', symbol=symbol),
+            dict(endpoint='news', symbol=symbol),
+            dict(endpoint='price_overview', symbol=symbol),
+            dict(endpoint='purchase_activity', symbol=symbol),
+            dict(endpoint='quote_type', symbol=symbol),
+            dict(endpoint='quotes_overview', symbols=symbol),
+            dict(endpoint='ratings_history', symbol=symbol),
+            dict(endpoint='recommendation_trend', symbol=symbol),
+            dict(endpoint='recommendations', symbol=symbol),
+            dict(endpoint='sec_filings', symbol=symbol),
+            dict(endpoint='validate_symbols', symbols=symbol)
+        ]
         return cls.batch_get(queries)

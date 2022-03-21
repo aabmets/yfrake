@@ -25,7 +25,6 @@ Public Decorators
    :type timeout: int
 
    :raises RuntimeError: if a configuration is already active.
-   :raises RuntimeError: if a response or a results object has not been (a)waited when the decorated function or a coroutine finishes running.
 
    :return: None
 
