@@ -32,15 +32,24 @@ import sys
 
 
 # ==================================================================================== #
-class Server:
+class ServerSingleton:
     """
     This class contains methods to control
     the YFrake server programmatically.
     """
+    # ------------------------------------------------------------------------------------ #
     _err_msg_1 = 'Server is already running! (YFrake)'
     _err_msg_2 = 'Cannot stop server which is not running! (YFrake)'
     _server: subprocess.Popen = None
     _is_running: bool = False
+    __instance__ = None
+
+    # Singleton pattern
+    # ------------------------------------------------------------------------------------ #
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = super(ServerSingleton, cls).__new__(cls)
+        return cls.__instance__
 
     # ---------------------------------------------------------------------------------- #
     @classmethod

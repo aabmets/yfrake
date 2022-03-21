@@ -25,57 +25,101 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .thread_loop import ThreadLoop
 from .paths import base_url
+from threading import Thread
 import aiohttp
 import asyncio
+import time
 
 
 # ==================================================================================== #
-class Session:
+class SessionSingleton:
     """
     This class holds a connection to the Yahoo
     Finance API servers. A session is established
     by the client 'configure' decorator. There can
     only be a single session active at any time.
     """
+    # ------------------------------------------------------------------------------------ #
     timeout: aiohttp.ClientTimeout | None = None
     session: aiohttp.ClientSession | None = None
     connector: aiohttp.TCPConnector | None = None
+    loop: asyncio.AbstractEventLoop = None
+    thread: Thread = None
+    __instance__ = None
 
+    # Singleton pattern
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    async def a_open(cls, limit, timeout) -> None:
-        cls.timeout = aiohttp.ClientTimeout(total=timeout)
-        cls.connector = aiohttp.TCPConnector(limit=limit)
-        cls.session = aiohttp.ClientSession(
-            connector=cls.connector,
-            timeout=cls.timeout,
-            base_url=base_url,
-            raise_for_status=True
-        )
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = super(SessionSingleton, cls).__new__(cls)
+        return cls.__instance__
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    async def a_close(cls) -> None:
-        await cls.session.close()
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def t_open(cls, limit, timeout) -> None:
-        coro = cls.a_open(limit=limit, timeout=timeout)
-        ThreadLoop.start_thread_loop()
-        cls.schedule(coro)
+# ==================================================================================== #
+async def open_async(limit, timeout) -> None:
+    ss = SessionSingleton()
+    ss.timeout = aiohttp.ClientTimeout(total=timeout)
+    ss.connector = aiohttp.TCPConnector(limit=limit)
+    ss.session = aiohttp.ClientSession(
+        connector=ss.connector,
+        timeout=ss.timeout,
+        base_url=base_url,
+        raise_for_status=True
+    )
 
-    # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def t_close(cls) -> None:
-        coro = cls.a_close()
-        cls.schedule(coro)
-        ThreadLoop.stop_thread_loop()
 
-    # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    def schedule(coro) -> None:
-        future = asyncio.run_coroutine_threadsafe(coro, ThreadLoop.loop)
-        future.result()  # concurrent future blocks until coro is done
+# ------------------------------------------------------------------------------------ #
+async def close_async() -> None:
+    ss = SessionSingleton()
+    await ss.session.close()
+
+
+# ------------------------------------------------------------------------------------ #
+def open_thread(limit, timeout) -> None:
+    start_thread_loop()
+    coro = open_async(limit=limit, timeout=timeout)
+    asyncio_run_threadsafe(coro)  # blocking
+
+
+# ------------------------------------------------------------------------------------ #
+def close_thread() -> None:
+    coro = close_async()
+    asyncio_run_threadsafe(coro)  # blocking
+    stop_thread_loop()
+
+
+# ------------------------------------------------------------------------------------ #
+def asyncio_run_threadsafe(coro) -> None:
+    ss = SessionSingleton()
+    future = asyncio.run_coroutine_threadsafe(coro, ss.loop)
+    future.result()  # blocks until concurrent future is done
+
+
+# ------------------------------------------------------------------------------------ #
+def run_background_thread() -> None:
+    ss = SessionSingleton()
+    asyncio.set_event_loop(ss.loop)
+    ss.loop.run_forever()
+
+
+# ------------------------------------------------------------------------------------ #
+def start_thread_loop() -> None:
+    ss = SessionSingleton()
+    ss.loop = asyncio.new_event_loop()
+    ss.thread = Thread(target=run_background_thread, daemon=True)
+    ss.thread.start()
+
+
+# ------------------------------------------------------------------------------------ #
+def stop_thread_loop() -> None:
+    ss = SessionSingleton()
+    ss.loop.call_soon_threadsafe(ss.loop.stop)
+
+    force_iter = True
+    while force_iter or ss.loop.is_running():
+        force_iter = False
+        time.sleep(0)
+
+    ss.loop.close()
+    ss.thread.join()

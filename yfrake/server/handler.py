@@ -26,7 +26,7 @@
 #                                                                                      #
 # ==================================================================================== #
 from .. import client
-from ..client.worker import Worker
+from ..client.worker import build_error
 from ..client.exceptions import BadRequestError
 from ..server.utils import convert_multidict
 from aiohttp import web
@@ -48,7 +48,7 @@ async def handler(request: web.Request) -> web.Response:
         data = resp.data
 
     except (NameError, TypeError, KeyError, BadRequestError):
-        error = Worker.build_error(BadRequestError)
+        error = build_error(BadRequestError)
         data = None
 
     result = dict(

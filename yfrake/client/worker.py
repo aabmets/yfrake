@@ -27,54 +27,53 @@
 # ==================================================================================== #
 from .validators import validate_response
 from .exceptions import BadRequestError
-from .session import Session
+from .session import SessionSingleton
 from .paths import paths
 from aiohttp import ClientError
 
 
 # ==================================================================================== #
-class Worker(Session):
-    @classmethod
-    async def request(cls, endpoint: str, kwargs: dict) -> tuple:
-        """
-        The main function responsible for making the
-        web requests to the Yahoo Finance API servers.
-        """
-        path = cls.get_path(endpoint, kwargs)
-        cls.sanitize_booleans_to_strings(kwargs)
-        try:
-            async with cls.session.get(url=path, params=kwargs) as resp:
-                data = await resp.json()
-                await validate_response(data)
-                error = None
-        except (ClientError, BadRequestError) as ex:
-            error = cls.build_error(ex)
-            data = None
-        return data, error
+async def request(endpoint: str, kwargs: dict) -> tuple:
+    """
+    The main function responsible for making the
+    web requests to the Yahoo Finance API servers.
+    """
+    path = get_path(endpoint, kwargs)
+    sanitize_booleans_to_strings(kwargs)
+    try:
+        ss = SessionSingleton()
+        async with ss.session.get(url=path, params=kwargs) as resp:
+            data = await resp.json()
+            await validate_response(data)
+            error = None
+    except (ClientError, BadRequestError) as ex:
+        error = build_error(ex)
+        data = None
+    return data, error
 
-    # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    def get_path(endpoint: str, params: dict) -> str:
-        path = paths.get(endpoint)
-        if '{symbol}' in path:
-            sym = params.pop('symbol', '')
-            path = path.format(symbol=sym)
-        return path
 
-    # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    def sanitize_booleans_to_strings(params: dict) -> None:
-        for key, value in params.items():
-            if isinstance(value, bool):
-                params[key] = str(value).lower()
+# ------------------------------------------------------------------------------------ #
+def get_path(endpoint: str, params: dict) -> str:
+    path = paths.get(endpoint)
+    if '{symbol}' in path:
+        sym = params.pop('symbol', '')
+        path = path.format(symbol=sym)
+    return path
 
-    # ------------------------------------------------------------------------------------ #
-    @staticmethod
-    def build_error(ex=None) -> dict:
-        default_message = 'Internal server error'
-        default_status = 500
-        return dict(
-            name='HTTPError',
-            status=getattr(ex, 'status', default_status),
-            message=getattr(ex, 'message', default_message)
-        )
+
+# ------------------------------------------------------------------------------------ #
+def sanitize_booleans_to_strings(params: dict) -> None:
+    for key, value in params.items():
+        if isinstance(value, bool):
+            params[key] = str(value).lower()
+
+
+# ------------------------------------------------------------------------------------ #
+def build_error(ex=None) -> dict:
+    default_message = 'Internal server error'
+    default_status = 500
+    return dict(
+        name='HTTPError',
+        status=getattr(ex, 'status', default_status),
+        message=getattr(ex, 'message', default_message)
+    )

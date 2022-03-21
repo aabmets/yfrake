@@ -25,8 +25,8 @@
 #   SOFTWARE.                                                                        #
 #                                                                                    #
 # ================================================================================== #
-from .client.client import Client
-from .server.server import Server
+from .client.client import ClientSingleton
+from .server.server import ServerSingleton
 
-client = Client()
-server = Server()
+client = ClientSingleton()
+server = ServerSingleton()

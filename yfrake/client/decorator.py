@@ -25,7 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .session import Session
+from . import session
 import asyncio
 import inspect
 import sys
@@ -60,16 +60,16 @@ class Decorator:
 
             async def a_inner(*args, **kwargs):
                 cls._initialized = True
-                await Session.a_open(**config)
+                await session.open_async(**config)
                 await func(*args, **kwargs)
-                await Session.a_close()
+                await session.close_async()
                 cls._initialized = False
 
             def t_inner(*args, **kwargs):
                 cls._initialized = True
-                Session.t_open(**config)
+                session.open_thread(**config)
                 func(*args, **kwargs)
-                Session.t_close()
+                session.close_thread()
                 cls._initialized = False
 
             cls._async_mode = inspect.iscoroutinefunction(func)

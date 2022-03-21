@@ -25,19 +25,26 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from .decorator import Decorator
 from .return_types.client_response import ClientResponse
 from .return_types.async_results import AsyncResults
 from .return_types.thread_results import ThreadResults
-from .thread_loop import ThreadLoop
-from .decorator import Decorator
-from .endpoints import Endpoints
 from .validators import validate_request
+from .session import SessionSingleton
+from . import endpoints
 import asyncio
 
 
 # ==================================================================================== #
-class Client(Decorator):
-    _err_bad_type = 'Only a list of dicts can be passed into the \'batch_get\' method! (YFrake)'
+class ClientSingleton(Decorator):
+    __instance__ = None
+
+    # Singleton pattern
+    # ------------------------------------------------------------------------------------ #
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = super(ClientSingleton, cls).__new__(cls)
+        return cls.__instance__
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
@@ -61,17 +68,18 @@ class Client(Decorator):
         if not cls._initialized:
             raise RuntimeError(cls._err_cfg_missing)
         validate_request(endpoint, kwargs)
+
         attr = 'get_' + endpoint
-        func = getattr(Endpoints, attr)
+        func = getattr(endpoints, attr)
         resp = ClientResponse(cls._async_mode)
 
         if cls._async_mode:
             future = asyncio.create_task(
                 cls._wrapper(endpoint, kwargs, func, resp))
         else:
+            ss = SessionSingleton()
             future = asyncio.run_coroutine_threadsafe(
-                cls._wrapper(endpoint, kwargs, func, resp),
-                ThreadLoop.loop)
+                cls._wrapper(endpoint, kwargs, func, resp), ss.loop)
         setattr(resp, '_future', future)
         return resp
 
@@ -86,8 +94,6 @@ class Client(Decorator):
         """
         requests = dict()
         for query in queries:
-            if not isinstance(query, dict):
-                raise TypeError(cls._err_bad_type)
             resp = cls.get(**query)
             fut = resp.future
             requests[fut] = resp
