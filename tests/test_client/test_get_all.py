@@ -10,7 +10,7 @@ if sys.platform == 'win32':
 
 
 async def test_async_object():
-    @client.configure()
+    @client.session
     async def inner():
         results = client.get_all(symbol='msft')
         async for resp in results.gather():

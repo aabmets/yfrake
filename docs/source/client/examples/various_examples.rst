@@ -68,7 +68,7 @@ The following example creates a batch request of 3 endpoints for 3 symbols:
        results = client.batch_get(all_queries)
        results.wait()
 
-       count = len(all_queries)
+       count = len(results)
        print(f'ClientResponse objects: {count}')  # 9
 
    if __name__ == '__main__':

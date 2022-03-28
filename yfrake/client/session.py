@@ -25,6 +25,7 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from ..config.config import ConfigSingleton
 from .paths import base_url
 from threading import Thread
 import aiohttp
@@ -41,9 +42,9 @@ class SessionSingleton:
     only be a single session active at any time.
     """
     # ------------------------------------------------------------------------------------ #
-    timeout: aiohttp.ClientTimeout | None = None
-    session: aiohttp.ClientSession | None = None
-    connector: aiohttp.TCPConnector | None = None
+    timeout: aiohttp.ClientTimeout = None
+    session: aiohttp.ClientSession = None
+    connector: aiohttp.TCPConnector = None
     loop: asyncio.AbstractEventLoop = None
     thread: Thread = None
     __instance__ = None
@@ -57,10 +58,11 @@ class SessionSingleton:
 
 
 # ==================================================================================== #
-async def open_async(limit, timeout) -> None:
+async def open_async() -> None:
+    config = ConfigSingleton()
     ss = SessionSingleton()
-    ss.timeout = aiohttp.ClientTimeout(total=timeout)
-    ss.connector = aiohttp.TCPConnector(limit=limit)
+    ss.timeout = aiohttp.ClientTimeout(total=config.timeout)
+    ss.connector = aiohttp.TCPConnector(limit=config.limit)
     ss.session = aiohttp.ClientSession(
         connector=ss.connector,
         timeout=ss.timeout,
@@ -76,9 +78,9 @@ async def close_async() -> None:
 
 
 # ------------------------------------------------------------------------------------ #
-def open_thread(limit, timeout) -> None:
+def open_thread() -> None:
     start_thread_loop()
-    coro = open_async(limit=limit, timeout=timeout)
+    coro = open_async()
     asyncio_run_threadsafe(coro)  # blocking
 
 

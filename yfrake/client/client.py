@@ -31,12 +31,14 @@ from .return_types.async_results import AsyncResults
 from .return_types.thread_results import ThreadResults
 from .validators import validate_request
 from .session import SessionSingleton
+from .cache import CacheSingleton
 from . import endpoints
 import asyncio
 
 
 # ==================================================================================== #
 class ClientSingleton(Decorator):
+    __cache__ = CacheSingleton()
     __instance__ = None
 
     # Singleton pattern
@@ -48,8 +50,12 @@ class ClientSingleton(Decorator):
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    async def _wrapper(cls, endpoint, kwargs, func, resp) -> ClientResponse:
-        result = await func(endpoint, kwargs)
+    async def _wrapper(cls, endpoint, params, func, resp) -> ClientResponse:
+        # result = await cls.__cache__.get(endpoint, params)
+        # if not result:
+        #     result = await func(endpoint, params)
+        #     await cls.__cache__.set(endpoint, params, result)
+        result = await func(endpoint, params)
         setattr(resp, '_endpoint', result['endpoint'])
         setattr(resp, '_error', result['error'])
         setattr(resp, '_data', result['data'])

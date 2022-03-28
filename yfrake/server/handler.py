@@ -28,7 +28,7 @@
 from .. import client
 from ..client.worker import build_error
 from ..client.exceptions import BadRequestError
-from ..server.utils import convert_multidict
+from multidict import MultiDictProxy
 from aiohttp import web
 import json
 
@@ -58,3 +58,12 @@ async def handler(request: web.Request) -> web.Response:
     )
     text = json.dumps(result, indent=3)
     return web.Response(text=text)
+
+
+# ------------------------------------------------------------------------------------ #
+def convert_multidict(multidict: MultiDictProxy) -> dict:
+    out = dict()
+    for key in multidict.keys():
+        if key not in out:
+            out[key] = multidict[key]
+    return out

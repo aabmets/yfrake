@@ -13,7 +13,7 @@ if sys.platform == 'win32':
 
 
 def test_client_response_1():
-    @client.configure()
+    @client.session
     def inner():
         resp = client.get(endpoint='quote_type', symbol='msft')
         resp.wait()
@@ -23,7 +23,7 @@ def test_client_response_1():
 
 
 async def test_client_response_2():
-    @client.configure()
+    @client.session
     async def inner():
         resp = client.get(endpoint='quote_type', symbol='msft')
         await resp.wait()
@@ -33,13 +33,13 @@ async def test_client_response_2():
 
 
 def test_client_response_3():
-    @client.configure()
+    @client.session
     def inner():
         resp = client.get(endpoint='quote_type', symbol='msft')
         resp.wait()
         for attr in ['event', 'future']:
-            with pytest.raises(RuntimeError):
+            with pytest.raises(TypeError):
                 setattr(resp, attr, str())
-            with pytest.raises(RuntimeError):
+            with pytest.raises(TypeError):
                 delattr(resp, attr)
     inner()

@@ -19,23 +19,23 @@ def test_resp_attributes():
 
 def test_resp_endpoint_exceptions():
     resp = BaseResponse()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         resp.endpoint = str()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         del resp.endpoint
 
 
 def test_resp_error_exceptions():
     resp = BaseResponse()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         resp.error = dict()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         del resp.error
 
 
 def test_resp_data_exceptions():
     resp = BaseResponse()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         resp.data = dict()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(TypeError):
         del resp.data

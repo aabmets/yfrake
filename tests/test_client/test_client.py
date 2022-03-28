@@ -19,17 +19,17 @@ def test_client_not_configured():
 
 
 def test_client_already_configured():
-    @client.configure()
+    @client.session
     def inner():
         with pytest.raises(RuntimeError):
-            @client.configure()
+            @client.session
             def failure():
                 pass
     inner()
 
 
 def test_invalid_endpoint():
-    @client.configure()
+    @client.session
     def inner():
         args = dict(endpoint='THIS_IS_INVALID', symbol='msft')
         with pytest.raises(NameError):
@@ -38,7 +38,7 @@ def test_invalid_endpoint():
 
 
 def test_invalid_param():
-    @client.configure()
+    @client.session
     def inner():
         args = dict(endpoint='quote_type', INVALID_KEY='msft')
         with pytest.raises(KeyError):
@@ -47,7 +47,7 @@ def test_invalid_param():
 
 
 def test_invalid_datatype():
-    @client.configure()
+    @client.session
     def inner():
         args = dict(endpoint='quote_type', symbol=1000)
         with pytest.raises(TypeError):
@@ -56,7 +56,7 @@ def test_invalid_datatype():
 
 
 def test_invalid_symbol():
-    @client.configure()
+    @client.session
     def inner():
         args = dict(endpoint='quote_type', symbol='THIS_IS_INVALID')
         resp = client.get(**args)
@@ -67,7 +67,7 @@ def test_invalid_symbol():
 
 
 async def test_async_object():
-    @client.configure()
+    @client.session
     async def inner():
         args = dict(endpoint='quote_type', symbol='msft')
         resp = client.get(**args)
@@ -79,7 +79,7 @@ async def test_async_object():
 
 
 async def test_singleton_instantiation():
-    @client.configure()
+    @client.session
     async def inner():
         _client = ClientSingleton()
         args = dict(endpoint='quote_type', symbol='msft')

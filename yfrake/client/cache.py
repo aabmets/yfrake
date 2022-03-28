@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    helpers.py - This file is part of the YFrake package.                             #
+#    cache.py - This file is part of the YFrake package.                               #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,51 +25,52 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from aiohttp_swagger3 import SwaggerFile
-from aiohttp_swagger3 import SwaggerUiSettings
-from aiohttp import web
-import aiohttp_cors
+from collections import OrderedDict
+import asyncio
+import hashlib
+import pickle
 
 
 # ==================================================================================== #
-def create_swagger(app, spec):
-    app['storage'] = dict()
-    swagger = SwaggerFile(
-        app=app,
-        spec_file=str(spec),
-        swagger_ui_settings=SwaggerUiSettings(path="/"),
-        validate=False
-    )
-    return swagger
+class CacheSingleton:
+    __instance__ = None
 
+    # Singleton pattern
+    # ------------------------------------------------------------------------------------ #
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = super(CacheSingleton, cls).__new__(cls)
+        return cls.__instance__
 
-# ------------------------------------------------------------------------------------ #
-def create_cors(app):
-    options = aiohttp_cors.ResourceOptions(
-        allow_credentials=True,
-        expose_headers="*",
-        allow_headers="*"
-    )
-    cors = aiohttp_cors.setup(
-        app=app,
-        defaults={'*': options}
-    )
-    return cors
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self):
+        if not getattr(self, '__cache__', False):
+            self.__cache__ = OrderedDict()
+            self.__maxsize__ = 0
+            self.__size__ = 0
 
+    # ------------------------------------------------------------------------------------ #
+    @staticmethod
+    def calculate_hex_digest(*args) -> str:
+        jar = pickle.dumps(args)
+        key = hashlib.sha3_256(jar)
+        return key.hexdigest()
 
-# ------------------------------------------------------------------------------------ #
-def create_site(runner, config):
-    site = web.TCPSite(
-        runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog
-    )
-    return site
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    async def get(cls, endpoint: str, params: dict) -> dict | None:
+        digest: str = cls.calculate_hex_digest(endpoint, params)
+        jar = await cls.__cache__.get(key=digest, default=None)
+        return pickle.loads(jar) if jar else None
 
+    # ------------------------------------------------------------------------------------ #
+    @classmethod
+    async def set(cls, endpoint: str, params: dict, result: dict) -> None:
+        digest: str = cls.calculate_hex_digest(endpoint, params)
+        jar = pickle.dumps(result)
+        ttl = cls.calculate_ttl(endpoint, params)
 
-# ------------------------------------------------------------------------------------ #
-def notify_user(host, port):
-    msg = f'Running YFrake server at: http://{host}:{port}'
-    sep = '-' * len(msg)
-    print(sep + '\n' + msg + '\n' + sep)
+    # ------------------------------------------------------------------------------------ #
+    @staticmethod
+    async def calculate_ttl(endpoint: str, params: dict) -> None:
+        pass

@@ -1,9 +1,6 @@
+from yfrake.server.runner import server_runner
 import asyncio
-import pytest
 import sys
-
-with pytest.warns(RuntimeWarning):
-    from yfrake.server import runner
 
 
 if sys.platform == 'win32':
@@ -13,4 +10,4 @@ if sys.platform == 'win32':
 
 
 async def test_runner():
-    await runner.main()
+    await server_runner()

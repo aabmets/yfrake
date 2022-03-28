@@ -19,7 +19,7 @@ queries = [
 
 
 def test_batch_get_1():
-    @client.configure()
+    @client.session
     def inner():
         results = client.batch_get(queries)
         results.wait()
@@ -30,7 +30,7 @@ def test_batch_get_1():
 
 
 def test_batch_get_2():
-    @client.configure()
+    @client.session
     def inner():
         results = client.batch_get(queries)
         while results.pending():
@@ -42,7 +42,7 @@ def test_batch_get_2():
 
 
 def test_batch_get_3():
-    @client.configure()
+    @client.session
     def inner():
         results = client.batch_get(queries)
         for resp in results.gather():
@@ -52,7 +52,7 @@ def test_batch_get_3():
 
 
 def test_batch_get_4():
-    @client.configure()
+    @client.session
     def inner():
         results = client.batch_get(queries)
         for resp in results.as_completed():
@@ -62,7 +62,7 @@ def test_batch_get_4():
 
 
 async def test_batch_get_5():
-    @client.configure()
+    @client.session
     async def inner():
         results = client.batch_get(queries)
         await results.wait()
@@ -73,7 +73,7 @@ async def test_batch_get_5():
 
 
 async def test_batch_get_6():
-    @client.configure()
+    @client.session
     async def inner():
         results = client.batch_get(queries)
         while results.pending():
@@ -85,7 +85,7 @@ async def test_batch_get_6():
 
 
 async def test_batch_get_7():
-    @client.configure()
+    @client.session
     async def inner():
         results = client.batch_get(queries)
         async for resp in results.gather():
@@ -95,7 +95,7 @@ async def test_batch_get_7():
 
 
 async def test_batch_get_8():
-    @client.configure()
+    @client.session
     async def inner():
         results = client.batch_get(queries)
         async for resp in results.as_completed():
@@ -105,7 +105,7 @@ async def test_batch_get_8():
 
 
 async def test_batch_get_9():
-    @client.configure()
+    @client.session
     async def inner():
         results = client.batch_get(queries)
         await results.wait()
@@ -120,7 +120,7 @@ async def test_batch_get_9():
 
 
 async def test_batch_get_10():
-    @client.configure()
+    @client.session
     async def inner():
         _queries = ['asdfg']
         with pytest.raises(TypeError):

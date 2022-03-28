@@ -1,5 +1,4 @@
 from yfrake.client.validators import validate_request
-from yfrake.client.exceptions import BadRequestError
 import pytest
 
 

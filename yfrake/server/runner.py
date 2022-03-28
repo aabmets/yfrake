@@ -26,35 +26,19 @@
 #                                                                                      #
 # ==================================================================================== #
 from yfrake.openapi.utils import get_spec_file_path
-from yfrake.server.utils import get_runtime_config
-from yfrake.server.utils import get_default_config
+from yfrake.config.utils import get_runtime_args
 from yfrake.server.handler import handler
 from yfrake.server import helpers
-from yfrake import client
+from yfrake import client, config
 from aiohttp import web
-import warnings
 import asyncio
 
 
 # ==================================================================================== #
-if __name__ != '__main__':  # pragma: no branch
-    message = "\n" \
-        "╔═══════════════════════════════════════════════════╗\n" \
-        "║ The 'runner.py' file is not meant to be imported! ║\n" \
-        "║ Use 'from yfrake import server' instead! (YFrake) ║\n" \
-        "╚═══════════════════════════════════════════════════╝\n"
-    warnings.warn(message, category=RuntimeWarning, stacklevel=100)
-
-
-# ------------------------------------------------------------------------------------ #
-@client.configure()
-async def main(run_forever=False):
+@client.session
+async def server_runner(run_forever=False):
     spec = get_spec_file_path()
     app = web.Application()
-    config = {
-        True: get_runtime_config,
-        False: get_default_config
-    }[run_forever]()
 
     swagger = helpers.create_swagger(app, spec)
     routes = [web.get('/{any}', handler)]
@@ -68,14 +52,10 @@ async def main(run_forever=False):
     runner = web.AppRunner(app=app)
     await runner.setup()
 
-    site = web.TCPSite(
-        runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog)
+    site = helpers.create_site(runner, config)
     await site.start()
 
-    helpers.print_notification(config.host, config.port)
+    helpers.notify_user(config.host, config.port)
     while run_forever:  # pragma: no cover
         await asyncio.sleep(3600)
 
@@ -85,5 +65,7 @@ async def main(run_forever=False):
 
 # ------------------------------------------------------------------------------------ #
 if __name__ == '__main__':
-    coro = main(run_forever=True)
+    args = get_runtime_args()
+    config.file = args.get('config_file')
+    coro = server_runner(run_forever=True)
     asyncio.run(coro)

@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    helpers.py - This file is part of the YFrake package.                             #
+#    __main__.py - This file is part of the YFrake package.                            #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,51 +25,26 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from aiohttp_swagger3 import SwaggerFile
-from aiohttp_swagger3 import SwaggerUiSettings
-from aiohttp import web
-import aiohttp_cors
+from .server.runner import server_runner
+from .config.config import ConfigSingleton
+from .config import utils
+from pathlib import Path
+import asyncio
 
 
 # ==================================================================================== #
-def create_swagger(app, spec):
-    app['storage'] = dict()
-    swagger = SwaggerFile(
-        app=app,
-        spec_file=str(spec),
-        swagger_ui_settings=SwaggerUiSettings(path="/"),
-        validate=False
-    )
-    return swagger
+if __name__ == '__main__':
+    args = utils.get_runtime_args()
+    run_server = args.get('run_server')
+    config_file = args.get('config_file')
 
+    if config_file == 'here':
+        config_file = utils.get_cwd_config_path()
+        if not config_file.exists():
+            utils.copy_default_config_to(config_file)
 
-# ------------------------------------------------------------------------------------ #
-def create_cors(app):
-    options = aiohttp_cors.ResourceOptions(
-        allow_credentials=True,
-        expose_headers="*",
-        allow_headers="*"
-    )
-    cors = aiohttp_cors.setup(
-        app=app,
-        defaults={'*': options}
-    )
-    return cors
-
-
-# ------------------------------------------------------------------------------------ #
-def create_site(runner, config):
-    site = web.TCPSite(
-        runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog
-    )
-    return site
-
-
-# ------------------------------------------------------------------------------------ #
-def notify_user(host, port):
-    msg = f'Running YFrake server at: http://{host}:{port}'
-    sep = '-' * len(msg)
-    print(sep + '\n' + msg + '\n' + sep)
+    if run_server is True:
+        config = ConfigSingleton()
+        config.file = Path(config_file)
+        coro = server_runner(run_forever=True)
+        asyncio.run(coro)

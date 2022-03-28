@@ -6,6 +6,8 @@ source = yfrake
 omit =
     yfrake/openapi/modules/*
     yfrake/server/handler.py
+    yfrake/__main__.py
+    yfrake/__init__.py
 
 [report]
 skip_empty = True

@@ -25,25 +25,55 @@
 #   SOFTWARE.                                                                        #
 #                                                                                    #
 # ================================================================================== #
-from .client.client import ClientSingleton
-from .server.server import ServerSingleton
-from .config.config import ConfigSingleton
-
-client = ClientSingleton()
-server = ServerSingleton()
-config = ConfigSingleton()
-
-
-# ---------------------------------------------------------------------------------- #
-def _verify_python_version():
-    import sys
-    major = sys.version_info.major
-    minor = sys.version_info.minor
-
-    if major < 3 or major == 3 and minor < 10:
-        msg = 'Python version 3.10 or higher required! (YFrake)'
-        raise RuntimeError(msg)
-
-
-# ---------------------------------------------------------------------------------- #
-_verify_python_version()
+config_file_name = 'yfrake_settings.ini'
+valid_config = {
+    'client': {
+        'limit':     int(),
+        'timeout':   int()
+    },
+    'server': {
+        'host':      str(),
+        'port':      int(),
+        'backlog':   int()
+    },
+    'other': {
+        'cache_size_mb': int()
+    },
+    'cache_ttl': {
+        'historical_prices':       int(),
+        'options':                 int(),
+        'insights':                int(),
+        'quotes_overview':         int(),
+        'esg_chart':               int(),
+        'quote_type':              int(),
+        'news':                    int(),
+        'recommendations':         int(),
+        'shares_outstanding':      int(),
+        'validate_symbols':        int(),
+        'market_summary':          int(),
+        'trending_symbols':        int(),
+        'currencies':              int(),
+        'esg_scores':              int(),
+        'purchase_activity':       int(),
+        'earnings':                int(),
+        'price_overview':          int(),
+        'calendar_events':         int(),
+        'company_overview':        int(),
+        'sec_filings':             int(),
+        'detailed_summary':        int(),
+        'financials':              int(),
+        'recommendation_trend':    int(),
+        'ratings_history':         int(),
+        'earnings_history':        int(),
+        'earnings_trend':          int(),
+        'key_statistics':          int(),
+        'income_statements':       int(),
+        'cashflow_statements':     int(),
+        'balance_statements':      int(),
+        'institution_ownership':   int(),
+        'fund_ownership':          int(),
+        'major_holders':           int(),
+        'insider_transactions':    int(),
+        'insider_holders':         int()
+    }
+}

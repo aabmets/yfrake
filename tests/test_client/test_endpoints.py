@@ -1,5 +1,5 @@
-from good_queries import good_queries
-from bad_queries import bad_queries
+from tests.test_client.queries.good_queries import good_queries
+from tests.test_client.queries.bad_queries import bad_queries
 from yfrake import client
 import asyncio
 import pytest
@@ -17,7 +17,7 @@ test_queries = good_queries + bad_queries
 
 @pytest.mark.parametrize('args', test_queries)
 async def test_client_async(args):
-    @client.configure()
+    @client.session
     async def inner():
         query = args.get('query')
         endpoint = query.get('endpoint')

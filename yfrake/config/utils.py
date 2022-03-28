@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    helpers.py - This file is part of the YFrake package.                             #
+#    utils.py - This file is part of the YFrake package.                               #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,51 +25,55 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from aiohttp_swagger3 import SwaggerFile
-from aiohttp_swagger3 import SwaggerUiSettings
-from aiohttp import web
-import aiohttp_cors
+from . import config_file_name
+from argparse import ArgumentParser
+from configparser import ConfigParser
+from pathlib import Path
+import shutil
+import os
 
 
 # ==================================================================================== #
-def create_swagger(app, spec):
-    app['storage'] = dict()
-    swagger = SwaggerFile(
-        app=app,
-        spec_file=str(spec),
-        swagger_ui_settings=SwaggerUiSettings(path="/"),
-        validate=False
-    )
-    return swagger
+def read_config_file(path: Path) -> dict:
+    cp = ConfigParser()
+    cp.read(path)
+    config = dict()
+    for section in cp.sections():
+        sect = section.lower()
+        config[section.lower()] = dict()
+        for key, value in cp.items(section):
+            try:
+                value = int(value)
+            except ValueError:
+                pass
+            config[sect][key] = value
+    return config
 
 
 # ------------------------------------------------------------------------------------ #
-def create_cors(app):
-    options = aiohttp_cors.ResourceOptions(
-        allow_credentials=True,
-        expose_headers="*",
-        allow_headers="*"
+def get_runtime_args() -> dict:  # pragma: no cover
+    default = get_default_config_path()
+    parser = ArgumentParser()
+    parser.add_argument('--run-server', action='store_true', default=False)
+    parser.add_argument('--config-file', type=str, default=str(default))
+    ns = parser.parse_args()
+    return dict(
+        run_server=ns.run_server,
+        config_file=ns.config_file
     )
-    cors = aiohttp_cors.setup(
-        app=app,
-        defaults={'*': options}
-    )
-    return cors
 
 
 # ------------------------------------------------------------------------------------ #
-def create_site(runner, config):
-    site = web.TCPSite(
-        runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog
-    )
-    return site
+def get_default_config_path() -> Path:
+    return Path(__file__).with_name(config_file_name).resolve()
 
 
 # ------------------------------------------------------------------------------------ #
-def notify_user(host, port):
-    msg = f'Running YFrake server at: http://{host}:{port}'
-    sep = '-' * len(msg)
-    print(sep + '\n' + msg + '\n' + sep)
+def get_cwd_config_path() -> Path:
+    return Path(os.getcwd()).joinpath(config_file_name).resolve()
+
+
+# ------------------------------------------------------------------------------------ #
+def copy_default_config_to(dest: Path) -> None:  # pragma: no cover
+    default_config = get_default_config_path()
+    shutil.copy(default_config, dest)

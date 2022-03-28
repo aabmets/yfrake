@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    validators.py - This file is part of the YFrake package.                           #
+#    validators.py - This file is part of the YFrake package.                          #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #

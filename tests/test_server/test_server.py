@@ -21,10 +21,11 @@ async def test_server():
 
     url = 'http://localhost:8888/quote_type'
     params = dict(symbol='msft')
+
     async with aiohttp.ClientSession() as session:
         async with session.get(url=url, params=params) as resp:
-            data = await resp.text(encoding='utf-8')
-    resp = json.loads(data)
+            data = await resp.text()
+            resp = json.loads(data)
 
     endpoint = resp.get('endpoint', False)
     error = resp.get('error', False)

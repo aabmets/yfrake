@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    server.py - This file is part of the YFrake package.                              #
+#    base_config.py - This file is part of the YFrake package.                         #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,69 +25,97 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from ..config.config import ConfigSingleton
-from pathlib import Path
-import subprocess
-import psutil
-import sys
-
-
-# ==================================================================================== #
-class ServerSingleton:
-    """
-    This class contains methods to control
-    the YFrake server programmatically.
-    """
-    # ------------------------------------------------------------------------------------ #
-    _err_msg_1 = 'Server is already running! (YFrake)'
-    _err_msg_2 = 'Cannot stop server which is not running! (YFrake)'
-    _server: subprocess.Popen = None
-    _is_running: bool = False
-    __instance__ = None
-
-    # Singleton pattern
-    # ------------------------------------------------------------------------------------ #
-    def __new__(cls):
-        if not cls.__instance__:
-            cls.__instance__ = super(ServerSingleton, cls).__new__(cls)
-        return cls.__instance__
+class BaseConfig:
+    _err_msg = 'Operation not available on config object attributes! (YFrake)'
+    _config: dict = None
 
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def is_running(cls) -> bool:
-        if isinstance(cls._server, subprocess.Popen):
-            return cls._server.poll() is None
-        return False
+    @property
+    def limit(self) -> int:
+        return self._config['client']['limit']
+
+    @limit.setter
+    def limit(self, _) -> None:
+        raise TypeError(self._err_msg)
+
+    @limit.deleter
+    def limit(self) -> None:
+        raise TypeError(self._err_msg)
 
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def start(cls) -> None:
-        if cls.is_running():
-            raise RuntimeError(cls._err_msg_1)
-        config = ConfigSingleton()
-        runner_file = get_runner_file_path()
-        args = [
-            sys.executable, runner_file,
-            '--config-file', str(config.file)
-        ]
-        cls._server = subprocess.Popen(args)
+    @property
+    def timeout(self) -> int:
+        return self._config['client']['timeout']
+
+    @timeout.setter
+    def timeout(self, _) -> None:
+        raise TypeError(self._err_msg)
+
+    @timeout.deleter
+    def timeout(self) -> None:
+        raise TypeError(self._err_msg)
 
     # ------------------------------------------------------------------------------------ #
-    @classmethod
-    def stop(cls) -> None:
-        if not cls.is_running():
-            raise RuntimeError(cls._err_msg_2)
-        try:
-            parent = psutil.Process(cls._server.pid)
-            children = parent.children(recursive=True)
-            procs = children + [parent]
-            for proc in procs:
-                proc.kill()
-        except psutil.NoSuchProcess:  # pragma: no cover
-            return
+    @property
+    def host(self) -> str:
+        return self._config['server']['host']
 
+    @host.setter
+    def host(self, _) -> None:
+        raise TypeError(self._err_msg)
 
-# ==================================================================================== #
-def get_runner_file_path() -> str:
-    runner_file = Path(__file__).with_name('runner.py').resolve()
-    return str(runner_file)
+    @host.deleter
+    def host(self) -> None:
+        raise TypeError(self._err_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def port(self) -> int:
+        return self._config['server']['port']
+
+    @port.setter
+    def port(self, _) -> None:
+        raise TypeError(self._err_msg)
+
+    @port.deleter
+    def port(self) -> None:
+        raise TypeError(self._err_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def backlog(self) -> int:
+        return self._config['server']['backlog']
+
+    @backlog.setter
+    def backlog(self, _) -> None:
+        raise TypeError(self._err_msg)
+
+    @backlog.deleter
+    def backlog(self) -> None:
+        raise TypeError(self._err_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def cache_size_mb(self) -> int:
+        return self._config['other']['cache_size_mb']
+
+    @cache_size_mb.setter
+    def cache_size_mb(self, _) -> None:
+        raise TypeError(self._err_msg)
+
+    @cache_size_mb.deleter
+    def cache_size_mb(self) -> None:
+        raise TypeError(self._err_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def cache_ttl(self) -> dict:
+        return dict(self._config['cache_ttl'])
+
+    @cache_ttl.setter
+    def cache_ttl(self, _) -> None:
+        raise TypeError(self._err_msg)
+
+    @cache_ttl.deleter
+    def cache_ttl(self) -> None:
+        raise TypeError(self._err_msg)

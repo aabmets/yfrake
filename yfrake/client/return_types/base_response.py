@@ -40,7 +40,7 @@ class BaseResponse:
     # ------------------------------------------------------------------------------------ #
     @classmethod
     def _raise_error(cls) -> None:
-        raise RuntimeError(cls._err_msg)
+        raise TypeError(cls._err_msg)
 
     # ------------------------------------------------------------------------------------ #
     @property

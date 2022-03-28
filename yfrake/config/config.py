@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    helpers.py - This file is part of the YFrake package.                             #
+#    config.py - This file is part of the YFrake package.                              #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,51 +25,59 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from aiohttp_swagger3 import SwaggerFile
-from aiohttp_swagger3 import SwaggerUiSettings
-from aiohttp import web
-import aiohttp_cors
+from .base_config import BaseConfig
+from .validator import validate_config
+from .utils import read_config_file
+from .utils import get_default_config_path
+from .utils import get_cwd_config_path
+from pathlib import Path
 
 
 # ==================================================================================== #
-def create_swagger(app, spec):
-    app['storage'] = dict()
-    swagger = SwaggerFile(
-        app=app,
-        spec_file=str(spec),
-        swagger_ui_settings=SwaggerUiSettings(path="/"),
-        validate=False
-    )
-    return swagger
+class ConfigSingleton(BaseConfig):
+    HERE = get_cwd_config_path()
+    _path: Path = None
+    __instance__ = None
 
+    # Singleton pattern
+    # ------------------------------------------------------------------------------------ #
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = super(ConfigSingleton, cls).__new__(cls)
+        return cls.__instance__
 
-# ------------------------------------------------------------------------------------ #
-def create_cors(app):
-    options = aiohttp_cors.ResourceOptions(
-        allow_credentials=True,
-        expose_headers="*",
-        allow_headers="*"
-    )
-    cors = aiohttp_cors.setup(
-        app=app,
-        defaults={'*': options}
-    )
-    return cors
+    # ------------------------------------------------------------------------------------ #
+    def __init__(self) -> None:
+        if not self.file:
+            self.file = get_default_config_path()
 
+    # ------------------------------------------------------------------------------------ #
+    def __iter__(self):
+        for key in self._config.keys():
+            yield key
 
-# ------------------------------------------------------------------------------------ #
-def create_site(runner, config):
-    site = web.TCPSite(
-        runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog
-    )
-    return site
+    # ------------------------------------------------------------------------------------ #
+    def __getitem__(self, key) -> dict:
+        return dict(self._config[key])  # break reference
 
+    def __setitem__(self, key, value) -> None:
+        raise TypeError(self._err_msg)
 
-# ------------------------------------------------------------------------------------ #
-def notify_user(host, port):
-    msg = f'Running YFrake server at: http://{host}:{port}'
-    sep = '-' * len(msg)
-    print(sep + '\n' + msg + '\n' + sep)
+    def __delitem__(self, key) -> None:
+        raise TypeError(self._err_msg)
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def file(self) -> Path:
+        return self._path
+
+    @file.setter
+    def file(self, path: Path) -> None:
+        config = read_config_file(path)
+        validate_config(config)
+        self._config = config
+        self._path = path
+
+    @file.deleter
+    def file(self) -> None:
+        raise TypeError(self._err_msg)

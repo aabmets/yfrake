@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    helpers.py - This file is part of the YFrake package.                             #
+#    validator.py - This file is part of the YFrake package.                           #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,51 +25,38 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from aiohttp_swagger3 import SwaggerFile
-from aiohttp_swagger3 import SwaggerUiSettings
-from aiohttp import web
-import aiohttp_cors
+from . import valid_config
 
 
 # ==================================================================================== #
-def create_swagger(app, spec):
-    app['storage'] = dict()
-    swagger = SwaggerFile(
-        app=app,
-        spec_file=str(spec),
-        swagger_ui_settings=SwaggerUiSettings(path="/"),
-        validate=False
-    )
-    return swagger
+_err_msg_1 = 'Wrong or missing sections in the config file! (YFrake)'
+_err_msg_2 = 'Wrong or missing fields in the config file! (YFrake)'
+_err_msg_3 = 'Incorrect field type in the config file! (YFrake)'
+
+
+# ==================================================================================== #
+def validate_config(config: dict) -> None:
+    for section in valid_config:
+        test_section(config, section)
+        for item in valid_config[section].items():
+            test_item(config, section, item)
+
+    for section in config:
+        test_section(valid_config, section)
+        for item in config[section].items():
+            test_item(valid_config, section, item)
 
 
 # ------------------------------------------------------------------------------------ #
-def create_cors(app):
-    options = aiohttp_cors.ResourceOptions(
-        allow_credentials=True,
-        expose_headers="*",
-        allow_headers="*"
-    )
-    cors = aiohttp_cors.setup(
-        app=app,
-        defaults={'*': options}
-    )
-    return cors
+def test_section(config, section) -> None:
+    if section not in config:
+        raise AttributeError(_err_msg_1)
 
 
 # ------------------------------------------------------------------------------------ #
-def create_site(runner, config):
-    site = web.TCPSite(
-        runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog
-    )
-    return site
-
-
-# ------------------------------------------------------------------------------------ #
-def notify_user(host, port):
-    msg = f'Running YFrake server at: http://{host}:{port}'
-    sep = '-' * len(msg)
-    print(sep + '\n' + msg + '\n' + sep)
+def test_item(config, section, item) -> None:
+    key, value = item
+    if key not in config[section]:
+        raise KeyError(_err_msg_2)
+    if not isinstance(config[section][key], type(value)):
+        raise ValueError(_err_msg_3)

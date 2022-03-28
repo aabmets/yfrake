@@ -41,7 +41,7 @@ class Decorator:
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    def configure(cls, limit: int = 64, timeout: int = 2):
+    def session(cls, func):
         """
         This decorator opens and closes a session to
         the Yahoo Finance API servers. Other methods
@@ -55,23 +55,19 @@ class Decorator:
             policy = asyncio.WindowsSelectorEventLoopPolicy()
             asyncio.set_event_loop_policy(policy)
 
-        def decorator(func):
-            config = dict(limit=limit, timeout=timeout)
+        async def a_inner(*args, **kwargs) -> None:
+            cls._initialized = True
+            await session.open_async()
+            await func(*args, **kwargs)
+            await session.close_async()
+            cls._initialized = False
 
-            async def a_inner(*args, **kwargs):
-                cls._initialized = True
-                await session.open_async(**config)
-                await func(*args, **kwargs)
-                await session.close_async()
-                cls._initialized = False
+        def t_inner(*args, **kwargs) -> None:
+            cls._initialized = True
+            session.open_thread()
+            func(*args, **kwargs)
+            session.close_thread()
+            cls._initialized = False
 
-            def t_inner(*args, **kwargs):
-                cls._initialized = True
-                session.open_thread(**config)
-                func(*args, **kwargs)
-                session.close_thread()
-                cls._initialized = False
-
-            cls._async_mode = inspect.iscoroutinefunction(func)
-            return a_inner if cls._async_mode else t_inner
-        return decorator
+        cls._async_mode = inspect.iscoroutinefunction(func)
+        return a_inner if cls._async_mode else t_inner
