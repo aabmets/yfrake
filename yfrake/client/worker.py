@@ -28,7 +28,7 @@
 from .validators import validate_response
 from .exceptions import BadRequestError
 from .session import SessionSingleton
-from .paths import paths
+from . import paths
 from aiohttp import ClientError
 
 

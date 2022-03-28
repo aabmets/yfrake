@@ -27,7 +27,7 @@
 # ==================================================================================== #
 from ..openapi.modules import param_specs
 from .exceptions import BadRequestError
-from .paths import paths
+from . import paths
 
 
 # ==================================================================================== #

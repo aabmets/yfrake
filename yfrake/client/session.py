@@ -26,7 +26,7 @@
 #                                                                                      #
 # ==================================================================================== #
 from ..config.config import ConfigSingleton
-from .paths import base_url
+from . import base_url
 from threading import Thread
 import aiohttp
 import asyncio
