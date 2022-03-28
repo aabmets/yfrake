@@ -25,9 +25,31 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from pathlib import Path
+
+
+# ==================================================================================== #
 class BaseConfig:
-    _err_msg = 'Operation not available on config object attributes! (YFrake)'
-    _config: dict = None
+    _err_not_available = 'Operation not available on config object attributes! (YFrake)'
+    _config = dict()
+    _path = Path()
+
+    # ------------------------------------------------------------------------------------ #
+    def _read_config_from(self, path: Path) -> None:
+        raise NotImplementedError
+
+    # ------------------------------------------------------------------------------------ #
+    @property
+    def file(self) -> Path:
+        return self._path
+
+    @file.setter
+    def file(self, path: Path | str) -> None:
+        self._read_config_from(Path(path))
+
+    @file.deleter
+    def file(self) -> None:
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -36,11 +58,11 @@ class BaseConfig:
 
     @limit.setter
     def limit(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @limit.deleter
     def limit(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -49,11 +71,11 @@ class BaseConfig:
 
     @timeout.setter
     def timeout(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @timeout.deleter
     def timeout(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -62,11 +84,11 @@ class BaseConfig:
 
     @host.setter
     def host(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @host.deleter
     def host(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -75,11 +97,11 @@ class BaseConfig:
 
     @port.setter
     def port(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @port.deleter
     def port(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -88,11 +110,11 @@ class BaseConfig:
 
     @backlog.setter
     def backlog(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @backlog.deleter
     def backlog(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -101,11 +123,11 @@ class BaseConfig:
 
     @cache_size_mb.setter
     def cache_size_mb(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @cache_size_mb.deleter
     def cache_size_mb(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     # ------------------------------------------------------------------------------------ #
     @property
@@ -114,8 +136,8 @@ class BaseConfig:
 
     @cache_ttl.setter
     def cache_ttl(self, _) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)
 
     @cache_ttl.deleter
     def cache_ttl(self) -> None:
-        raise TypeError(self._err_msg)
+        raise TypeError(self._err_not_available)

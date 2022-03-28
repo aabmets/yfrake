@@ -25,18 +25,19 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from . import utils
 from .base_config import BaseConfig
 from .validator import validate_config
-from .utils import read_config_file
-from .utils import get_default_config_path
-from .utils import get_cwd_config_path
+from configparser import ConfigParser
 from pathlib import Path
 
 
 # ==================================================================================== #
 class ConfigSingleton(BaseConfig):
-    HERE = get_cwd_config_path()
-    _path: Path = None
+    HERE = utils.get_cwd_config_path()
+    _err_no_file = 'Config file does not exist at provided path! (YFrake)'
+    _err_locked = 'Cannot modify config while session is open! (YFrake)'
+    _locked = False
     __instance__ = None
 
     # Singleton pattern
@@ -44,40 +45,41 @@ class ConfigSingleton(BaseConfig):
     def __new__(cls):
         if not cls.__instance__:
             cls.__instance__ = super(ConfigSingleton, cls).__new__(cls)
+            cls.__init_once__(cls.__instance__)
         return cls.__instance__
 
     # ------------------------------------------------------------------------------------ #
-    def __init__(self) -> None:
-        if not self.file:
-            self.file = get_default_config_path()
+    def __init_once__(self):
+        default = utils.get_default_config_path()
+        self._read_config_from(default)
+        self._locked = False
 
     # ------------------------------------------------------------------------------------ #
-    def __iter__(self):
-        for key in self._config.keys():
-            yield key
+    def _raise_if_unable(self, path: Path) -> None:
+        if not path.exists():
+            raise RuntimeError(self._err_no_file)
+        if self._locked:
+            raise RuntimeError(self._err_locked)
 
     # ------------------------------------------------------------------------------------ #
-    def __getitem__(self, key) -> dict:
-        return dict(self._config[key])  # break reference
-
-    def __setitem__(self, key, value) -> None:
-        raise TypeError(self._err_msg)
-
-    def __delitem__(self, key) -> None:
-        raise TypeError(self._err_msg)
-
-    # ------------------------------------------------------------------------------------ #
-    @property
-    def file(self) -> Path:
-        return self._path
-
-    @file.setter
-    def file(self, path: Path) -> None:
-        config = read_config_file(path)
+    def _read_config_from(self, path: Path) -> None:
+        if path == self.HERE and not path.exists():
+            utils.copy_default_config_to(path)
+        self._raise_if_unable(path)
+        cp = ConfigParser()
+        cp.read(path)
+        config = utils.convert_to_dict(cp)
         validate_config(config)
         self._config = config
         self._path = path
 
-    @file.deleter
-    def file(self) -> None:
-        raise TypeError(self._err_msg)
+    # ------------------------------------------------------------------------------------ #
+    def is_locked(self) -> bool:
+        return self._locked
+
+
+# ==================================================================================== #
+def toggle_config_lock() -> None:
+    config = ConfigSingleton()
+    locked = getattr(config, '_locked')
+    setattr(config, '_locked', not locked)

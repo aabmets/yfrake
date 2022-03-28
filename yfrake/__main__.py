@@ -28,7 +28,6 @@
 from .server.runner import server_runner
 from .config.config import ConfigSingleton
 from .config import utils
-from pathlib import Path
 import asyncio
 
 
@@ -45,6 +44,6 @@ if __name__ == '__main__':
 
     if run_server is True:
         config = ConfigSingleton()
-        config.file = Path(config_file)
+        config.file = config_file
         coro = server_runner(run_forever=True)
         asyncio.run(coro)

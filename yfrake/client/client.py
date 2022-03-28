@@ -38,7 +38,8 @@ import asyncio
 
 # ==================================================================================== #
 class ClientSingleton(Decorator):
-    __cache__ = CacheSingleton()
+    _err_not_open = 'Session has not been opened! (YFrake)'
+    _cache = CacheSingleton()
     __instance__ = None
 
     # Singleton pattern
@@ -71,8 +72,8 @@ class ClientSingleton(Decorator):
         Returns immediately with the pending
         ClientResponse object.
         """
-        if not cls._initialized:
-            raise RuntimeError(cls._err_cfg_missing)
+        if not cls._config.is_locked():
+            raise RuntimeError(cls._err_not_open)
         validate_request(endpoint, kwargs)
 
         attr = 'get_' + endpoint

@@ -1,24 +1,41 @@
-from yfrake.config import config as cfg
+from yfrake.config import utils
+from yfrake import client, config
 import pytest
+import os
 
 
-config = cfg.ConfigSingleton()
-
-
-def test_config_singleton_1():
-    assert isinstance(config, cfg.ConfigSingleton)
-    for key in config:
-        assert key in ['client', 'server', 'other', 'cache_ttl']
-        assert isinstance(config[key], dict)
-        with pytest.raises(TypeError):
-            config[key] = 'asdfg'
-        with pytest.raises(TypeError):
-            del config[key]
-
-
-def test_config_singleton_2():
+def test_config_1():
     path = config.file
-    assert path == cfg.get_default_config_path()
+    assert path == utils.get_default_config_path()
     with pytest.raises(TypeError):
         del config.file
     config.file = path
+
+
+def test_config_2():
+    assert config.is_locked() is False
+
+    @client.session
+    def main():
+        with pytest.raises(RuntimeError):
+            config.file = 'asdfg'
+        assert config.is_locked() is True
+    main()
+
+    assert config.is_locked() is False
+
+
+def test_config_3():
+    assert not config.HERE.exists()
+    config.file = config.HERE
+    assert config.HERE.exists()
+
+    @client.session
+    def main():
+        with pytest.raises(RuntimeError):
+            config.file = config.HERE
+    main()
+
+    assert config.HERE.exists()
+    os.remove(config.HERE)
+    assert not config.HERE.exists()

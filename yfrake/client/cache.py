@@ -33,6 +33,7 @@ import pickle
 
 # ==================================================================================== #
 class CacheSingleton:
+    __cache__ = None
     __instance__ = None
 
     # Singleton pattern
@@ -44,10 +45,10 @@ class CacheSingleton:
 
     # ------------------------------------------------------------------------------------ #
     def __init__(self):
-        if not getattr(self, '__cache__', False):
+        if not self.__cache__:
             self.__cache__ = OrderedDict()
-            self.__maxsize__ = 0
-            self.__size__ = 0
+            self._cache_max_size_mb = 0
+            self._cache_size_mb = 0
 
     # ------------------------------------------------------------------------------------ #
     @staticmethod

@@ -34,9 +34,7 @@ import os
 
 
 # ==================================================================================== #
-def read_config_file(path: Path) -> dict:
-    cp = ConfigParser()
-    cp.read(path)
+def convert_to_dict(cp: ConfigParser) -> dict:
     config = dict()
     for section in cp.sections():
         sect = section.lower()
@@ -74,6 +72,9 @@ def get_cwd_config_path() -> Path:
 
 
 # ------------------------------------------------------------------------------------ #
-def copy_default_config_to(dest: Path) -> None:  # pragma: no cover
+def copy_default_config_to(dest: Path) -> None:
     default_config = get_default_config_path()
     shutil.copy(default_config, dest)
+
+
+

@@ -25,19 +25,19 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
+from ..config.config import ConfigSingleton
+from ..config.config import toggle_config_lock as tcl
 from . import session
 import asyncio
 import inspect
 import sys
 
 
+# ==================================================================================== #
 class Decorator:
-    _err_cfg_missing = 'Configuration decorator not in use! (YFrake)'
-    _err_already_cfg = 'Configuration decorator already in use! (YFrake)'
-    _err_forgot_to_wait = 'You forgot to (a)wait a response or a results object! (YFrake)'
-
+    _err_already_open = 'Session has already been opened! (YFrake)'
+    _config = ConfigSingleton()
     _async_mode: bool = False
-    _initialized: bool = False
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
@@ -48,26 +48,26 @@ class Decorator:
         of the client object can be called only when the
         decorated function or coroutine has not returned.
         """
-        if cls._initialized:
-            raise RuntimeError(cls._err_already_cfg)
+        if cls._config.is_locked():
+            raise RuntimeError(cls._err_already_open)
 
         if sys.platform == 'win32':  # pragma: no branch
             policy = asyncio.WindowsSelectorEventLoopPolicy()
             asyncio.set_event_loop_policy(policy)
 
         async def a_inner(*args, **kwargs) -> None:
-            cls._initialized = True
+            tcl()
             await session.open_async()
             await func(*args, **kwargs)
             await session.close_async()
-            cls._initialized = False
+            tcl()
 
         def t_inner(*args, **kwargs) -> None:
-            cls._initialized = True
+            tcl()
             session.open_thread()
             func(*args, **kwargs)
             session.close_thread()
-            cls._initialized = False
+            tcl()
 
         cls._async_mode = inspect.iscoroutinefunction(func)
         return a_inner if cls._async_mode else t_inner
