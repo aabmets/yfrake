@@ -52,10 +52,10 @@ class ClientSingleton(Decorator):
     # ------------------------------------------------------------------------------------ #
     @classmethod
     async def _wrapper(cls, endpoint, params, func, resp) -> ClientResponse:
-        # result = await cls.__cache__.get(endpoint, params)
-        # if not result:
-        #     result = await func(endpoint, params)
-        #     await cls.__cache__.set(endpoint, params, result)
+        result = await cls._cache.get(endpoint, params)
+        if not result:
+            result = await func(endpoint, params)
+            await cls._cache.set(endpoint, params, result)
         result = await func(endpoint, params)
         setattr(resp, '_endpoint', result['endpoint'])
         setattr(resp, '_error', result['error'])

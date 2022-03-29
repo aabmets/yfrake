@@ -36,11 +36,14 @@ valid_config = {
         'port':      int(),
         'backlog':   int()
     },
-    'other': {
-        'cache_size_mb': int()
+    'cache_max_size': {
+        'num_of_items':   int(),
+        'memory_megs':    int()
     },
-    'cache_ttl': {
-        'historical_prices':       int(),
+    'cache_ttl_variable': {
+        'historical_prices':       str(),
+    },
+    'cache_ttl_constant': {
         'options':                 int(),
         'insights':                int(),
         'quotes_overview':         int(),
