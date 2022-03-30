@@ -2,11 +2,13 @@ Examples
 ========
 
 
-Running the server programmatically with the default settings:
+Running the server programmatically:
 
 .. code-block:: python
-   :emphasize-lines: 2
+   :emphasize-lines: 4
    :linenos:
+
+   from yfrake import server
 
    if not server.is_running()
        server.start()
@@ -16,39 +18,20 @@ Running the server programmatically with the default settings:
    if server.is_running()
        server.stop()
 
+|
+| Creating the 'yfrake_settings.ini' file to the *CWD* if it doesn't exist, without running the server:
+| ``$ python -m yfrake --config-file here``
+|
+|
+| **Running the server from the terminal:**
 
-Running the server programmatically with custom settings:
+| 1) With the default configuration:
+| ``$ python -m yfrake --run-server``
 
-.. code-block:: python
-   :emphasize-lines: 10
-   :linenos:
+| 2) With 'yfrake_settings.ini' in the *CWD*:
+| ``$ python -m yfrake --run-server --config-file here``
 
-   settings = dict(
-       host='localhost',
-       port=8888,
-       limit=64,
-       timeout=2,
-       backlog=128
-   )
-
-   if not server.is_running()
-       server.start(**settings)
-
-   # do other stuff
-
-   if server.is_running()
-       server.stop()
+| 3) With the config file in a custom directory:
+| ``$ python -m yfrake --run-server --config-file "/path/to/'yfrake_settings.ini"``
 
 
-Running the server from the command line or terminal:
-
-``$ python "/path/to/python/Lib/site-packages/yfrake/server/runner.py" args``
-
-| It is not necessary to provide any args, if you want to run the server with the default settings.
-| The default values for the available args are as follows:
-
-``--host 'localhost'``
-``--port 8888``
-``--limit 64``
-``--timeout 2``
-``--backlog 128``

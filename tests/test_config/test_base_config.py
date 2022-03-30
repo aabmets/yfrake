@@ -45,21 +45,3 @@ def test_base_config_backlog():
         config.backlog = 'asdfg'
     with pytest.raises(TypeError):
         del config.backlog
-
-
-def test_base_config_cache_size_mb():
-    cache_size_mb = config.cache_size_mb
-    assert isinstance(cache_size_mb, int)
-    with pytest.raises(TypeError):
-        config.cache_size_mb = 'asdfg'
-    with pytest.raises(TypeError):
-        del config.cache_size_mb
-
-
-def test_base_config_cache_ttl():
-    cache_ttl = config.cache_ttl
-    assert isinstance(cache_ttl, dict)
-    with pytest.raises(TypeError):
-        config.cache_ttl = 'asdfg'
-    with pytest.raises(TypeError):
-        del config.cache_ttl

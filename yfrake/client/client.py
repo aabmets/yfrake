@@ -31,7 +31,6 @@ from .return_types.async_results import AsyncResults
 from .return_types.thread_results import ThreadResults
 from .validators import validate_request
 from .session import SessionSingleton
-from .cache import CacheSingleton
 from . import endpoints
 import asyncio
 
@@ -39,7 +38,6 @@ import asyncio
 # ==================================================================================== #
 class ClientSingleton(Decorator):
     _err_not_open = 'Session has not been opened! (YFrake)'
-    _cache = CacheSingleton()
     __instance__ = None
 
     # Singleton pattern
@@ -51,11 +49,9 @@ class ClientSingleton(Decorator):
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    async def _wrapper(cls, endpoint, params, func, resp) -> ClientResponse:
-        result = await cls._cache.get(endpoint, params)
-        if not result:
-            result = await func(endpoint, params)
-            await cls._cache.set(endpoint, params, result)
+    async def _wrapper(cls, endpoint, params, resp) -> ClientResponse:
+        attr = 'get_' + endpoint
+        func = getattr(endpoints, attr)
         result = await func(endpoint, params)
         setattr(resp, '_endpoint', result['endpoint'])
         setattr(resp, '_error', result['error'])
@@ -76,17 +72,15 @@ class ClientSingleton(Decorator):
             raise RuntimeError(cls._err_not_open)
         validate_request(endpoint, kwargs)
 
-        attr = 'get_' + endpoint
-        func = getattr(endpoints, attr)
         resp = ClientResponse(cls._async_mode)
-
         if cls._async_mode:
             future = asyncio.create_task(
-                cls._wrapper(endpoint, kwargs, func, resp))
+                cls._wrapper(endpoint, kwargs, resp))
         else:
             ss = SessionSingleton()
             future = asyncio.run_coroutine_threadsafe(
-                cls._wrapper(endpoint, kwargs, func, resp), ss.loop)
+                cls._wrapper(endpoint, kwargs, resp), ss.loop)
+
         setattr(resp, '_future', future)
         return resp
 

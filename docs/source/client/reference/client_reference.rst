@@ -13,20 +13,14 @@ Client Reference
 Public Decorators
 -----------------
 
-.. py:decorator:: configure(limit=64, timeout=2)
+.. py:decorator:: session
 
    | Manages the connection session for the YFrake client singleton.
    | Needs to be active when methods of the client object are being called.
-
-   :param limit: The total number of concurrent requests to the Yahoo Finance API servers.
-   :type limit: int
-
-   :param timeout: The maximum time allowed for a request to fetch data from the Yahoo Finance API servers, in seconds.
-   :type timeout: int
+   | The server object uses this decorator internally to manage its session
+   | to the Yahoo Finance API servers.
 
    :raises RuntimeError: if a configuration is already active.
-
-   :return: None
 
 
 .. raw:: html
@@ -49,7 +43,7 @@ Public Methods
    :param kwargs: Variable keyword arguments, which depend on the endpoint requirements. Values can be either *str*, *int* or *bool*.
    :type kwargs: unpacked dict
 
-   :raises RuntimeError: if a configuration is not active.
+   :raises RuntimeError: if the session decorator is not in use.
    :raises NameError: if an invalid endpoint name has been provided.
    :raises KeyError: if an invalid query parameter has been provided.
    :raises TypeError: if the datatype of a query parameter is invalid.
@@ -66,11 +60,10 @@ Public Methods
    :param queries: Collection of query dicts.
    :type queries: list
 
-   :raises RuntimeError: if a configuration is not active.
+   :raises RuntimeError: if the session decorator is not in use.
    :raises NameError: if an invalid endpoint name has been provided.
    :raises KeyError: if an invalid query parameter has been provided.
    :raises TypeError: if the datatype of a query parameter is invalid.
-   :raises TypeError: if an element in the queries list is not a dict.
 
    :return: List-like collection object
    :rtype: AsyncResults or ThreadResults
@@ -87,11 +80,10 @@ Public Methods
    :param symbol: Security identifier.
    :type symbol: str
 
-   :raises RuntimeError: if a configuration is not active.
+   :raises RuntimeError: if the session decorator is not in use.
    :raises NameError: if an invalid endpoint name has been provided.
    :raises KeyError: if an invalid query parameter has been provided.
    :raises TypeError: if the datatype of a query parameter is invalid.
-   :raises TypeError: if an element in the queries list is not a dict.
 
    :return: List-like collection object
    :rtype: AsyncResults or ThreadResults

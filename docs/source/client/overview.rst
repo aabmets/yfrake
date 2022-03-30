@@ -25,7 +25,7 @@ about a single symbol from all symbol-specific endpoints at once.
 Client Decorators
 +++++++++++++++++
 
-The ``client`` object has a decorator named ``configure``, which opens a session to the Yahoo Finance API servers and
+The ``client`` object has a single decorator named ``session``, which opens a session to the Yahoo Finance API servers and
 inspects the concurrency mode of your program to adjust its behaviour accordingly.
 This enables YFrake to work in async and sync (threaded) modes out-of-the-box.
 

@@ -23,3 +23,11 @@ Welcome to YFrake's documentation!
    server/server_overview.rst
    server/server_reference.rst
    server/server_examples.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Config
+
+   config/config_overview.rst
+   config/config_reference.rst
+   config/config_examples.rst

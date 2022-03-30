@@ -115,29 +115,3 @@ class BaseConfig:
     @backlog.deleter
     def backlog(self) -> None:
         raise TypeError(self._err_not_available)
-
-    # ------------------------------------------------------------------------------------ #
-    @property
-    def cache_size_mb(self) -> int:
-        return self._config['other']['cache_size_mb']
-
-    @cache_size_mb.setter
-    def cache_size_mb(self, _) -> None:
-        raise TypeError(self._err_not_available)
-
-    @cache_size_mb.deleter
-    def cache_size_mb(self) -> None:
-        raise TypeError(self._err_not_available)
-
-    # ------------------------------------------------------------------------------------ #
-    @property
-    def cache_ttl(self) -> dict:
-        return dict(self._config['cache_ttl'])
-
-    @cache_ttl.setter
-    def cache_ttl(self, _) -> None:
-        raise TypeError(self._err_not_available)
-
-    @cache_ttl.deleter
-    def cache_ttl(self) -> None:
-        raise TypeError(self._err_not_available)

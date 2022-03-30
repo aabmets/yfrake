@@ -19,7 +19,7 @@ The following example loops at line 4 ``while`` the response has not yet arrived
    :emphasize-lines: 4
    :linenos:
 
-   @client.configure()
+   @client.session
    async def main():
        resp = client.get('quote_type', symbol='msft')
        while resp.pending():
@@ -32,7 +32,7 @@ The following example blocks at line 4 until the response has arrived:
    :emphasize-lines: 4
    :linenos:
 
-   @client.configure()
+   @client.session
    async def main():
        resp = client.get('quote_type', symbol='msft')
        await resp.wait()
@@ -54,7 +54,7 @@ The following example waits until all of the responses have arrived before runni
    :emphasize-lines: 9
    :linenos:
 
-   @client.configure()
+   @client.session
    async def main():
        queries = [
            dict(endpoint='quote_type', symbol='msft'),
@@ -72,7 +72,7 @@ The following example starts yielding the responses into the ``async for`` loop 
    :emphasize-lines: 9
    :linenos:
 
-   @client.configure()
+   @client.session
    async def main():
        queries = [
            dict(endpoint='quote_type', symbol='msft'),
@@ -99,7 +99,7 @@ The following example loops while all the available data about a symbol is being
    :emphasize-lines: 4
    :linenos:
 
-   @client.configure()
+   @client.session
    async def main():
        results = client.get_all(symbol='msft')
        while results.pending():
@@ -112,7 +112,7 @@ The following example blocks while all the available data about a symbol is bein
    :emphasize-lines: 4
    :linenos:
 
-   @client.configure()
+   @client.session
    async def main():
        results = client.get_all(symbol='aapl')
        await results.wait()
