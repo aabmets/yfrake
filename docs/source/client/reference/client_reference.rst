@@ -15,10 +15,9 @@ Public Decorators
 
 .. py:decorator:: session
 
-   | Manages the connection session for the YFrake client singleton.
-   | Needs to be active when methods of the client object are being called.
-   | The server object uses this decorator internally to manage its session
-   | to the Yahoo Finance API servers.
+   | Manages the network connection to the Yahoo Finance API servers.
+   | Needs to be active only when the client methods are being called.
+   | Used internally by the YFrake server process.
 
    :raises RuntimeError: if a configuration is already active.
 

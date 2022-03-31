@@ -75,6 +75,3 @@ def get_cwd_config_path() -> Path:
 def copy_default_config_to(dest: Path) -> None:
     default_config = get_default_config_path()
     shutil.copy(default_config, dest)
-
-
-

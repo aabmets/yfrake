@@ -75,7 +75,7 @@ The following example creates a batch request of 3 endpoints for 3 symbols:
        main()
 
 
-The following example demonstrates the usage of the ``get`` method inside a non-decorated method:
+The following example demonstrates the usage of the ``get`` method inside a non-decorated function (or coroutine):
 
 .. code-block:: python
    :linenos:
