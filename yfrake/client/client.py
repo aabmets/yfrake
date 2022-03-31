@@ -70,9 +70,10 @@ class ClientSingleton(Decorator):
         """
         if not cls._config.is_locked():
             raise RuntimeError(cls._err_not_open)
-        validate_request(endpoint, kwargs)
 
+        validate_request(endpoint, kwargs)
         resp = ClientResponse(cls._async_mode)
+
         if cls._async_mode:
             future = asyncio.create_task(
                 cls._wrapper(endpoint, kwargs, resp))

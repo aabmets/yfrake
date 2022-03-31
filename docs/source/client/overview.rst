@@ -13,8 +13,8 @@ Overview
 Client Object
 -------------
 
-Client Methods
-++++++++++++++
+Methods
++++++++
 
 The ``client`` singleton is the main object which is used to request data from the Yahoo Finance API servers.
 It has three methods: the ``get`` method, which is used to make a single request, the ``batch_get`` helper method,
@@ -26,8 +26,8 @@ To convert the servers endpoint path param names for use with the client object,
 beginning of the endpoint name: ``/company_overview`` becomes ``company_overview``.
 
 
-Client Decorators
-+++++++++++++++++
+Decorators
+++++++++++
 
 The ``client`` object has a single decorator named ``session``, which opens a session to the Yahoo Finance API servers and
 inspects the concurrency mode of your program to adjust its behaviour accordingly.
