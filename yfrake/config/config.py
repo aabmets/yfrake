@@ -70,7 +70,7 @@ class ConfigSingleton:
             raise RuntimeError(self._err_locked)
         path = Path(path).resolve()
         if not path.exists():
-            if not path == self.HERE:
+            if path != self.HERE:
                 raise RuntimeError(self._err_no_file)
             utils.copy_default_config_to(path)
         self._config = helpers.read_config_from(path)
