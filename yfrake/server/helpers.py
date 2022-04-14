@@ -58,18 +58,20 @@ def create_cors(app):
 
 
 # ------------------------------------------------------------------------------------ #
-def create_site(runner, config):
+def create_site(runner, settings):
     site = web.TCPSite(
         runner=runner,
-        host=config.host,
-        port=config.port,
-        backlog=config.backlog
+        host=settings['host'],
+        port=settings['port'],
+        backlog=settings['backlog']
     )
     return site
 
 
 # ------------------------------------------------------------------------------------ #
-def notify_user(host, port):
+def notify_user(settings):
+    host = settings['host']
+    port = settings['port']
     msg = f'Running YFrake server at: http://{host}:{port}'
     sep = '-' * len(msg)
     print(sep + '\n' + msg + '\n' + sep)

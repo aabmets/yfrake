@@ -1,5 +1,5 @@
 # ==================================================================================== #
-#    yfrake_settings.ini - This file is part of the YFrake package.                    #
+#    helpers.py - This file is part of the YFrake package.                             #
 # ------------------------------------------------------------------------------------ #
 #                                                                                      #
 #    MIT License                                                                       #
@@ -25,60 +25,39 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-[CLIENT]
-limit:     64
-timeout:   2
+from .validator import validate_config
+from configparser import ConfigParser
+from pathlib import Path
 
-[SERVER]
-host:      localhost
-port:      8888
-backlog:   128
 
-[CACHE_SIZE]
-max_entries:      1024
-max_entry_size:   2
-max_memory:       64
+# ==================================================================================== #
+def read_config_from(path: Path | str) -> dict:
+    cp = ConfigParser()
+    cp.read(path)
+    config = convert_to_dict(cp)
+    config = convert_datatypes(config)
+    validate_config(config)
+    return config
 
-[CACHE_TTL_GROUPS]
-# override:   false  <- MISSING FIELD
-short_ttl:  0
-long_ttl:   0
 
-[CACHE_TTL_SHORT]
-historical_prices:       60
-detailed_summary:        60
-financials:              60
-insights:                60
-key_statistics:          60
-market_summary:          60
-news:                    60
-options:                 60
-price_overview:          60
-quotes_overview:         60
-trending_symbols:        60
+# ------------------------------------------------------------------------------------ #
+def convert_to_dict(cp: ConfigParser) -> dict:
+    config = dict()
+    for section in cp.sections():
+        sect = section.lower()
+        config[section.lower()] = dict()
+        for key, value in cp.items(section):
+            config[sect][key] = value
+    return config
 
-[CACHE_TTL_LONG]
-balance_statements:      86400
-calendar_events:         86400
-cashflow_statements:     86400
-company_overview:        86400
-currencies:              86400
-earnings:                86400
-earnings_history:        86400
-earnings_trend:          86400
-esg_chart:               86400
-esg_scores:              86400
-fund_ownership:          86400
-income_statements:       86400
-insider_holders:         86400
-insider_transactions:    86400
-institution_ownership:   86400
-major_holders:           86400
-purchase_activity:       86400
-quote_type:              86400
-ratings_history:         86400
-recommendation_trend:    86400
-recommendations:         86400
-sec_filings:             86400
-shares_outstanding:      86400
-validate_symbols:        86400
+
+# ------------------------------------------------------------------------------------ #
+def convert_datatypes(config: dict) -> dict:
+    bool_map = dict(true=True, false=False)
+    for section in config.values():
+        for key, value in section.items():
+            try:
+                section[key] = int(value)
+            except ValueError:
+                section[key] = bool_map.get(value, value)
+    return config

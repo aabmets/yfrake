@@ -39,3 +39,16 @@ def test_config_3():
     assert config.HERE.exists()
     os.remove(config.HERE)
     assert not config.HERE.exists()
+
+
+def test_config_4():
+    assert isinstance(config.settings, dict)
+    with pytest.raises(TypeError):
+        config.settings = dict()
+    with pytest.raises(TypeError):
+        del config.settings
+
+
+def test_config_5():
+    with pytest.raises(RuntimeError):
+        config.file = 'bad/path'

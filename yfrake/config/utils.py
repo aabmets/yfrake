@@ -27,28 +27,12 @@
 # ==================================================================================== #
 from . import config_file_name
 from argparse import ArgumentParser
-from configparser import ConfigParser
 from pathlib import Path
 import shutil
 import os
 
 
 # ==================================================================================== #
-def convert_to_dict(cp: ConfigParser) -> dict:
-    config = dict()
-    for section in cp.sections():
-        sect = section.lower()
-        config[section.lower()] = dict()
-        for key, value in cp.items(section):
-            try:
-                value = int(value)
-            except ValueError:
-                pass
-            config[sect][key] = value
-    return config
-
-
-# ------------------------------------------------------------------------------------ #
 def get_runtime_args() -> dict:  # pragma: no cover
     default = get_default_config_path()
     parser = ArgumentParser()

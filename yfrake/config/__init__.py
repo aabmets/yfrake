@@ -35,52 +35,54 @@ valid_config = {
         'host':      str(),
         'port':      int(),
         'backlog':   int()
+    },
+    'cache_size': {
+        'max_entries':      int(),
+        'max_entry_size':   int(),
+        'max_memory':       int()
+    },
+    'cache_ttl_groups': {
+        'override':    bool(),
+        'short_ttl':   int(),
+        'long_ttl':    int()
+    },
+    'cache_ttl_short': {
+        'historical_prices':   int(),
+        'detailed_summary':    int(),
+        'financials':          int(),
+        'insights':            int(),
+        'key_statistics':      int(),
+        'market_summary':      int(),
+        'news':                int(),
+        'options':             int(),
+        'price_overview':      int(),
+        'quotes_overview':     int(),
+        'trending_symbols':    int()
+    },
+    'cache_ttl_long': {
+        'balance_statements':      int(),
+        'calendar_events':         int(),
+        'cashflow_statements':     int(),
+        'company_overview':        int(),
+        'currencies':              int(),
+        'earnings':                int(),
+        'earnings_history':        int(),
+        'earnings_trend':          int(),
+        'esg_chart':               int(),
+        'esg_scores':              int(),
+        'fund_ownership':          int(),
+        'income_statements':       int(),
+        'insider_holders':         int(),
+        'insider_transactions':    int(),
+        'institution_ownership':   int(),
+        'major_holders':           int(),
+        'purchase_activity':       int(),
+        'quote_type':              int(),
+        'ratings_history':         int(),
+        'recommendation_trend':    int(),
+        'recommendations':         int(),
+        'sec_filings':             int(),
+        'shares_outstanding':      int(),
+        'validate_symbols':        int()
     }
 }
-
-# NOT IMPLEMENTED YET / WORK IN PROGRESS
-#
-#     'cache_max_size': {
-#         'num_of_items':   int(),
-#         'memory_megs':    int()
-#     },
-#     'cache_ttl_variable': {
-#         'historical_prices':       str(),
-#     },
-#     'cache_ttl_constant': {
-#         'options':                 int(),
-#         'insights':                int(),
-#         'quotes_overview':         int(),
-#         'esg_chart':               int(),
-#         'quote_type':              int(),
-#         'news':                    int(),
-#         'recommendations':         int(),
-#         'shares_outstanding':      int(),
-#         'validate_symbols':        int(),
-#         'market_summary':          int(),
-#         'trending_symbols':        int(),
-#         'currencies':              int(),
-#         'esg_scores':              int(),
-#         'purchase_activity':       int(),
-#         'earnings':                int(),
-#         'price_overview':          int(),
-#         'calendar_events':         int(),
-#         'company_overview':        int(),
-#         'sec_filings':             int(),
-#         'detailed_summary':        int(),
-#         'financials':              int(),
-#         'recommendation_trend':    int(),
-#         'ratings_history':         int(),
-#         'earnings_history':        int(),
-#         'earnings_trend':          int(),
-#         'key_statistics':          int(),
-#         'income_statements':       int(),
-#         'cashflow_statements':     int(),
-#         'balance_statements':      int(),
-#         'institution_ownership':   int(),
-#         'fund_ownership':          int(),
-#         'major_holders':           int(),
-#         'insider_transactions':    int(),
-#         'insider_holders':         int()
-#     }
-# }

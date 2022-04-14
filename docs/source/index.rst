@@ -7,6 +7,7 @@ Welcome to YFrake's documentation!
 
    yfrake/description.rst
    yfrake/getting_started.rst
+   yfrake/caching.rst
 
 .. toctree::
    :maxdepth: 2
@@ -31,3 +32,4 @@ Welcome to YFrake's documentation!
    config/config_overview.rst
    config/config_reference.rst
    config/config_examples.rst
+   config/config_file.rst

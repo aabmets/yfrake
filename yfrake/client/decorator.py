@@ -25,8 +25,6 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from ..config.config import ConfigSingleton
-from ..config.config import toggle_config_lock as tcl
 from . import session
 import asyncio
 import inspect
@@ -35,8 +33,7 @@ import sys
 
 # ==================================================================================== #
 class Decorator:
-    _err_already_open = 'Session has already been opened! (YFrake)'
-    _config = ConfigSingleton()
+    _err_sess_already_open = 'Session has already been opened! (YFrake)'
     _async_mode: bool = False
 
     # ------------------------------------------------------------------------------------ #
@@ -48,26 +45,22 @@ class Decorator:
         of the client object can be called only when the
         decorated function or coroutine has not returned.
         """
-        if cls._config.is_locked():
-            raise RuntimeError(cls._err_already_open)
+        if session.is_locked():
+            raise RuntimeError(cls._err_sess_already_open)
 
         if sys.platform == 'win32':  # pragma: no branch
             policy = asyncio.WindowsSelectorEventLoopPolicy()
             asyncio.set_event_loop_policy(policy)
 
         async def a_inner(*args, **kwargs) -> None:
-            tcl()
             await session.open_async()
             await func(*args, **kwargs)
             await session.close_async()
-            tcl()
 
         def t_inner(*args, **kwargs) -> None:
-            tcl()
             session.open_thread()
             func(*args, **kwargs)
             session.close_thread()
-            tcl()
 
         cls._async_mode = inspect.iscoroutinefunction(func)
         return a_inner if cls._async_mode else t_inner

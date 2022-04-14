@@ -1,18 +1,4 @@
 [[package]]
-name = "aiocache"
-version = "0.11.1"
-description = "multi backend asyncio cache"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.extras]
-dev = ["asynctest (>=0.11.0)", "codecov", "coverage", "flake8", "ipdb", "marshmallow", "pystache", "pytest", "pytest-asyncio", "pytest-mock", "sphinx", "sphinx-autobuild", "sphinx-rtd-theme", "black"]
-memcached = ["aiomcache (>=0.5.2)"]
-msgpack = ["msgpack (>=0.5.5)"]
-redis = ["aioredis (>=0.3.3)", "aioredis (>=1.0.0)"]
-
-[[package]]
 name = "aiohttp"
 version = "3.8.1"
 description = "Async http client/server framework (asyncio)"
@@ -45,11 +31,11 @@ aiohttp = ">=1.1"
 
 [[package]]
 name = "aiohttp-swagger3"
-version = "0.7.1"
+version = "0.7.2"
 description = "validation for aiohttp swagger openAPI 3"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 aiohttp = ">=3.6.2,<3.9.0"
@@ -536,13 +522,9 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "0306e9adb1e0cd5c66c5a8aa7745a33a0992784843441b18ebe1f08046c7a54c"
+content-hash = "8dc526958d9063f09ea69222c43663ead05ae2b012dd92b8fe669a35f2ac0895"
 
 [metadata.files]
-aiocache = [
-    {file = "aiocache-0.11.1-py2.py3-none-any.whl", hash = "sha256:e55c7caaa5753794fd301c3a2e592737fa1d036db9f8d04ae154facdfb48a157"},
-    {file = "aiocache-0.11.1.tar.gz", hash = "sha256:f2ebe0b05cec45782e7b5ea0bb74640f157dd4bb1028b4565364dda9fe33be7f"},
-]
 aiohttp = [
     {file = "aiohttp-3.8.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:1ed0b6477896559f17b9eaeb6d38e07f7f9ffe40b9f0f9627ae8b9926ae260a8"},
     {file = "aiohttp-3.8.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7dadf3c307b31e0e61689cbf9e06be7a867c563d5a63ce9dca578f956609abf8"},
@@ -622,8 +604,8 @@ aiohttp-cors = [
     {file = "aiohttp_cors-0.7.0-py3-none-any.whl", hash = "sha256:0451ba59fdf6909d0e2cd21e4c0a43752bc0703d33fc78ae94d9d9321710193e"},
 ]
 aiohttp-swagger3 = [
-    {file = "aiohttp-swagger3-0.7.1.tar.gz", hash = "sha256:d67d194b6946d6dfff755698d272d8acb7db03002db7f4b361904e567ea0eb68"},
-    {file = "aiohttp_swagger3-0.7.1-py3-none-any.whl", hash = "sha256:0654c19d321894639b0f4132a32bed085f961d62f73d8b92e06d8c5c8b1d3e53"},
+    {file = "aiohttp-swagger3-0.7.2.tar.gz", hash = "sha256:e0746bfcc4c5b4e04d0d85cc651fe728e35380f754a21788153b472286c00b50"},
+    {file = "aiohttp_swagger3-0.7.2-py3-none-any.whl", hash = "sha256:3b460a8e9cee8a3f3ab7a7c51f01870a79d451f327a71efea6ef37ba5d73f73b"},
 ]
 aiosignal = [
     {file = "aiosignal-1.2.0-py3-none-any.whl", hash = "sha256:26e62109036cd181df6e6ad646f91f0dcfd05fe16d0cb924138ff2ab75d64e3a"},

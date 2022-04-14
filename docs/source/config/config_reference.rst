@@ -45,61 +45,13 @@ Public Properties
    :rtype: pathlib.Path
 
 
-.. py:property:: limit
+.. py:property:: settings
    :classmethod:
 
-   | The total number of concurrent requests to the Yahoo Finance API servers.
-   | *READ ONLY.*
+   | Deep copied dictionary of the currently loaded configuration.
+   | This property is *READ ONLY.*
 
    :raises TypeError: on attempt to modify the property.
    :raises TypeError: on attempt to delete the property.
 
-   :rtype: int
-
-
-.. py:property:: timeout
-   :classmethod:
-
-   | The maximum time allowed for a request to fetch data, in seconds.
-   | *READ ONLY.*
-
-   :raises TypeError: on attempt to modify the property.
-   :raises TypeError: on attempt to delete the property.
-
-   :rtype: int
-
-
-.. py:property:: host
-   :classmethod:
-
-   | The web address of the host.
-   | *READ ONLY.*
-
-   :raises TypeError: on attempt to modify the property.
-   :raises TypeError: on attempt to delete the property.
-
-   :rtype: str
-
-
-.. py:property:: port
-   :classmethod:
-
-   | The port number of the host.
-   | *READ ONLY.*
-
-   :raises TypeError: on attempt to modify the property.
-   :raises TypeError: on attempt to delete the property.
-
-   :rtype: int
-
-
-.. py:property:: backlog
-   :classmethod:
-
-   | A number of connections on-hold before the system refuses new connections.
-   | *READ ONLY.*
-
-   :raises TypeError: on attempt to modify the property.
-   :raises TypeError: on attempt to delete the property.
-
-   :rtype: int
+   :rtype: dict

@@ -39,7 +39,9 @@ async def handler(request: web.Request) -> web.Response:
     This func receives all the incoming requests to the server
     and forwards them to the correct endpoint handlers.
     """
+
     params = convert_multidict(request.query)
+    params = convert_datatypes(params)
     endpoint = request.path.strip('/')
     try:
         resp = client.get(endpoint, **params)
@@ -67,3 +69,19 @@ def convert_multidict(multidict: MultiDictProxy) -> dict:
         if key not in out:
             out[key] = multidict[key]
     return out
+
+
+# ------------------------------------------------------------------------------------ #
+def convert_datatypes(params: dict) -> dict:
+    for key, value in params.items():
+        try:
+            params[key] = int(value)
+        except ValueError:
+            pass
+
+        if value.lower() == 'true':
+            params[key] = True
+        if value.lower() == 'false':
+            params[key] = False
+
+    return params

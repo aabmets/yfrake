@@ -25,19 +25,21 @@
 #    SOFTWARE.                                                                         #
 #                                                                                      #
 # ==================================================================================== #
-from .decorator import Decorator
-from .return_types.client_response import ClientResponse
-from .return_types.async_results import AsyncResults
-from .return_types.thread_results import ThreadResults
+from ..cache.cache import CacheSingleton
+from .return_types import ClientResponse
+from .return_types import AsyncResults
+from .return_types import ThreadResults
 from .validators import validate_request
-from .session import SessionSingleton
+from .decorator import Decorator
 from . import endpoints
+from . import session
 import asyncio
 
 
 # ==================================================================================== #
 class ClientSingleton(Decorator):
-    _err_not_open = 'Session has not been opened! (YFrake)'
+    _err_sess_not_open = 'Session has not been opened! (YFrake)'
+    _cache = CacheSingleton()
     __instance__ = None
 
     # Singleton pattern
@@ -49,10 +51,13 @@ class ClientSingleton(Decorator):
 
     # ------------------------------------------------------------------------------------ #
     @classmethod
-    async def _wrapper(cls, endpoint, params, resp) -> ClientResponse:
-        attr = 'get_' + endpoint
-        func = getattr(endpoints, attr)
-        result = await func(endpoint, params)
+    async def _wrapper(cls, endpoint: str, params: dict, resp: ClientResponse) -> ClientResponse:
+        result = cls._cache.get(endpoint, params)
+        if not result:
+            attr = 'get_' + endpoint
+            func = getattr(endpoints, attr)
+            result = await func(endpoint, dict(params))
+            cls._cache.set(endpoint, params, result)
         setattr(resp, '_endpoint', result['endpoint'])
         setattr(resp, '_error', result['error'])
         setattr(resp, '_data', result['data'])
@@ -68,8 +73,8 @@ class ClientSingleton(Decorator):
         Returns immediately with the pending
         ClientResponse object.
         """
-        if not cls._config.is_locked():
-            raise RuntimeError(cls._err_not_open)
+        if not session.is_locked():
+            raise RuntimeError(cls._err_sess_not_open)
 
         validate_request(endpoint, kwargs)
         resp = ClientResponse(cls._async_mode)
@@ -78,9 +83,9 @@ class ClientSingleton(Decorator):
             future = asyncio.create_task(
                 cls._wrapper(endpoint, kwargs, resp))
         else:
-            ss = SessionSingleton()
+            loop = session.get_event_loop()
             future = asyncio.run_coroutine_threadsafe(
-                cls._wrapper(endpoint, kwargs, resp), ss.loop)
+                cls._wrapper(endpoint, kwargs, resp), loop)
 
         setattr(resp, '_future', future)
         return resp

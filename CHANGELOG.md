@@ -1,6 +1,27 @@
 
 # Change Log
 
+
+### Version 2.1.0
+
+* Implemented caching functionality. Now, all endpoint results are cached using a TLRU algorithm.
+The cache behaviour is fully customizable from the configuration file.
+
+
+* Reworked the config object implementation to support the caching functionality. <br /> 
+The config object no longer has separate attributes for each setting, but rather a single "settings" attribute,
+from which all currently enabled config settings can be read.
+
+
+* Added tests for the cache functionality and improved config testing.
+
+
+* Improved documentation to explain caching and the contents of the configuration file.
+
+
+* Fixed a server bug which caused the swagger docs to return bad responses for good requests.
+
+
 ### Version 2.0.0
 
 * Changed configuration implementation. <br /> 

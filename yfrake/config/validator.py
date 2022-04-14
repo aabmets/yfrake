@@ -59,4 +59,7 @@ def test_item(config, section, item) -> None:
     if key not in config[section]:
         raise KeyError(_err_msg_2)
     if not isinstance(config[section][key], type(value)):
+        print(key)
+        print(type(config[section][key]))
+        print(type(value))
         raise ValueError(_err_msg_3)

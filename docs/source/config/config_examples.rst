@@ -63,6 +63,23 @@ Assigning a custom config file in the specified path:
    main()
 
 
+Reading the currently loaded configuration settings:
+
+.. code-block:: python
+   :emphasize-lines: 3, 7
+   :linenos:
+
+   from yfrake import client, config
+
+   settings = config.settings  # correct
+
+   @client.session
+   def main():
+       settings = config.settings  # also correct
+
+   main()
+
+
 Assigning a custom config file before the server is started:
 
 .. code-block:: python

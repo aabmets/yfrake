@@ -37,6 +37,7 @@ import asyncio
 # ==================================================================================== #
 @client.session
 async def server_runner(run_forever=False):
+    settings = config.settings['server']
     spec = get_spec_file_path()
     app = web.Application()
 
@@ -52,10 +53,10 @@ async def server_runner(run_forever=False):
     runner = web.AppRunner(app=app)
     await runner.setup()
 
-    site = helpers.create_site(runner, config)
+    site = helpers.create_site(runner, settings)
     await site.start()
 
-    helpers.notify_user(config.host, config.port)
+    helpers.notify_user(settings)
     while run_forever:  # pragma: no cover
         await asyncio.sleep(3600)
 
