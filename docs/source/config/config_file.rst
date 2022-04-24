@@ -11,6 +11,7 @@ Config File
 Description
 ~~~~~~~~~~~
 
+TTL time values are **integer seconds**.
 All settings in the config file affect the client and the server behaviour both, except those in the **SERVER** section, which affect only the behaviour of the server.
 
 .. raw:: html
