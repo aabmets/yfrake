@@ -1,15 +1,15 @@
 # YFrake
 
 <a target="new" href="https://pypi.python.org/pypi/yfrake"><img border=0 src="https://img.shields.io/badge/python-3.10+-blue.svg?label=python" alt="Supported Python versions"></a>
-<a target="new" href="https://github.com/aspenforest/yfrake/releases"><img border=0 src="https://img.shields.io/github/v/release/aspenforest/yfrake" alt="Latest version released"></a>
-<a target="new" href="https://www.codefactor.io/repository/github/aspenforest/yfrake"><img border=0 src="https://img.shields.io/codefactor/grade/github/aspenforest/yfrake?label=code quality" alt="CodeFactor code quality"></a>
-<a target="new" href="https://scrutinizer-ci.com/g/aspenforest/yfrake/"><img border=0 src="https://img.shields.io/scrutinizer/build/g/aspenforest/yfrake" alt="Scrutinizer build inspection"></a>
-<a target="new" href="https://app.codecov.io/gh/aspenforest/yfrake"><img border=0 src="https://img.shields.io/codecov/c/github/aspenforest/yfrake" alt="Code coverage"></a> 
+<a target="new" href="https://github.com/aabmets/yfrake/releases"><img border=0 src="https://img.shields.io/github/v/release/aabmets/yfrake" alt="Latest version released"></a>
+<a target="new" href="https://www.codefactor.io/repository/github/aabmets/yfrake"><img border=0 src="https://img.shields.io/codefactor/grade/github/aabmets/yfrake?label=code quality" alt="CodeFactor code quality"></a>
+<a target="new" href="https://scrutinizer-ci.com/g/aabmets/yfrake/"><img border=0 src="https://img.shields.io/scrutinizer/build/g/aabmets/yfrake" alt="Scrutinizer build inspection"></a>
+<a target="new" href="https://app.codecov.io/gh/aabmets/yfrake"><img border=0 src="https://img.shields.io/codecov/c/github/aabmets/yfrake" alt="Code coverage"></a> 
 <br />
 <a target="new" href="https://pypi.python.org/pypi/yfrake"><img border=0 src="https://img.shields.io/pypi/dm/yfrake?label=installs" alt="Installs per month"></a>
-<a target="new" href="https://github.com/aspenforest/yfrake/issues"><img border=0 src="https://img.shields.io/github/issues/aspenforest/yfrake" alt="Issues on Github"></a>
-<a target="new" href="https://github.com/aspenforest/yfrake/blob/main/LICENSE"><img border=0 src="https://img.shields.io/github/license/aspenforest/yfrake" alt="License on GitHub"></a>
-<a target="new" href="https://github.com/aspenforest/yfrake/stargazers"><img border=0 src="https://img.shields.io/github/stars/aspenforest/yfrake?style=social" alt="Stars on GitHub"></a>
+<a target="new" href="https://github.com/aabmets/yfrake/issues"><img border=0 src="https://img.shields.io/github/issues/aabmets/yfrake" alt="Issues on Github"></a>
+<a target="new" href="https://github.com/aabmets/yfrake/blob/main/LICENSE"><img border=0 src="https://img.shields.io/github/license/aabmets/yfrake" alt="License on GitHub"></a>
+<a target="new" href="https://github.com/aabmets/yfrake/stargazers"><img border=0 src="https://img.shields.io/github/stars/aabmets/yfrake?style=social" alt="Stars on GitHub"></a>
 <a target="new" href="https://twitter.com/aabmets"><img border=0 src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Faabmets&label=Say%20Thanks" alt="Say thanks on Twitter"></a>
 
 
