@@ -39,7 +39,7 @@ The tutorials and the reference manual is available at: &nbsp; <a target="new" h
 ### Contributing
 
 Your suggestions on how to improve the library or the docs are welcome!  
-Please open an issue with the relevant tag to share your ideas.
+Please open an issue with the appropriate label to share your ideas or report bugs.
 
 <br />
 <a id="footnote1"><sup>&#91;note1&#93;:</sup></a> Stock market data is sourced from Yahoo Finance. 
