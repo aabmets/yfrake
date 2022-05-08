@@ -9,77 +9,113 @@ Endpoints
    :header-rows: 1
    :widths: auto
 
-   * - Endpoints
+   * - Count
+     - Endpoints
      - Symbols
-   * - historical_prices
+   * - 1
+     - historical_prices
      - stocks, forex, crypto
-   * - quotes_overview
+   * - 2
+     - quotes_overview
      - stocks, forex, crypto
-   * - quote_type
+   * - 3
+     - quote_type
      - stocks, forex, crypto
-   * - news
+   * - 4
+     - news
      - stocks, forex, crypto
-   * - recommendations
+   * - 5
+     - recommendations
      - stocks, forex, crypto
-   * - validate_symbols
+   * - 6
+     - validate_symbols
      - stocks, forex, crypto
-   * - price_overview
+   * - 7
+     - price_overview
      - stocks, forex, crypto
-   * - detailed_summary
+   * - 8
+     - detailed_summary
      - stocks, forex, crypto
 
-   * - options
+   * - 9
+     - options
      - stocks only
-   * - insights
+   * - 10
+     - insights
      - stocks only
-   * - esg_chart
+   * - 11
+     - esg_chart
      - stocks only
-   * - shares_outstanding
+   * - 12
+     - shares_outstanding
      - stocks only
-   * - esg_scores
+   * - 13
+     - esg_scores
      - stocks only
-   * - purchase_activity
+   * - 14
+     - purchase_activity
      - stocks only
-   * - earnings
+   * - 15
+     - earnings
      - stocks only
-   * - calendar_events
+   * - 16
+     - calendar_events
      - stocks only
-   * - company_overview
+   * - 17
+     - company_overview
      - stocks only
-   * - sec_filings
+   * - 18
+     - sec_filings
      - stocks only
-   * - financials
+   * - 19
+     - financials
      - stocks only
-   * - recommendation_trend
+   * - 20
+     - recommendation_trend
      - stocks only
-   * - ratings_history
+   * - 21
+     - ratings_history
      - stocks only
-   * - earnings_history
+   * - 22
+     - earnings_history
      - stocks only
-   * - earnings_trend
+   * - 23
+     - earnings_trend
      - stocks only
-   * - key_statistics
+   * - 24
+     - key_statistics
      - stocks only
-   * - income_statements
+   * - 25
+     - income_statements
      - stocks only
-   * - cashflow_statements
+   * - 26
+     - cashflow_statements
      - stocks only
-   * - balance_statements
+   * - 27
+     - balance_statements
      - stocks only
-   * - institution_ownership
+   * - 28
+     - institution_ownership
      - stocks only
-   * - fund_ownership
+   * - 29
+     - fund_ownership
      - stocks only
-   * - major_holders
+   * - 30
+     - major_holders
      - stocks only
-   * - insider_transactions
+   * - 31
+     - insider_transactions
      - stocks only
-   * - insider_holders
+   * - 32
+     - insider_holders
      - stocks only
 
-   * - market_summary
+   * - 33
+     - market_summary
      - none
-   * - trending_symbols
+   * - 34
+     - trending_symbols
      - none
-   * - currencies
+   * - 35
+     - currencies
      - none
