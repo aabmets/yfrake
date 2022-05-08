@@ -7,8 +7,8 @@ build-backend = "poetry.core.masonry.api"
 # ==================================================================================== #
 [tool.poetry]
 name = "YFrake"
-version = "2.1.1"
-description = "A fast and flexible stock market data provider."
+version = "2.1.2"
+description = "A fast and flexible stock market, forex and cryptocurrencies data provider."
 readme = "README.md"
 license = "MIT License"
 authors = [
