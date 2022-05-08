@@ -21,10 +21,6 @@ It has three methods: the ``get`` method, which is used to make a single request
 which is used to schedule multiple requests with one call, and the ``get_all`` helper method, which requests data
 about a single symbol from all symbol-specific endpoints at once.
 
-You can get the list of valid endpoints and their arguments by running the server and reading the Swagger documentation.
-To convert the servers endpoint path param names for use with the client object, just omit the ``/`` character from the
-beginning of the endpoint name: ``/company_overview`` becomes ``company_overview``.
-
 
 Decorators
 ++++++++++

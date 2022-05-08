@@ -1,7 +1,7 @@
 Description
 ===========
 
-YFrake is a fast and flexible stock market data scraper and server [#f1]_.
+YFrake is a fast and flexible stock market, forex and cryptocurrencies data scraper and server [#f1]_.
 It enables developers to **build powerful apps** without having to worry about the details of session management or maximizing throughput [#f2]_.
 
 YFrake has caching built in to speed up requests even more and to reduce load on the source servers.

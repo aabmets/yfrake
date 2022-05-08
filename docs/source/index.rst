@@ -7,6 +7,7 @@ Welcome to YFrake's documentation!
 
    yfrake/description.rst
    yfrake/getting_started.rst
+   yfrake/endpoints.rst
    yfrake/caching.rst
 
 .. toctree::
