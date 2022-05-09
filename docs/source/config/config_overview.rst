@@ -18,6 +18,3 @@ Modifying this dictionary does not modify the currently loaded configuration.
 
 The ``config`` object also has an attribute named ``HERE``, which points to an abstract config file in the **Current Working Directory**.
 Assigning the ``HERE`` attribute to the ``file`` property will create the config file in the **CWD** with the default settings, if it doesn't exist.
-
-*NOTE:* The configuration was moved to a separate object, because future versions of YFrake will have caching,
-which will use individual TTL values for each endpoint, therefore a file-based config implementation is more suitable in this case.
