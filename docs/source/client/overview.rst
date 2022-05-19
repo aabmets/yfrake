@@ -56,6 +56,10 @@ ClientResponse Object
 Instances of this object are returned by the ``client.get`` method.
 It handles the request and contains the response from the Yahoo Finance API servers
 in three properties: ``endpoint``, ``error`` and ``data``.
+The ``endpoint`` is a string, while the ``error`` and ``data`` can be either dictionaries or None.
+If the request returned with an error, the ``error`` property is a dictionary and the ``data`` property is None.
+If the request returned with data, then the ``data`` property is a dictionary and the ``error`` property is None.
+This allows the developer to easily check for response status by writing ``if resp.error is None:``.
 It has methods to (a)wait for the response and to check its completion status and also
 two properties, ``event`` and ``future``, to access the low-level internals of the ``ClientResponse`` object.
 
